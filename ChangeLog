@@ -1,0 +1,442 @@
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: NEWS file (marked as 0.0.1 release)
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* BLURB: add BLURB
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am: add tests/basic.sh to EXTRA_DIST
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* mac.mk, windows.mk: CHECK=check for windows and mac
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* tests/Makefile.am, tests/basic.sh, windows.mk: windows fixes for
+	selftest
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore, Makefile.am, configure.ac, tests/Makefile.am,
+	tests/basic.sh: add a very simple selftest
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am, cmdline.ggo: remove details and put them as text
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* configure.ac: print more build options
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* README: example for selfsigned cert
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: use sign_data() from request_certificate()
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: break out signing from selfsign to it's own
+	function
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: add a selfsign-certificate action
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: move opening files to it's own function
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* README: README text
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo: more text on key slots
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: text
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am, mac.mk: add mac.mk for binary mac builds
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: properly dereference pointer before assigning
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: re-encode fasc
+
+2014-02-10  Klas Lindfors <klas@yubico.com>
+
+	* tools/fasc.pl: explaining comments and small change-around
+
+2014-02-09  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: make sure to zero-out apdu before use
+
+2014-02-09  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: more text about pin-retries
+
+2014-02-09  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: refactor import_key() to use transfer_data()
+	instead of own chaining.
+
+2014-02-09  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: let import_cert() use transfer_data() instead
+	of own chaining
+
+2014-02-08  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: better error messages for verify pin
+
+2014-02-08  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: successfull -> successful
+
+2014-02-08  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: drop verbose print of digest
+
+2014-02-08  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: setup the ec pub key properly when doing
+	generate key
+
+2014-02-08  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: switch to sha256 for cert requests and fix for
+	ec csr
+
+2014-02-08  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: add unblock-pin action and more
+	text and checks to change-
+
+2014-02-08  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: make sure to set ret to false before goto
+
+2014-02-08  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: properly initialize memory to 0
+
+2014-02-08  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: check the new key before setting it
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo: more help on actions
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: implement change-pin
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: let generate use chaining with transfer_data()
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: break out looped sending from request-cert to
+	own function
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: fix bug with continued data in request cert
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: drop debug prints
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: correct certificate length text
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: remove usage of strtok_r so it builds on
+	windows again
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: reorder includes so openssl includes fix
+	X509_NAME on windows
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: some support for ecc key import
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: refactor send_len to calculate the send_len
+	internally
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: fix warnings and variable names
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: add some code for ecc CSR
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am, cmdline.ggo: more help for subject, and generate man
+	page from detailed-help
+
+2014-02-07  Klas Lindfors <klas@yubico.com>
+
+	* : commit 4b64a5c800d6e3c01a6202831db2d7bd0bf55b24 Author: Klas
+	Lindfors <klas@yubico.com> Date:   Fri Feb 7 10:52:56 2014 +0100
+
+2014-02-06  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: more work on request, try to sign digest
+
+2014-02-06  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: add a verify-pin action (needed
+	for signing request)
+
+2014-02-06  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: refactor so we get algorithm from a function.
+
+2014-02-06  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: open output for writing..
+
+2014-02-06  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: more work on request
+
+2014-02-06  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: start on request certificate
+	action
+
+2014-02-06  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: print verbose information about found key
+
+2014-02-06  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: print sizes in a more stable fashion
+
+2014-02-06  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: don't print password instead remind the user the password might be wrong.
+
+2014-02-05  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: remove debug prints.
+
+2014-02-05  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: rework get_length() and fix bug(s)
+
+2014-02-05  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: more text
+
+2014-02-05  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: use sizeof(aid) instead of constant
+
+2014-02-05  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: chuid comments..
+
+2014-02-05  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: add code for setting CHUID
+
+2014-02-05  Klas Lindfors <klas@yubico.com>
+
+	* tools/fasc.pl: small tool to build the fasc
+
+2014-02-05  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: change around and let send_data() take a
+	pointer to APDU
+
+2014-02-05  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore: ignore more
+
+2014-02-05  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore, build-aux/config.rpath: add a config.rpath
+
+2014-02-05  Klas Lindfors <klas@yubico.com>
+
+	* windows.mk: add a windows.mk
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am, configure.ac, yubico-piv-tool.c: pcsc for platforms
+	fixes
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: add password for private keys
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: add certificate import
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: use switch-case for action args
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo: fix help
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo: set default reader to Yubikey
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: drop ec.h
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: handle generation of ecc keys
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: correct C style comment
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: more error info
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: proper output of public key after generate
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: TODO
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: a bit more messages
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: make action a multi-val
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: PKCS12 support for import
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: implement import-key action
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: implement set pin retries
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: implement reset instruction
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: rework verbose prints
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: make -v take a numeric value
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: add action to set management key
+
+2014-02-04  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo: 9b is not available as a slot generally
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: implement algorithms for generate
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: multiple fetch for public key.
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: implement generate
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: add action for what to do
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: get rid of openssl warnings
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: print version
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am, configure.ac, yubico-piv-tool.c: implement
+	authenticate
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: parse authentication key
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: some working code for selecting
+	applet
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am, yubico-piv-tool.c: drop indent rule and re-indent
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore: ignore more
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: various stuff
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore: ignore
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* COPYING, Makefile.am, cmdline.ggo, configure.ac,
+	m4/manywarnings.m4, m4/pkg.m4, m4/warnings.m4, yubico-piv-tool.c: 
+	basic structure
+
+2014-02-03  Klas Lindfors <klas@yubico.com>
+
+	* Initial commit
+
