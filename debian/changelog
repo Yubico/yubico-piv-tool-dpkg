@@ -1,0 +1,5 @@
+yubico-piv-tool (0.0.1-1~ppa1) testing; urgency=low
+
+  * Initial release. (Closes: #XXXXXX)
+
+ -- Klas Lindfors <klas@yubico.com>  Tue, 11 Feb 2014 13:31:21 +0100

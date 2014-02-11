@@ -1,0 +1,20 @@
+Source: yubico-piv-tool
+Maintainer: Yubico Open Source Maintainers <ossmaint@yubico.com>
+Uploaders: Simon Josefsson <simon@yubico.com>, Klas Lindfors <klas@yubico.com>, Dain Nilsson <dain@yubico.com>
+Section: utils
+Priority: extra
+Build-Depends: debhelper (>= 9), pkg-config, libpcsclite-dev, libssl-dev, gengetopt, help2man
+Standards-Version: 3.9.4
+Homepage: http://opensource.yubico.com/yubico-piv-tool/
+Vcs-Git: git://github.com/Yubico/yubico-piv-tool-dpkg.git
+Vcs-Browser: https://github.com/Yubico/yubico-piv-tool-dpkg
+
+Package: yubico-piv-tool
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Command line tool for the YubiKey NEO PIV applet
+ This is a tool for doing administrative tasks with the a YubiKey NEO
+ with a loaded PIV applet from Yubico.
+ .
+ It allows generating keys on card, importing keys and certificates,
+ generating certificate requests and generating selfsigned certificates.
