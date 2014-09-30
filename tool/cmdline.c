@@ -39,7 +39,7 @@ const char *gengetopt_args_info_help[] = {
   "  -v, --verbose[=INT]    Print more information  (default=`0')",
   "  -r, --reader=STRING    Only use a matching reader  (default=`Yubikey')",
   "  -k, --key=STRING       Authentication key to use\n                           (default=`010203040506070801020304050607080102030405060708')",
-  "  -a, --action=ENUM      Action to take  (possible values=\"version\",\n                           \"generate\", \"set-mgm-key\", \"reset\",\n                           \"pin-retries\", \"import-key\",\n                           \"import-certificate\", \"set-chuid\",\n                           \"request-certificate\", \"verify-pin\",\n                           \"change-pin\", \"change-puk\", \"unblock-pin\",\n                           \"selfsign-certificate\")",
+  "  -a, --action=ENUM      Action to take  (possible values=\"version\",\n                           \"generate\", \"set-mgm-key\", \"reset\",\n                           \"pin-retries\", \"import-key\",\n                           \"import-certificate\", \"set-chuid\",\n                           \"request-certificate\", \"verify-pin\",\n                           \"change-pin\", \"change-puk\", \"unblock-pin\",\n                           \"selfsign-certificate\", \"delete-certificate\")",
   "\n       Multiple actions may be given at once and will be executed in order\n       for example --action=verify-pin --action=request-certificate\n",
   "  -s, --slot=ENUM        What key slot to operate on  (possible values=\"9a\",\n                           \"9c\", \"9d\", \"9e\")",
   "\n       9a is for PIV Authentication\n       9c is for Digital Signature (PIN always checked)\n       9d is for Key Management\n       9e is for Card Authentication (PIN never checked)\n",
@@ -76,7 +76,7 @@ cmdline_parser_internal (int argc, char **argv, struct gengetopt_args_info *args
 static int
 cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *prog_name, const char *additional_error);
 
-const char *cmdline_parser_action_values[] = {"version", "generate", "set-mgm-key", "reset", "pin-retries", "import-key", "import-certificate", "set-chuid", "request-certificate", "verify-pin", "change-pin", "change-puk", "unblock-pin", "selfsign-certificate", 0}; /*< Possible values for action. */
+const char *cmdline_parser_action_values[] = {"version", "generate", "set-mgm-key", "reset", "pin-retries", "import-key", "import-certificate", "set-chuid", "request-certificate", "verify-pin", "change-pin", "change-puk", "unblock-pin", "selfsign-certificate", "delete-certificate", 0}; /*< Possible values for action. */
 const char *cmdline_parser_slot_values[] = {"9a", "9c", "9d", "9e", 0}; /*< Possible values for slot. */
 const char *cmdline_parser_algorithm_values[] = {"RSA1024", "RSA2048", "ECCP256", 0}; /*< Possible values for algorithm. */
 const char *cmdline_parser_key_format_values[] = {"PEM", "PKCS12", 0}; /*< Possible values for key-format. */

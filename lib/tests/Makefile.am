@@ -24,33 +24,11 @@
 # non-source form of such a combination shall include the source code
 # for the parts of OpenSSL used as well as that of the covered work.
 
-SUBDIRS = lib tool
+AM_CFLAGS = $(WARN_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_builddir)/lib
 
-ACLOCAL_AMFLAGS = -I m4
+AM_LDFLAGS = -no-install
+LDADD = ../libykpiv.la
 
-EXTRA_DIST = windows.mk mac.mk tool/tests/basic.sh
-
-# Maintainer rules.
-
-ChangeLog:
-	cd $(srcdir) && git2cl > ChangeLog
-
-release:
-	@if test -z "$(KEYID)"; then \
-		echo "Try this instead:"; \
-		echo "  make release KEYID=[PGPKEYID]"; \
-		echo "For example:"; \
-		echo "  make release KEYID=2117364A"; \
-		exit 1; \
-	fi
-	head -3 $(srcdir)/NEWS | \
-		grep -q "Version $(VERSION) .released `date -I`" || \
-		(echo 'error: Update date/version in $(srcdir)/NEWS.'; exit 1)
-	rm -f $(srcdir)/ChangeLog
-	make ChangeLog distcheck
-	gpg --detach-sign --default-key $(KEYID) $(PACKAGE)-$(VERSION).tar.gz
-	gpg --verify $(PACKAGE)-$(VERSION).tar.gz.sig
-	git tag -sm "$(PACKAGE)-$(VERSION)" $(PACKAGE)-$(VERSION)
-	git push
-	git push --tags
-	$(YUBICO_GITHUB_REPO)/publish $(PACKAGE) $(VERSION) $(PACKAGE)-$(VERSION).tar.gz*
+check_PROGRAMS = basic parse_key
+TESTS = $(check_PROGRAMS)

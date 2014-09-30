@@ -1,8 +1,6 @@
-#!/bin/sh
-
 # Copyright (c) 2014 Yubico AB
 # All rights reserved.
-# 
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -21,21 +19,31 @@
 # If you modify this program, or any covered work, by linking or
 # combining it with the OpenSSL project's OpenSSL library (or a
 # modified version of that library), containing parts covered by the
-# terms of the OpenSSL or SSLeay licenses, We grant you additional 
+# terms of the OpenSSL or SSLeay licenses, We grant you additional
 # permission to convey the resulting work. Corresponding Source for a
 # non-source form of such a combination shall include the source code
 # for the parts of OpenSSL used as well as that of the covered work.
 
-# This is a _very_ simple test shell script, really only verifying
-#  that we managed to build a binary and it can execute.
+YKPIV_0.1.0
+{
+global:
+	ykpiv_check_version;
+	ykpiv_strerror_name;
+	ykpiv_strerror;
+	ykpiv_init;
+	ykpiv_done;
+	ykpiv_connect;
+	ykpiv_disconnect;
+	ykpiv_transfer_data;
+	ykpiv_authenticate;
+	ykpiv_set_mgmkey;
+	ykpiv_sign_data;
+	ykpiv_get_version;
+	ykpiv_verify;
+	ykpiv_fetch_object;
+  ykpiv_save_object;
+	ykpiv_hex_decode;
 
-set -e
-
-HELP_OUTPUT=$(../yubico-piv-tool$EXEEXT --help)
-
-expected="yubico-piv-tool $VERSION"
-VERSION_OUTPUT=$(../yubico-piv-tool$EXEEXT --version | sed 's/\r//')
-if [ "x$VERSION_OUTPUT" != "x$expected" ]; then
-  echo "Version ($VERSION_OUTPUT) not matching expected output $expected."
-  exit 1
-fi
+local:
+	*;
+};

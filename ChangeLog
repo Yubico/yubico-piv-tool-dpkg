@@ -1,3 +1,546 @@
+2014-08-25  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: NEWS for 0.1.0 release
+
+2014-08-25  Klas Lindfors <klas@yubico.com>
+
+	* windows.mk: bump openssl version and add -static-libgcc for
+	openssl compile
+
+2014-06-27  Klas Lindfors <klas@yubico.com>
+
+	* lib/tests/parse_key.c, lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map,
+	tool/yubico-piv-tool.c: replace ykpiv_parse_key() with
+	ykpiv_hex_decode()
+
+2014-06-27  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: temp fix for ykpiv_parse_key() it should be removed and replaced by a real hex encoder.
+
+2014-06-26  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am: fix EXTRA_DIST
+
+2014-06-26  Klas Lindfors <klas@yubico.com>
+
+	* : commit c5c06c3c036b69eab8d60f7aa667075efeb5a557 Author: Klas
+	Lindfors <klas@yubico.com> Date:   Wed Jun 18 10:29:22 2014 +0200
+
+2014-06-26  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: let set_object set tag as well, not only lv
+
+2014-06-26  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, tool/yubico-piv-tool.c: refactor delete action to use
+	ykpiv_save_object()
+
+2014-06-26  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: refactor set_chuid() to use
+	ykpiv_save_object()
+
+2014-06-26  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map, tool/yubico-piv-tool.c: 
+	refactor writing object to it's own library function ykpiv_save_object(), use that for writing certs
+
+2014-06-26  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: refactor to let send_data take an APDU* for data
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: let set_length take a size_t
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: add openssl/rsa.h for ykpiv.c
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: rename ykpiv_send_data() to send_data() since it's
+	local
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* tool/util.h: drop apdu structure from tool
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: drop unused code from delete_cert
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, tool/yubico-piv-tool.c: refactor so
+	ykpiv_sign_data() takes size_t input
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map: stop exporting
+	ykpiv_send_data()
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: refactor change_pin() to use
+	ykpiv_transfer_data()
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: refactor to ykpiv_transfer_data() for
+	chuid setting
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: refactor pin-retries to use
+	ykpiv_transfer_data()
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: refactor reset to use
+	ykpiv_transfer_data() instead
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: refactor transfer data so it can send 0 bytes
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, tool/util.c, tool/util.h: make get_length() take a
+	const buffer
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: set version on the selfsigned cert
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* lib/error.c: add error messages
+
+2014-06-25  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, tool/yubico-piv-tool.c: change around
+	and let ykpiv_sign_data() pad
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: 3f ff for object
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* tool/tests/parse_name.c: some negative tests of parse_name()
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: only return the actual data in ykpiv_fetch_data()
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, tool/yubico-piv-tool.c: rework some
+	stuff to size_t
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map: add ykpiv_fetch_object()
+	to library
+
+2014-06-24  Simon Josefsson <simon@josefsson.org>
+
+	* doc/YubiKey-NEO-PIV-Introduction.txt: Fix.
+
+2014-06-24  Simon Josefsson <simon@josefsson.org>
+
+	* doc/YubiKey-NEO-PIV-Introduction.txt: Add.
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.h, tool/util.c: add macros for piv objects
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: fix indentation
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* tool/util.c, tool/util.h, tool/yubico-piv-tool.c: let util.h
+	include cmdline.h since it's using declarations from it..
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* tool/Makefile.am: link the util lib with openssl
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* tool/tests/parse_name.c: constify
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore, tool/tests/Makefile.am, tool/tests/parse_name.c: test
+	for parse_name()
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* tool/util.c, tool/util.h: let parse_name() take a const char*
+	instead
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* tool/Makefile.am, tool/util.c, tool/{internal.h => util.h},
+	tool/yubico-piv-tool.c: change internal.h to util.h
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore, Makefile.am, configure.ac, lib/Makefile.am, {tests =>
+	lib/tests}/Makefile.am, {tests => lib/tests}/basic.c, {tests =>
+	lib/tests}/parse_key.c: move lib tests under lib
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore, configure.ac, tests/Makefile.am, tool/Makefile.am,
+	tool/tests/Makefile.am, {tests => tool/tests}/basic.sh: move
+	basic.sh test to subdir of tool
+
+2014-06-24  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore, tool/Makefile.am, tool/internal.h, tool/util.c,
+	tool/yubico-piv-tool.c: split out util functions from
+	yubico-piv-tool.c
+
+2014-06-23  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map, tool/yubico-piv-tool.c: 
+	add ykpiv_verify to the library
+
+2014-06-18  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.h, tool/yubico-piv-tool.c: make constants for more
+	instructions
+
+2014-06-18  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: use constants for algorithm ids
+
+2014-06-18  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: set version correctly in NEWS
+
+2014-06-18  Klas Lindfors <klas@yubico.com>
+
+	* windows.mk: bump openssl version for windows
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map, tool/yubico-piv-tool.c: 
+	add ykpiv_get_version()  function
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/Makefile.am, lib/error.c, lib/ykpiv.c, lib/ykpiv.h,
+	lib/ykpiv.map, tool/yubico-piv-tool.c: move sign_data() function to
+	library
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: include windows.h on windows
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore, tool/Makefile.am: make a small temp library to avoid
+	warnings on ggo file
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/Makefile.am: no EXTRA_DIST in tool
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map: add ykpiv_disconnect()
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore, tests/Makefile.am, tests/basic.c, tests/parse_key.c: 
+	some tests for the library
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.h: include ykpiv-version.h in ykpiv.h
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/error.c, lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map,
+	tool/yubico-piv-tool.c: add ykpiv_parse_key()
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/error.c, lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map,
+	tool/yubico-piv-tool.c: add ykpiv_set_mgmkey()
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h: make constants for algorithms, keys and
+	instructions
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h: more constness
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/internal.h, lib/ykpiv.c: move apdu structure to internal.h
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/error.c, lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map,
+	tool/yubico-piv-tool.c: move authenticate to library as
+	ykpiv_authenticate()
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/error.c, lib/ykpiv.c, lib/ykpiv.h, tool/yubico-piv-tool.c: let
+	the ykpiv_connect() function select as well
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/Makefile.am, tool/yubico-piv-tool.c: drop direct PCSC
+	dependency for the tool
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: call ykpiv_done() before exiting
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: drop verbose parameter to alot of
+	functions since it's stored in state now
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: drop the connect_reader() function
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, tool/yubico-piv-tool.c: get rid of the
+	YKPIV_APDU_* macros transport the starting 4 bytes as an array instead
+
+2014-06-17  Klas Lindfors <klas@yubico.com>
+
+	* tests/basic.sh: fix the test with new directory structure
+
+2014-06-16  Klas Lindfors <klas@yubico.com>
+
+	* lib/error.c, lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map,
+	tool/yubico-piv-tool.c: break out connect and send data to the
+	library exporting ykpiv_connect() ykpiv_send_data() ykpiv_transfer_data()
+
+2014-06-16  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore, configure.ac, lib/Makefile.am, lib/error.c,
+	lib/internal.h, lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map: start
+	moving code to the library, and add error codes
+
+2014-06-16  Klas Lindfors <klas@yubico.com>
+
+	* lib/Makefile.am, lib/internal.h, lib/ykpiv.c, lib/ykpiv.h,
+	lib/ykpiv.map: start library structure
+
+2014-06-16  Klas Lindfors <klas@yubico.com>
+
+	* configure.ac: bump version properly with librarisation
+
+2014-06-16  Klas Lindfors <klas@yubico.com>
+
+	* configure.ac, tool/Makefile.am: let configure.ac try to find
+	gengetopt
+
+2014-06-16  Klas Lindfors <klas@yubico.com>
+
+	* tool/Makefile.am: let the tool link with the library
+
+2014-06-16  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore: ignore more
+
+2014-06-16  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am, configure.ac, lib/Makefile.am, lib/version.c,
+	lib/ykpiv-version.h.in, lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map,
+	lib/ykpiv.pc.in, m4/ld-version-script.m4: start of the ykpiv library
+
+2014-06-16  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore, Makefile.am, configure.ac, tool/Makefile.am,
+	cmdline.ggo => tool/cmdline.ggo, yubico-piv-tool.c =>
+	tool/yubico-piv-tool.c, yubico-piv-tool.h2m =>
+	tool/yubico-piv-tool.h2m: move the cli stuff to subdir tool
+
+2014-05-28  Klas Lindfors <klas@yubico.com>
+
+	* README, yubico-piv-tool.h2m: add an example of using
+	delete-certificate
+
+2014-05-26  Klas Lindfors <klas@yubico.com>
+
+	* NEWS, configure.ac: bump version after release to 0.0.4
+
+2014-05-26  Klas Lindfors <klas@yubico.com>
+
+	* windows.mk: bump openssl to 1.0.1g
+
+2014-05-26  Klas Lindfors <klas@yubico.com>
+
+	* README: fix typo
+
+2014-05-26  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: news for 0.0.3
+
+2014-05-16  Klas Lindfors <klas@yubico.com>
+
+	* README, yubico-piv-tool.h2m: add note about just
+	import-certificate to help texts
+
+2014-05-16  Klas Lindfors <klas@yubico.com>
+
+	* cmdline.ggo, yubico-piv-tool.c: add a delete-certificate action resolves #2
+
+2014-04-07  Klas Lindfors <klas@yubico.com>
+
+	* tools/fasc.pl: drop unused, commented code
+
+2014-04-02  Klas Lindfors <klas@yubico.com>
+
+	* doc/Windows-Certificate.asciidoc: break line in right place
+
+2014-04-02  Klas Lindfors <klas@yubico.com>
+
+	* doc/Windows-Certificate.asciidoc: short documentation on how to
+	request a cert from a Windows CA
+
+2014-04-01  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: don't continue processing if we failed an
+	action
+
+2014-03-11  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: change functions around to have failure as
+	default mode
+
+2014-03-11  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: fix null dereferences reported by coverity's free scanner
+
+2014-02-19  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am: fixup release target
+
+2014-02-19  Klas Lindfors <klas@yubico.com>
+
+	* NEWS, configure.ac: bump versions
+
+2014-02-14  Klas Lindfors <klas@yubico.com>
+
+	* BLURB: add Travis link to BLURB
+
+2014-02-14  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: actually do the full mutual auth with a
+	challenge from the host
+
+2014-02-13  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am, yubico-piv-tool.h2m: add examples to the manpage and will remove from the README when we figure out how to publish
+	manpages like these properly.
+
+2014-02-13  Klas Lindfors <klas@yubico.com>
+
+	* README: spelling: publick -> public
+
+2014-02-13  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: correct GUID offset GUID was set one byte off resulting in invalid message
+
+2014-02-12  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: return at the end of main() and call
+	EVP_cleanup() before
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: make sure to initialize num_readers before
+	using.
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* yubico-piv-tool.c: simplify selfsign and request, some stuff is
+	already allocated.
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* .travis.yml: gnulib shouldn't be needed explicitly
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* windows.mk: try to specify CC for windows build
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* .travis.yml: change around to try to get windows-build to work
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* .travis.yml: and in precise the package is namned mingw-w64-dev
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* .travis.yml: try to add mingw-dev package
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* build-and-test.sh: rework build-and-test for windows cheat with tar instead of running make dist
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* build-and-test.sh: cheat by touching the man-page before make dist since the binary doesn't exist yet.
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* build-and-test.sh: check for arch instead
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* tests/Makefile.am: use TESTS_ENVIRONMENT instead of
+	AM_TESTS_ENVIRONMENT since automake 1.11 (shipped with precise) doesn't support
+	AM_TESTS_ENVIRONMENT
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* .travis.yml: more packages required
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* .travis.yml: libpcslite -> libpcsclite
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* .travis.yml, build-and-test.sh: add travis stuff
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore: ignore more release artifacts
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* mac.mk, windows.mk: upload target for mac and windows
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* NEWS, configure.ac: bump versions
+
+2014-02-11  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am: fix release target
+
 2014-02-11  Klas Lindfors <klas@yubico.com>
 
 	* NEWS: NEWS file (marked as 0.0.1 release)

@@ -38,7 +38,7 @@ extern "C" {
 #define CMDLINE_PARSER_VERSION VERSION
 #endif
 
-enum enum_action { action__NULL = -1, action_arg_version = 0, action_arg_generate, action_arg_setMINUS_mgmMINUS_key, action_arg_reset, action_arg_pinMINUS_retries, action_arg_importMINUS_key, action_arg_importMINUS_certificate, action_arg_setMINUS_chuid, action_arg_requestMINUS_certificate, action_arg_verifyMINUS_pin, action_arg_changeMINUS_pin, action_arg_changeMINUS_puk, action_arg_unblockMINUS_pin, action_arg_selfsignMINUS_certificate };
+enum enum_action { action__NULL = -1, action_arg_version = 0, action_arg_generate, action_arg_setMINUS_mgmMINUS_key, action_arg_reset, action_arg_pinMINUS_retries, action_arg_importMINUS_key, action_arg_importMINUS_certificate, action_arg_setMINUS_chuid, action_arg_requestMINUS_certificate, action_arg_verifyMINUS_pin, action_arg_changeMINUS_pin, action_arg_changeMINUS_puk, action_arg_unblockMINUS_pin, action_arg_selfsignMINUS_certificate, action_arg_deleteMINUS_certificate };
 enum enum_slot { slot__NULL = -1, slot_arg_9a = 0, slot_arg_9c, slot_arg_9d, slot_arg_9e };
 enum enum_algorithm { algorithm__NULL = -1, algorithm_arg_RSA1024 = 0, algorithm_arg_RSA2048, algorithm_arg_ECCP256 };
 enum enum_key_format { key_format__NULL = -1, key_format_arg_PEM = 0, key_format_arg_PKCS12 };

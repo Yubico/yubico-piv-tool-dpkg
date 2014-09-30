@@ -25,7 +25,7 @@
 # for the parts of OpenSSL used as well as that of the covered work.
 
 PACKAGE=yubico-piv-tool
-OPENSSLVERSION=1.0.1f
+OPENSSLVERSION=1.0.1i
 
 all: usage 32bit 64bit
 
@@ -46,14 +46,14 @@ doit:
 		wget --no-check-certificate "https://www.openssl.org/source/openssl-$(OPENSSLVERSION).tar.gz" && \
 	tar xfa openssl-$(OPENSSLVERSION).tar.gz && \
 	cd openssl-$(OPENSSLVERSION) && \
-	CROSS_COMPILE="$(HOST)-" ./Configure mingw64 no-asm shared --prefix=$(PWD)/tmp$(ARCH)/root && \
+	CROSS_COMPILE="$(HOST)-" ./Configure mingw64 no-asm shared --prefix=$(PWD)/tmp$(ARCH)/root -static-libgcc && \
 	make all install_sw && \
 	cp LICENSE $(PWD)/tmp$(ARCH)/root/licenses/openssl.txt && \
 	cd .. && \
 	cp ../$(PACKAGE)-$(VERSION).tar.gz . && \
 	tar xfa $(PACKAGE)-$(VERSION).tar.gz && \
 	cd $(PACKAGE)-$(VERSION)/ && \
-	PKG_CONFIG_PATH=$(PWD)/tmp$(ARCH)/root/lib/pkgconfig lt_cv_deplibs_check_method=pass_all ./configure --host=$(HOST) --build=x86_64-unknown-linux-gnu --prefix=$(PWD)/tmp$(ARCH)/root LDFLAGS=-L$(PWD)/tmp$(ARCH)/root/lib CPPFLAGS=-I$(PWD)/tmp$(ARCH)/root/include && \
+	CC=$(HOST)-gcc PKG_CONFIG_PATH=$(PWD)/tmp$(ARCH)/root/lib/pkgconfig lt_cv_deplibs_check_method=pass_all ./configure --host=$(HOST) --build=x86_64-unknown-linux-gnu --prefix=$(PWD)/tmp$(ARCH)/root LDFLAGS=-L$(PWD)/tmp$(ARCH)/root/lib CPPFLAGS=-I$(PWD)/tmp$(ARCH)/root/include && \
 	make install $(CHECK) && \
 	cp COPYING $(PWD)/tmp$(ARCH)/root/licenses/$(PACKAGE).txt && \
 	cd .. && \
@@ -65,3 +65,20 @@ doit:
 
 64bit:
 	$(MAKE) -f windows.mk doit ARCH=64 HOST=x86_64-w64-mingw32 CHECK=check
+
+upload:
+	@if test ! -d "$(YUBICO_GITHUB_REPO)"; then \
+		echo "yubico.github.com repo not found!"; \
+		echo "Make sure that YUBICO_GITHUB_REPO is set"; \
+		exit 1; \
+		fi
+	gpg --detach-sign --default-key $(PGPKEYID) \
+		$(PACKAGE)-$(VERSION)-win$(ARCH).zip
+	gpg --verify $(PACKAGE)-$(VERSION)-win$(ARCH).zip.sig
+	$(YUBICO_GITHUB_REPO)/publish $(PACKAGE) $(VERSION) $(PACKAGE)-$(VERSION)-win${ARCH}.zip*
+
+upload-32bit:
+	$(MAKE) -f windows.mk upload ARCH=32
+
+upload-64bit:
+	$(MAKE) -f windows.mk upload ARCH=64
