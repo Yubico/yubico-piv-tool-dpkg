@@ -1,0 +1,23 @@
+yubico-piv-tool NEWS -- History of user-visible changes.        -*- outline -*-
+
+* Version 0.1.0 (released 2014-08-25)
+
+** Break out functionality into a library.
+
+** More testing.
+
+* Version 0.0.3 (released 2014-05-26)
+
+** Add delete-certificate action.
+
+** Fix minor bugs.
+
+* Version 0.0.2 (released 2014-02-19)
+
+** Fix an offset bug with CHUID.
+
+** Do full mutual auth with the applet.
+
+* Version 0.0.1 (released 2014-02-11)
+
+** Initial release.
