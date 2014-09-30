@@ -9,7 +9,7 @@ Homepage: http://opensource.yubico.com/yubico-piv-tool/
 Vcs-Git: git://github.com/Yubico/yubico-piv-tool-dpkg.git
 Vcs-Browser: https://github.com/Yubico/yubico-piv-tool-dpkg
 
-Package: libykpiv
+Package: libykpiv0
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Library for communication with the YubiKey NEO PIV applet
