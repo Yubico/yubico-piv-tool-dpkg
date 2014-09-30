@@ -2,3 +2,6 @@ files
 yubico-piv-tool.debhelper.log
 yubico-piv-tool.substvars
 yubico-piv-tool/
+libykpiv.debhelper.log
+tmp/
+
