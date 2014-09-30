@@ -16,6 +16,12 @@ Description: Library for communication with the YubiKey NEO PIV applet
  This package contains a run-time shared library for doing administrative
  tasks with a YubiKey NEO with a loaded PIV applet from Yubico.
 
+Package: libykpiv-dev
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Development files for the YubiKey NEO PIV applet library
+ This package contains development files for the libykpiv0 library.
+
 Package: yubico-piv-tool
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
