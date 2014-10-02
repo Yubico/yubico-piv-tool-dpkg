@@ -21,7 +21,7 @@ Description: Library for communication with the YubiKey NEO PIV applet
 Package: libykpiv-dev
 Architecture: any
 Section: libdevel
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, libykpiv0 (= ${binary:Version})
 Description: Development files for the YubiKey NEO PIV applet library
  This package contains development files for the libykpiv0 library.
 
