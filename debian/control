@@ -5,7 +5,7 @@ Section: utils
 Priority: extra
 Build-Depends: debhelper (>= 9), pkg-config, libpcsclite-dev, libssl-dev, gengetopt, help2man, dh-autoreconf
 Standards-Version: 3.9.6
-Homepage: http://opensource.yubico.com/yubico-piv-tool/
+Homepage: https://developers.yubico.com/yubico-piv-tool/
 Vcs-Git: git://github.com/Yubico/yubico-piv-tool-dpkg.git
 Vcs-Browser: https://github.com/Yubico/yubico-piv-tool-dpkg
 
