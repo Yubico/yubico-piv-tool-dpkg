@@ -1,3 +1,217 @@
+2014-11-10  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am: dist the docs, and check that all docs are included
+
+2014-11-10  Klas Lindfors <klas@yubico.com>
+
+	* doc/{Windows-Certificate.asciidoc => Windows-Certificate.txt}: 
+	move to .txt for consistency
+
+2014-11-10  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: NEWS for 0.1.1
+
+2014-11-10  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: cast cert_len to size_t shouldn't be
+	negative here.  gets rid of warnings about int/size_t combinations
+
+2014-11-10  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: check that stat completes correctly
+
+2014-11-10  Klas Lindfors <klas@yubico.com>
+
+	* : commit 7e0fdd8f9d01dce6e09f914b34fa38f06cedf847 Author: Klas
+	Lindfors <klas@yubico.com> Date:   Mon Nov 10 09:49:54 2014 +0100
+
+2014-11-07  David Woodhouse <David.Woodhouse@intel.com>
+
+	* tool/cmdline.ggo, tool/yubico-piv-tool.c,
+	tool/yubico-piv-tool.h2m: Add support for compressed certificates This could be more sophisticated — it could automatically compress
+	certificates if they are too large, instead of expecting the user to
+	do so manually. But this is a good start.
+
+2014-10-30  Klas Lindfors <klas@yubico.com>
+
+	* windows.mk: newer openssl, install fewer things and use curl
+
+2014-10-30  Klas Lindfors <klas@yubico.com>
+
+	* configure.ac, lib/Makefile.am: don't use AC_LIB_HAVE_LINKFLAGS it seems to be from gnulib or such, not always available fixes #7
+
+2014-10-29  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: fix broken unblock-pin action the unblock pin action misstakenly used pin reference 0x81 (unblock)
+	instead of 0x80 (pin)
+
+2014-10-28  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: add an error message for wrong key length
+
+2014-10-27  Daniel Barnes <nasonfish@nasonfish.com>
+
+	* tool/yubico-piv-tool.c: Check if new keys being set are the
+	correct length, since longer or shorter keys yield inconsistant
+	results
+
+2014-10-07  Simon Josefsson <simon@josefsson.org>
+
+	* doc/CertificateAuthorityWithNEO.txt: Fix.
+
+2014-10-07  Simon Josefsson <simon@josefsson.org>
+
+	* : commit b16dce294d6f8624228c61af0480b2d276418b6a Author: Klas
+	Lindfors <klas@yubico.com> Date:   Thu Oct 2 13:28:02 2014 +0200
+
+2014-10-02  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: give errors when sign fails
+
+2014-10-02  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: a bit of verbosity for authentication
+	needs
+
+2014-10-02  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: don't change the action_arg pointer, add
+	to it in place instead this effectively reverses 931d224485ad197ba4ef85b76777ea96cf3471e2
+
+2014-10-02  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: refactor to let request-cert and
+	selfsign-cert use different hashes namely sha1 and sha512 as well with sha256 as default
+
+2014-10-02  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: use temporary args_info for parsing if
+	auth is needed
+
+2014-10-02  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore, tool/Makefile.am, tool/cmdline-signer.ggo,
+	tool/cmdline.ggo, tool/yubico-piv-signer.c, tool/yubico-piv-tool.c: 
+	move the signer into the standard tool as a hidden option to discourage use
+
+2014-10-01  Simon Josefsson <simon@josefsson.org>
+
+	* doc/CertificateAuthorityWithNEO.txt: mark basic constraints as
+	critical
+
+2014-10-01  Simon Josefsson <simon@josefsson.org>
+
+	* doc/CertificateAuthorityWithNEO.txt: key usages
+
+2014-10-01  Simon Josefsson <simon@josefsson.org>
+
+	* : commit 675839362a62319a8ab226917a1416271cd54b3f Author: Simon
+	Josefsson <simon@josefsson.org> Date:   Wed Oct 1 14:45:00 2014
+	+0200
+
+2014-10-01  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: only authenticate with the applet if
+	needed
+
+2014-09-30  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.h2m: drop \n in man file, gives warnings
+
+2014-10-01  Simon Josefsson <simon@josefsson.org>
+
+	* doc/CertificateAuthorityWithNEO.txt: Fix.
+
+2014-10-01  Simon Josefsson <simon@josefsson.org>
+
+	* doc/CertificateAuthorityWithNEO.txt: Typo.
+
+2014-10-01  Simon Josefsson <simon@josefsson.org>
+
+	* doc/CertificateAuthorityWithNEO.txt: Add.
+
+2014-10-01  Simon Josefsson <simon@josefsson.org>
+
+	* doc/YubiKey-NEO-PIV-Introduction.txt: Fix.
+
+2014-10-01  Simon Josefsson <simon@josefsson.org>
+
+	* doc/YubiKey-NEO-PIV-Introduction.txt: Add.
+
+2014-09-29  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: add the length of the padding when checking RSA
+	length
+
+2014-09-29  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-signer.c: better error message
+
+2014-09-29  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-signer.c: add a success message for signer
+
+2014-09-29  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-signer.c: check the return value of the signing
+	operation
+
+2014-09-29  Klas Lindfors <klas@yubico.com>
+
+	* tool/cmdline-signer.ggo, tool/yubico-piv-signer.c: add SHA512 for
+	signing
+
+2014-09-29  Klas Lindfors <klas@yubico.com>
+
+	* tool/Makefile.am: add cmdline-signer to sources properly
+
+2014-09-29  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-signer.c: for rsa let it sign a correct DigestInfo
+	structure which has to have the digest OID, with a NULL parameter and then the
+	hash.
+
+2014-09-26  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-signer.c: let the signer sign
+
+2014-09-26  Klas Lindfors <klas@yubico.com>
+
+	* tool/cmdline-signer.ggo, tool/util.c, tool/util.h,
+	tool/yubico-piv-signer.c, tool/yubico-piv-tool.c: start implementing
+	signer
+
+2014-09-26  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore: ignore
+
+2014-09-26  Klas Lindfors <klas@yubico.com>
+
+	* tool/Makefile.am, tool/cmdline-signer.ggo,
+	tool/yubico-piv-signer.c: start on yubico-piv-signer
+
+2014-09-26  Klas Lindfors <klas@yubico.com>
+
+	* tool/util.h: make util.h header more self-contained
+
+2014-09-11  Klas Lindfors <klas@yubico.com>
+
+	* mac.mk: fix mac build
+
+2014-08-26  Klas Lindfors <klas@yubico.com>
+
+	* tool/tests/Makefile.am: use PACKAGE_VERSION to obtain version
+	instead seems to work more reliably?
+
+2014-08-25  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: set the signature algorithm again in the
+	cert
+
+2014-08-25  Klas Lindfors <klas@yubico.com>
+
+	* NEWS, configure.ac: bump versions after release
+
 2014-08-25  Klas Lindfors <klas@yubico.com>
 
 	* NEWS: NEWS for 0.1.0 release

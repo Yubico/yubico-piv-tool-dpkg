@@ -31,6 +31,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "ykpiv.h"
 
@@ -43,6 +45,7 @@
 #include <openssl/pkcs12.h>
 #include <openssl/rand.h>
 
+#include "cmdline.h"
 #include "util.h"
 
 /* FASC-N containing S9999F9999F999999F0F1F0000000000300001E encoded in
@@ -56,13 +59,22 @@ unsigned const char chuid_tmpl[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x35, 0x08, 0x32, 0x30, 0x33, 0x30, 0x30,
   0x31, 0x30, 0x31, 0x3e, 0x00, 0xfe, 0x00,
 };
-#define CHUID_GUID_OFFS 28
+#define CHUID_GUID_OFFS 29
+
+unsigned const char sha1oid[] = {
+  0x30, 0x21, 0x30, 0x09, 0x06, 0x05, 0x2B, 0x0E, 0x03, 0x02, 0x1A, 0x05, 0x00,
+  0x04, 0x14
+};
 
 unsigned const char sha256oid[] = {
   0x30, 0x31, 0x30, 0x0D, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04,
   0x02, 0x01, 0x05, 0x00, 0x04, 0x20
 };
-#define DIGEST_LEN 32
+
+unsigned const char sha512oid[] = {
+  0x30, 0x51, 0x30, 0x0D, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04,
+  0x02, 0x03, 0x05, 0x00, 0x04, 0x40
+};
 
 #define KEY_LEN 24
 
@@ -376,6 +388,8 @@ static bool import_cert(ykpiv_state *state, enum enum_key_format cert_format,
   X509 *cert = NULL;
   PKCS12 *p12 = NULL;
   EVP_PKEY *private_key = NULL;
+  int compress = 0;
+  int cert_len;
 
   input_file = open_file(input_file_name, INPUT);
   if(!input_file) {
@@ -388,6 +402,7 @@ static bool import_cert(ykpiv_state *state, enum enum_key_format cert_format,
       fprintf(stderr, "Failed loading certificate for import.\n");
       goto import_cert_out;
     }
+    cert_len = i2d_X509(cert, NULL);
   } else if(cert_format == key_format_arg_PKCS12) {
     p12 = d2i_PKCS12_fp(input_file, NULL);
     if(!p12) {
@@ -398,6 +413,16 @@ static bool import_cert(ykpiv_state *state, enum enum_key_format cert_format,
       fprintf(stderr, "Failed to parse PKCS12 structure.\n");
       goto import_cert_out;
     }
+    cert_len = i2d_X509(cert, NULL);
+  } else if (cert_format == key_format_arg_GZIP) {
+    struct stat st;
+
+    if(fstat(fileno(input_file), &st) == -1) {
+      fprintf(stderr, "Failed checking input GZIP file.\n");
+      goto import_cert_out;
+    }
+    cert_len = st.st_size;
+    compress = 0x01;
   } else {
     /* TODO: more formats go here */
     fprintf(stderr, "Unknown key format.\n");
@@ -408,7 +433,6 @@ static bool import_cert(ykpiv_state *state, enum enum_key_format cert_format,
     unsigned char certdata[2100];
     unsigned char *certptr = certdata;
     int object = get_object_id(slot);
-    int cert_len = i2d_X509(cert, NULL);
     ykpiv_rc res;
 
     if(cert_len > 2048) {
@@ -417,11 +441,19 @@ static bool import_cert(ykpiv_state *state, enum enum_key_format cert_format,
     }
     *certptr++ = 0x70;
     certptr += set_length(certptr, cert_len);
-    /* i2d_X509 increments certptr here.. */
-    i2d_X509(cert, &certptr);
+    if (compress) {
+      if (fread(certptr, 1, (size_t)cert_len, input_file) != (size_t)cert_len) {
+        fprintf(stderr, "Failed to read compressed certificate\n");
+        goto import_cert_out;
+      }
+      certptr += cert_len;
+    } else {
+      /* i2d_X509 increments certptr here.. */
+      i2d_X509(cert, &certptr);
+    }
     *certptr++ = 0x71;
     *certptr++ = 1;
-    *certptr++ = 0; /* certinfo (gzip etc) */
+    *certptr++ = compress; /* certinfo (gzip etc) */
     *certptr++ = 0xfe; /* LRC */
     *certptr++ = 0;
 
@@ -459,7 +491,7 @@ static bool set_chuid(ykpiv_state *state, int verbose) {
     return false;
   }
   if(verbose) {
-    fprintf(stderr, "Setting the GUID to: ");
+    fprintf(stderr, "Setting the CHUID to: ");
     dump_hex(chuid, sizeof(chuid));
     fprintf(stderr, "\n");
   }
@@ -472,20 +504,25 @@ static bool set_chuid(ykpiv_state *state, int verbose) {
 }
 
 static bool request_certificate(ykpiv_state *state, enum enum_key_format key_format,
-    const char *input_file_name, const char *slot, char *subject,
+    const char *input_file_name, const char *slot, char *subject, enum enum_hash hash,
     const char *output_file_name) {
   X509_REQ *req = NULL;
   X509_NAME *name = NULL;
   FILE *input_file = NULL;
   FILE *output_file = NULL;
   EVP_PKEY *public_key = NULL;
+  const EVP_MD *md;
   bool ret = false;
-  unsigned char digest[DIGEST_LEN + sizeof(sha256oid)];
-  unsigned int digest_len = DIGEST_LEN;
+  unsigned char digest[EVP_MAX_MD_SIZE + sizeof(sha512oid)]; // maximum..
+  unsigned int digest_len;
+  unsigned int md_len;
   unsigned char algorithm;
   int key = 0;
   unsigned char *signinput;
   size_t len = 0;
+  size_t oid_len;
+  const unsigned char *oid;
+  int nid;
 
   sscanf(slot, "%x", &key);
 
@@ -510,6 +547,30 @@ static bool request_certificate(ykpiv_state *state, enum enum_key_format key_for
     goto request_out;
   }
 
+  switch(hash) {
+    case hash_arg_SHA1:
+      md = EVP_sha1();
+      oid = sha1oid;
+      oid_len = sizeof(sha1oid);
+      break;
+    case hash_arg_SHA256:
+      md = EVP_sha256();
+      oid = sha256oid;
+      oid_len = sizeof(sha256oid);
+      break;
+    case hash_arg_SHA512:
+      md = EVP_sha512();
+      oid = sha512oid;
+      oid_len = sizeof(sha512oid);
+      break;
+    case hash__NULL:
+    default:
+      goto request_out;
+  }
+
+  md_len = (unsigned int)EVP_MD_size(md);
+  digest_len = sizeof(digest) - md_len;
+
   req = X509_REQ_new();
   if(!req) {
     fprintf(stderr, "Failed to allocate request structure.\n");
@@ -533,10 +594,10 @@ static bool request_certificate(ykpiv_state *state, enum enum_key_format key_for
   }
 
   memset(digest, 0, sizeof(digest));
-  memcpy(digest, sha256oid, sizeof(sha256oid));
+  memcpy(digest, oid, oid_len);
   /* XXX: this should probably use X509_REQ_digest() but that's buggy */
-  if(!ASN1_item_digest(ASN1_ITEM_rptr(X509_REQ_INFO), EVP_sha256(), req->req_info,
-			  digest + sizeof(sha256oid), &digest_len)) {
+  if(!ASN1_item_digest(ASN1_ITEM_rptr(X509_REQ_INFO), md, req->req_info,
+			  digest + oid_len, &digest_len)) {
     fprintf(stderr, "Failed doing digest of request.\n");
     goto request_out;
   }
@@ -545,23 +606,51 @@ static bool request_certificate(ykpiv_state *state, enum enum_key_format key_for
     case YKPIV_ALGO_RSA1024:
     case YKPIV_ALGO_RSA2048:
       signinput = digest;
-      len = sizeof(digest);
-      req->sig_alg->algorithm = OBJ_nid2obj(NID_sha256WithRSAEncryption);
+      len = oid_len + digest_len;
+      switch(hash) {
+        case hash_arg_SHA1:
+          nid = NID_sha1WithRSAEncryption;
+          break;
+        case hash_arg_SHA256:
+          nid = NID_sha256WithRSAEncryption;
+          break;
+        case hash_arg_SHA512:
+          nid = NID_sha512WithRSAEncryption;
+          break;
+        case hash__NULL:
+        default:
+          goto request_out;
+      }
       break;
     case YKPIV_ALGO_ECCP256:
-      signinput = digest + sizeof(sha256oid);
-      len = DIGEST_LEN;
-      req->sig_alg->algorithm = OBJ_nid2obj(NID_ecdsa_with_SHA256);
+      signinput = digest + oid_len;
+      len = digest_len;
+      switch(hash) {
+        case hash_arg_SHA1:
+          nid = NID_ecdsa_with_SHA1;
+          break;
+        case hash_arg_SHA256:
+          nid = NID_ecdsa_with_SHA256;
+          break;
+        case hash_arg_SHA512:
+          nid = NID_ecdsa_with_SHA512;
+          break;
+        case hash__NULL:
+        default:
+          goto request_out;
+      }
       break;
     default:
       fprintf(stderr, "Unsupported algorithm %x.\n", algorithm);
       goto request_out;
   }
+  req->sig_alg->algorithm = OBJ_nid2obj(nid);
   {
     unsigned char signature[1024];
     size_t sig_len = sizeof(signature);
     if(ykpiv_sign_data(state, signinput, len, signature, &sig_len, algorithm, key)
         != YKPIV_OK) {
+      fprintf(stderr, "Failed signing request.\n");
       goto request_out;
     }
     M_ASN1_BIT_STRING_set(req->signature, signature, sig_len);
@@ -594,7 +683,7 @@ request_out:
 }
 
 static bool selfsign_certificate(ykpiv_state *state, enum enum_key_format key_format,
-    const char *input_file_name, const char *slot, char *subject,
+    const char *input_file_name, const char *slot, char *subject, enum enum_hash hash,
     const char *output_file_name) {
   FILE *input_file = NULL;
   FILE *output_file = NULL;
@@ -602,12 +691,17 @@ static bool selfsign_certificate(ykpiv_state *state, enum enum_key_format key_fo
   EVP_PKEY *public_key = NULL;
   X509 *x509 = NULL;
   X509_NAME *name = NULL;
-  unsigned char digest[DIGEST_LEN + sizeof(sha256oid)];
-  unsigned int digest_len = DIGEST_LEN;
+  const EVP_MD *md;
+  unsigned char digest[EVP_MAX_MD_SIZE + sizeof(sha512oid)];
+  unsigned int digest_len;
   unsigned char algorithm;
   int key = 0;
   unsigned char *signinput;
   size_t len = 0;
+  size_t oid_len;
+  const unsigned char *oid;
+  int nid;
+  unsigned int md_len;
 
   sscanf(slot, "%x", &key);
 
@@ -631,6 +725,30 @@ static bool selfsign_certificate(ykpiv_state *state, enum enum_key_format key_fo
   if(algorithm == 0) {
     goto selfsign_out;
   }
+
+  switch(hash) {
+    case hash_arg_SHA1:
+      md = EVP_sha1();
+      oid = sha1oid;
+      oid_len = sizeof(sha1oid);
+      break;
+    case hash_arg_SHA256:
+      md = EVP_sha256();
+      oid = sha256oid;
+      oid_len = sizeof(sha256oid);
+      break;
+    case hash_arg_SHA512:
+      md = EVP_sha512();
+      oid = sha512oid;
+      oid_len = sizeof(sha512oid);
+      break;
+    case hash__NULL:
+    default:
+      goto selfsign_out;
+  }
+
+  md_len = (unsigned int)EVP_MD_size(md);
+  digest_len = sizeof(digest) - md_len;
 
   x509 = X509_new();
   if(!x509) {
@@ -670,35 +788,64 @@ static bool selfsign_certificate(ykpiv_state *state, enum enum_key_format key_fo
     fprintf(stderr, "Failed setting certificate issuer.\n");
     goto selfsign_out;
   }
-  memset(digest, 0, sizeof(digest));
-  memcpy(digest, sha256oid, sizeof(sha256oid));
-  /* XXX: this should probably use X509_digest() but that looks buggy */
-  if(!ASN1_item_digest(ASN1_ITEM_rptr(X509_CINF), EVP_sha256(), x509->cert_info,
-			  digest + sizeof(sha256oid), &digest_len)) {
-    fprintf(stderr, "Failed doing digest of certificate.\n");
-    goto selfsign_out;
-  }
   switch(algorithm) {
     case YKPIV_ALGO_RSA1024:
     case YKPIV_ALGO_RSA2048:
       signinput = digest;
-      len = sizeof(digest);
-      x509->sig_alg->algorithm = OBJ_nid2obj(NID_sha256WithRSAEncryption);
+      len = oid_len + md_len;
+      switch(hash) {
+        case hash_arg_SHA1:
+          nid = NID_sha1WithRSAEncryption;
+          break;
+        case hash_arg_SHA256:
+          nid = NID_sha256WithRSAEncryption;
+          break;
+        case hash_arg_SHA512:
+          nid = NID_sha512WithRSAEncryption;
+          break;
+        case hash__NULL:
+        default:
+          goto selfsign_out;
+      }
       break;
     case YKPIV_ALGO_ECCP256:
-      signinput = digest + sizeof(sha256oid);
-      len = DIGEST_LEN;
-      x509->sig_alg->algorithm = OBJ_nid2obj(NID_ecdsa_with_SHA256);
+      signinput = digest + oid_len;
+      len = md_len;
+      switch(hash) {
+        case hash_arg_SHA1:
+          nid = NID_ecdsa_with_SHA1;
+          break;
+        case hash_arg_SHA256:
+          nid = NID_ecdsa_with_SHA256;
+          break;
+        case hash_arg_SHA512:
+          nid = NID_ecdsa_with_SHA512;
+          break;
+        case hash__NULL:
+        default:
+          goto selfsign_out;
+      }
       break;
     default:
       fprintf(stderr, "Unsupported algorithm %x.\n", algorithm);
       goto selfsign_out;
+  }
+  x509->sig_alg->algorithm = OBJ_nid2obj(nid);
+  x509->cert_info->signature->algorithm = x509->sig_alg->algorithm;
+  memset(digest, 0, sizeof(digest));
+  memcpy(digest, oid, oid_len);
+  /* XXX: this should probably use X509_digest() but that looks buggy */
+  if(!ASN1_item_digest(ASN1_ITEM_rptr(X509_CINF), md, x509->cert_info,
+			  digest + oid_len, &digest_len)) {
+    fprintf(stderr, "Failed doing digest of certificate.\n");
+    goto selfsign_out;
   }
   {
     unsigned char signature[1024];
     size_t sig_len = sizeof(signature);
     if(ykpiv_sign_data(state, signinput, len, signature, &sig_len, algorithm, key)
         != YKPIV_OK) {
+      fprintf(stderr, "Failed signing certificate.\n");
       goto selfsign_out;
     }
     M_ASN1_BIT_STRING_set(x509->signature, signature, sig_len);
@@ -758,7 +905,7 @@ static bool verify_pin(ykpiv_state *state, const char *pin) {
  * since they're very similar in what data they use. */
 static bool change_pin(ykpiv_state *state, enum enum_action action, const char *pin,
     const char *new_pin) {
-  unsigned char templ[] = {0, YKPIV_INS_CHANGE_REFERENCE, 0, 0x81};
+  unsigned char templ[] = {0, YKPIV_INS_CHANGE_REFERENCE, 0, 0x80};
   unsigned char indata[0x10];
   unsigned char data[0xff];
   unsigned long recv_len = sizeof(data);
@@ -774,8 +921,8 @@ static bool change_pin(ykpiv_state *state, enum enum_action action, const char *
   if(action == action_arg_unblockMINUS_pin) {
     templ[1] = YKPIV_INS_RESET_RETRY;
   }
-  else if(action == action_arg_changeMINUS_pin) {
-    templ[3] = 0x80;
+  else if(action == action_arg_changeMINUS_puk) {
+    templ[3] = 0x81;
   }
   memcpy(indata, pin, pin_len);
   if(pin_len < 8) {
@@ -818,11 +965,138 @@ static bool delete_certificate(ykpiv_state *state, enum enum_slot slot) {
   }
 }
 
+static bool sign_file(ykpiv_state *state, const char *input, const char *output,
+    const char *slot, enum enum_algorithm algorithm, enum enum_hash hash,
+    int verbosity) {
+  FILE *input_file = NULL;
+  FILE *output_file = NULL;
+  int key;
+  unsigned int hash_len;
+  unsigned char hashed[EVP_MAX_MD_SIZE];
+  bool ret = false;
+  int algo;
+  int nid;
+
+  sscanf(slot, "%x", &key);
+
+  input_file = open_file(input, INPUT);
+  if(!input_file) {
+    return false;
+  }
+
+  output_file = open_file(output, OUTPUT);
+  if(!output_file) {
+    return false;
+  }
+
+  switch(algorithm) {
+    case algorithm_arg_RSA2048:
+      algo = YKPIV_ALGO_RSA2048;
+      break;
+    case algorithm_arg_RSA1024:
+      algo = YKPIV_ALGO_RSA1024;
+      break;
+    case algorithm_arg_ECCP256:
+      algo = YKPIV_ALGO_ECCP256;
+      break;
+    case algorithm__NULL:
+    default:
+      goto out;
+  }
+
+  {
+    const EVP_MD *md;
+    EVP_MD_CTX *mdctx;
+
+    switch(hash) {
+      case hash_arg_SHA1:
+        md = EVP_sha1();
+        nid = NID_sha1;
+        break;
+      case hash_arg_SHA256:
+        md = EVP_sha256();
+        nid = NID_sha256;
+        break;
+      case hash_arg_SHA512:
+        md = EVP_sha512();
+        nid = NID_sha512;
+        break;
+      case hash__NULL:
+      default:
+        goto out;
+    }
+
+    mdctx = EVP_MD_CTX_create();
+    EVP_DigestInit_ex(mdctx, md, NULL);
+    while(!feof(input_file)) {
+      char buf[1024];
+      size_t len = fread(buf, 1, 1024, input_file);
+      EVP_DigestUpdate(mdctx, buf, len);
+    }
+    EVP_DigestFinal_ex(mdctx, hashed, &hash_len);
+
+    if(verbosity) {
+      fprintf(stderr, "file hashed as: ");
+      dump_hex(hashed, hash_len);
+      fprintf(stderr, "\n");
+    }
+    EVP_MD_CTX_destroy(mdctx);
+  }
+
+  if(algo == YKPIV_ALGO_RSA1024 || algo == YKPIV_ALGO_RSA2048) {
+    X509_SIG digestInfo;
+    X509_ALGOR algor;
+    ASN1_TYPE parameter;
+    ASN1_OCTET_STRING digest;
+    unsigned char buf[1024];
+    unsigned char *ptr = hashed;
+
+    memcpy(buf, hashed, hash_len);
+
+    digestInfo.algor = &algor;
+    digestInfo.algor->algorithm = OBJ_nid2obj(nid);
+    digestInfo.algor->parameter = &parameter;
+    digestInfo.algor->parameter->type = V_ASN1_NULL;
+    digestInfo.algor->parameter->value.ptr = NULL;
+    digestInfo.digest = &digest;
+    digestInfo.digest->data = buf;
+    digestInfo.digest->length = (int)hash_len;
+    hash_len = (unsigned int)i2d_X509_SIG(&digestInfo, &ptr);
+  }
+
+  {
+    unsigned char buf[1024];
+    size_t len = sizeof(buf);
+    ykpiv_rc rc = ykpiv_sign_data(state, hashed, hash_len, buf, &len, algo, key);
+    if(rc != YKPIV_OK) {
+      fprintf(stderr, "failed signing file: %s\n", ykpiv_strerror(rc));
+      goto out;
+    }
+
+    if(verbosity) {
+      fprintf(stderr, "file signed as: ");
+      dump_hex(buf, len);
+      fprintf(stderr, "\n");
+    }
+    fwrite(buf, 1, len, output_file);
+    ret = true;
+  }
+
+out:
+  if(input_file && input_file != stdin) {
+    fclose(input_file);
+  }
+
+  if(output_file && output_file != stdout) {
+    fclose(output_file);
+  }
+
+  return ret;
+}
+
 int main(int argc, char *argv[]) {
   struct gengetopt_args_info args_info;
   ykpiv_state *state;
-  unsigned char key[KEY_LEN];
-  size_t key_len = sizeof(key);
   int verbosity;
   enum enum_action action;
   unsigned int i;
@@ -844,23 +1118,60 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
-  if(ykpiv_hex_decode(args_info.key_arg, strlen(args_info.key_arg), key, &key_len) != YKPIV_OK) {
-    return EXIT_FAILURE;
-  }
+  for(i = 0; i < args_info.action_given; i++) {
+    bool needs_auth = false;
+    action = *(args_info.action_arg + i);
+    switch(action) {
+      case action_arg_generate:
+      case action_arg_setMINUS_mgmMINUS_key:
+      case action_arg_pinMINUS_retries:
+      case action_arg_importMINUS_key:
+      case action_arg_importMINUS_certificate:
+      case action_arg_setMINUS_chuid:
+      case action_arg_deleteMINUS_certificate:
+        if(verbosity) {
+          fprintf(stderr, "Authenticating since action %d needs that.\n", action);
+        }
+        needs_auth = true;
+        break;
+      case action_arg_version:
+      case action_arg_reset:
+      case action_arg_requestMINUS_certificate:
+      case action_arg_verifyMINUS_pin:
+      case action_arg_changeMINUS_pin:
+      case action_arg_changeMINUS_puk:
+      case action_arg_unblockMINUS_pin:
+      case action_arg_selfsignMINUS_certificate:
+      case action__NULL:
+      default:
+        if(verbosity) {
+          fprintf(stderr, "Action %d does not need authentication.\n", action);
+        }
+        continue;
+    }
+    if(needs_auth) {
+      unsigned char key[KEY_LEN];
+      size_t key_len = sizeof(key);
+      if(ykpiv_hex_decode(args_info.key_arg, strlen(args_info.key_arg), key, &key_len) != YKPIV_OK) {
+        return EXIT_FAILURE;
+      }
 
-  if(ykpiv_authenticate(state, key) != YKPIV_OK) {
-    fprintf(stderr, "Failed authentication with the applet.\n");
-    return EXIT_FAILURE;
-  }
-  if(verbosity) {
-    fprintf(stderr, "Successful applet authentication.\n");
+      if(ykpiv_authenticate(state, key) != YKPIV_OK) {
+        fprintf(stderr, "Failed authentication with the applet.\n");
+        return EXIT_FAILURE;
+      }
+      if(verbosity) {
+        fprintf(stderr, "Successful applet authentication.\n");
+      }
+      break;
+    }
   }
 
   /* openssl setup.. */
   OpenSSL_add_all_algorithms();
 
   for(i = 0; i < args_info.action_given; i++) {
-    action = *args_info.action_arg++;
+    action = *(args_info.action_arg + i);
     if(verbosity) {
       fprintf(stderr, "Now processing for action %d.\n", action);
     }
@@ -880,14 +1191,19 @@ int main(int argc, char *argv[]) {
         break;
       case action_arg_setMINUS_mgmMINUS_key:
         if(args_info.new_key_arg) {
-          unsigned char new_key[KEY_LEN];
-          size_t new_key_len = sizeof(new_key);
-          if(ykpiv_hex_decode(args_info.new_key_arg, strlen(args_info.new_key_arg), new_key, &new_key_len) != YKPIV_OK) {
-            ret = EXIT_FAILURE;
-          } else if(ykpiv_set_mgmkey(state, new_key) != YKPIV_OK) {
-            ret = EXIT_FAILURE;
+          if(strlen(args_info.new_key_arg) == (KEY_LEN * 2)){
+            unsigned char new_key[KEY_LEN];
+            size_t new_key_len = sizeof(new_key);
+            if(ykpiv_hex_decode(args_info.new_key_arg, strlen(args_info.new_key_arg), new_key, &new_key_len) != YKPIV_OK) {
+              ret = EXIT_FAILURE;
+            } else if(ykpiv_set_mgmkey(state, new_key) != YKPIV_OK) {
+              ret = EXIT_FAILURE;
+            } else {
+              printf("Successfully set new management key.\n");
+            }
           } else {
-            printf("Successfully set new management key.\n");
+            fprintf(stderr, "The new management key has to be exactly %d character.\n", KEY_LEN * 2);
+            ret = EXIT_FAILURE;
           }
         } else {
           fprintf(stderr, "The set-mgm-key action needs the new-key (-n) argument.\n");
@@ -955,7 +1271,8 @@ int main(int argc, char *argv[]) {
           ret = EXIT_FAILURE;
         } else {
           if(request_certificate(state, args_info.key_format_arg, args_info.input_arg,
-                args_info.slot_orig, args_info.subject_arg, args_info.output_arg) == false) {
+                args_info.slot_orig, args_info.subject_arg, args_info.hash_arg,
+                args_info.output_arg) == false) {
             ret = EXIT_FAILURE;
           }
         }
@@ -1002,7 +1319,8 @@ int main(int argc, char *argv[]) {
           ret = EXIT_FAILURE;
         } else {
           if(selfsign_certificate(state, args_info.key_format_arg, args_info.input_arg,
-                args_info.slot_orig, args_info.subject_arg, args_info.output_arg) == false) {
+                args_info.slot_orig, args_info.subject_arg, args_info.hash_arg,
+                args_info.output_arg) == false) {
             ret = EXIT_FAILURE;
           }
         }
@@ -1024,6 +1342,21 @@ int main(int argc, char *argv[]) {
     }
     if(ret == EXIT_FAILURE) {
       break;
+    }
+  }
+
+  if(ret == EXIT_SUCCESS && args_info.sign_flag) {
+    if(args_info.slot_arg == slot__NULL) {
+      fprintf(stderr, "The sign action needs a slot (-s) to operate on.\n");
+      ret = EXIT_FAILURE;
+    }
+    else if(sign_file(state, args_info.input_arg, args_info.output_arg,
+        args_info.slot_orig, args_info.algorithm_arg, args_info.hash_arg,
+        verbosity)) {
+      fprintf(stderr, "Signature successful!\n");
+    } else {
+      fprintf(stderr, "Failed signing!\n");
+      ret = EXIT_FAILURE;
     }
   }
 

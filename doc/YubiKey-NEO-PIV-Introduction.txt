@@ -1,0 +1,100 @@
+Introduction to the YubiKey NEO PIV Applet
+==========================================
+
+The YubiKey NEO supports the Privilege and Identification Card (PIV)
+interface specified in NIST SP 800-73 document "Cryptographic
+Algorithms and Key Sizes for PIV".  This enables you to perform RSA or
+ECC sign/decrypt operations using a private key stored on the
+smartcard, through common interfaces like PKCS#11.
+
+* SP 800-73-3 http://csrc.nist.gov/publications/PubsSPs.html
+* NIST SP 800-73-4 (draft) 
+  http://csrc.nist.gov/publications/PubsDrafts.html#800-73-4
+
+General information
+-------------------
+
+The default PIN code is 123456.  The default PUK code is 12345678.
+
+The default 3DES management key (9B) is
+01:02:03:04:05:06:07:08:01:02:03:04:05:06:07:08:01:02:03:04:05:06:07:08.
+
+The following key slots exists:
+
+* 9A, 9C, 9D, 9E: RSA 1024, RSA 2048, or ECC secp256r1 keys
+  (algorithms 6, 7, 11 respectively).
+
+* 9B: Triple-DES key (algorithm 3) for PIV management.
+
+The maximum size of stored objects is 2005 bytes.
+
+Currently all functionality are available over both contact and
+contactless interfaces (contrary to what the specifications mandate).
+
+Preparing a NEO for real use
+----------------------------
+
+You would typically change the management key to make sure nobody but
+you can modify the state of the PIV applet on the NEO.  Make sure to
+keep a copy of the key around for later use.
+
+  key=`dd if=/dev/random bs=1 count=24 2>/dev/null | hexdump -v -e '/1 "%02X"'`
+  echo $key
+  yubico-piv-tool -a set-mgm-key -n $key
+
+The PIN and PUK should be changed as well.
+
+  pin=`dd if=/dev/random bs=1 count=6 2>/dev/null | hexdump -v -e '/1 "%u"'|cut -c1-6`
+  echo $pin
+
+  puk=`dd if=/dev/random bs=1 count=6 2>/dev/null | hexdump -v -e '/1 "%u"'|cut -c1-8`
+  echo $puk
+
+  yubico-piv-tool -k $key -a change-pin -P 123456 -N $pin
+  yubico-piv-tool -k $key -a change-puk -P 12345678 -N $puk
+
+Other useful commands
+---------------------
+
+To generate a new private key:
+
+  yubico-piv-tool -k $key -a generate -s 9c
+
+To reset PIN/PUK retry counter AND codes (default pin 123456 puk
+12345678):
+
+  yubico-piv-tool -k $key -a pin-retries --pin-retries 3 --puk-retries 3
+
+To reset the applet (PIN/PUK need to be blocked hence trying a couple
+of times -- you need to modify this if you have changed the default
+number of PIN/PUK retries).
+
+  yubico-piv-tool -a verify-pin -P 4711
+  yubico-piv-tool -a verify-pin -P 4711
+  yubico-piv-tool -a verify-pin -P 4711
+  yubico-piv-tool -a verify-pin -P 4711
+  yubico-piv-tool -a change-puk -P 4711 -N 67567
+  yubico-piv-tool -a change-puk -P 4711 -N 67567
+  yubico-piv-tool -a change-puk -P 4711 -N 67567
+  yubico-piv-tool -a change-puk -P 4711 -N 67567
+  yubico-piv-tool -a reset
+
+Software
+--------
+
+Card management has been tested with the tools from the OpenSC
+project, specifically piv-tool, and Yubico's yubico-piv-tool.  Basic
+features should work with any PIV compliant middleware.
+
+* https://github.com/OpenSC/OpenSC/wiki
+* https://developers.yubico.com/yubico-piv-tool/
+* https://github.com/OpenSC/OpenSC/wiki/US-PIV
+* https://github.com/OpenSC/OpenSC/wiki/PivTool
+
+Card Holder Unique Identifier
+-----------------------------
+
+For the applet to be usable in windows the object CHUID (Card Holder
+Unique Identifier) has to be set and unique. The card contents are
+also aggressively cached so the CHUID has to be changed if the card
+contents change.
