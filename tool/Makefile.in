@@ -106,6 +106,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = yubico-piv-tool$(EXEEXT)
+@ENABLE_COV_TRUE@am__append_1 = --coverage
 subdir = tool
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/build-aux/depcomp $(dist_man_MANS)
@@ -291,6 +292,7 @@ CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
+CPPCHECK = @CPPCHECK@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
@@ -408,7 +410,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = . tests
-AM_CFLAGS = $(WERROR_CFLAGS) $(WARN_CFLAGS)
+AM_CFLAGS = $(WERROR_CFLAGS) $(WARN_CFLAGS) $(am__append_1)
 AM_CPPFLAGS = $(OPENSSL_CFLAGS) -I$(top_srcdir)/lib \
 	-I$(top_builddir)/lib
 yubico_piv_tool_SOURCES = yubico-piv-tool.c yubico-piv-tool.h2m
@@ -424,6 +426,7 @@ MAINTAINERCLEANFILES = $(BUILT_SOURCES) $(dist_man_MANS)
 
 # Doc.
 dist_man_MANS = yubico-piv-tool.1
+@ENABLE_COV_TRUE@AM_LDFLAGS = --coverage
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 

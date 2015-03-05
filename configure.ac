@@ -24,7 +24,7 @@
 # non-source form of such a combination shall include the source code
 # for the parts of OpenSSL used as well as that of the covered work.
 
-AC_INIT([yubico-piv-tool], [0.1.3])
+AC_INIT([yubico-piv-tool], [0.1.4])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -33,7 +33,7 @@ AC_CONFIG_MACRO_DIR([m4])
 # Interfaces added:                             AGE++
 # Interfaces removed:                           AGE=0
 AC_SUBST([LT_CURRENT], 1)
-AC_SUBST([LT_REVISION], 1)
+AC_SUBST([LT_REVISION], 2)
 AC_SUBST([LT_AGE], 0)
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
@@ -120,7 +120,29 @@ else
   AC_MSG_ERROR([cannot find PCSC/winscard library/headers])
 fi
 
+AC_ARG_ENABLE([coverage],
+              [AS_HELP_STRING([--enable-coverage],
+                              [use Gcov to test the test suite])],
+                              [],
+                              [enable_cov=no])
+AM_CONDITIONAL([ENABLE_COV],[test '!' "$enable_cov" = no])
 
+AC_ARG_ENABLE([cppcheck],
+              [AS_HELP_STRING([--enable-cppcheck],
+                              [run cppcheck])],
+                              [enable_cppcheck="$enableval"],
+                              [enable_cppcheck="no"])
+
+have_cppcheck=no
+AS_IF([test "x$enable_cppcheck" != xno],
+      [AC_PATH_PROG([CPPCHECK], [cppcheck], [NONE])
+      AS_IF([test "x$enable_cppcheck" != xno],
+            [have_cppcheck=yes
+             AC_SUBST([CPPCHECK])],
+             [have_cppcheck=no
+              AS_IF([test "x$enable_cppcheck" != xauto],
+                    [AC_MSG_ERROR([cannot find cppcheck])])])])
+AM_CONDITIONAL([ENABLE_CPPCHECK],[test '!' "$have_cppcheck" = no])
 
 AC_ARG_ENABLE([gcc-warnings],
   [AS_HELP_STRING([--enable-gcc-warnings],

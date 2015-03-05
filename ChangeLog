@@ -1,3 +1,114 @@
+2015-02-02  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: NEWS for 0.1.4
+
+2015-02-02  Klas Lindfors <klas@yubico.com>
+
+	* lib/tests/parse_key.c: add a test with uppercase hex
+
+2015-02-02  Klas Lindfors <klas@yubico.com>
+
+	* windows.mk: bump openssl version
+
+2015-02-02  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: make sure we try to decode uppercase hex
+
+2015-02-02  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: use DES_set_key_checked() instead of
+	DES_is_weak_key() since DES_set_key_checked() checks the parity as well
+
+2015-02-02  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: report error if setting a new key fails
+
+2015-02-02  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: calculate offsets properly
+
+2015-02-02  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, tool/yubico-piv-tool.c: return error properly on hex
+	decode
+
+2015-01-29  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: use bounded scanf
+
+2015-01-29  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: drop unnecessary memset()
+
+2015-01-29  Klas Lindfors <klas@yubico.com>
+
+	* lib/version.c: reduce scope of variables
+
+2015-01-29  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: move parantheses to make check clearer
+
+2015-01-29  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am, configure.ac: add cppcheck rule
+
+2015-01-20  Klas Lindfors <klas@yubico.com>
+
+	* .gitignore: ignore coverage artifacts
+
+2015-01-20  Klas Lindfors <klas@yubico.com>
+
+	* .travis.yml, build-and-test.sh, configure.ac: run coverage for
+	travis
+
+2015-01-20  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am, configure.ac, lib/Makefile.am, tool/Makefile.am,
+	tool/tests/Makefile.am: add --enable-coverage for lcov
+
+2015-01-19  Klas Lindfors <klali@avm.se>
+
+	* : Merge pull request #14 from westfeld/fixed_unblock_pin_response Fixed error when parameters in unblock-pin
+
+2015-01-14  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: mark all bits of the signature as used the first byte of a bit string marks how many bits should be
+	subtracted, make sure this doesn't get set.
+
+2015-01-12  Klas Lindfors <klas@yubico.com>
+
+	* tool/util.c, tool/util.h, tool/yubico-piv-tool.c: rip
+	input_ready() and call isatty() instead should be more portable (work on windows) relates to #12
+
+2015-01-12  Klas Lindfors <klas@yubico.com>
+
+	* tool/util.c, tool/util.h, tool/yubico-piv-tool.c: try to discover
+	if there is input waiting on stdin otherwise give the user a hint resolves #12
+
+2015-01-08  Simon Josefsson <simon@josefsson.org>
+
+	* tool/yubico-piv-tool.h2m: Fix markup.
+
+2015-01-08  Simon Josefsson <simon@josefsson.org>
+
+	* tool/yubico-piv-tool.c: Fix typo.
+
+2015-01-08  Klas Lindfors <klas@yubico.com>
+
+	* mac.mk: add a check for mac linking being correct relates to #10
+
+2015-01-08  Klas Lindfors <klas@yubico.com>
+
+	* mac.mk: fix mac makefile
+
+2015-01-08  Klas Lindfors <klas@yubico.com>
+
+	* configure.ac: fixup libtool versions
+
+2014-12-18  Klas Lindfors <klas@yubico.com>
+
+	* NEWS, configure.ac: bump versions
+
 2014-12-18  Klas Lindfors <klas@yubico.com>
 
 	* NEWS: news for 0.1.3

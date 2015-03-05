@@ -242,6 +242,7 @@ CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
+CPPCHECK = @CPPCHECK@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
@@ -741,9 +742,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@ENABLE_COV_FALSE@clean-local:
 clean: clean-recursive
 
-clean-am: clean-generic clean-libtool mostlyclean-am
+clean-am: clean-generic clean-libtool clean-local mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
@@ -815,20 +817,44 @@ uninstall-am:
 
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am \
 	am--refresh check check-am clean clean-cscope clean-generic \
-	clean-libtool cscope cscopelist-am ctags ctags-am dist \
-	dist-all dist-bzip2 dist-gzip dist-lzip dist-shar dist-tarZ \
-	dist-xz dist-zip distcheck distclean distclean-generic \
-	distclean-libtool distclean-tags distcleancheck distdir \
-	distuninstallcheck dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	installdirs-am maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am tags tags-am uninstall uninstall-am
+	clean-libtool clean-local cscope cscopelist-am ctags ctags-am \
+	dist dist-all dist-bzip2 dist-gzip dist-lzip dist-shar \
+	dist-tarZ dist-xz dist-zip distcheck distclean \
+	distclean-generic distclean-libtool distclean-tags \
+	distcleancheck distdir distuninstallcheck dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs installdirs-am maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
+	uninstall-am
 
+
+@ENABLE_COV_TRUE@cov-reset:
+@ENABLE_COV_TRUE@	rm -fr coverage
+@ENABLE_COV_TRUE@	find . -name "*.gcda" -exec rm {} \;
+@ENABLE_COV_TRUE@	lcov --directory . --zerocounters
+
+@ENABLE_COV_TRUE@cov-report:
+@ENABLE_COV_TRUE@	mkdir -p coverage
+@ENABLE_COV_TRUE@	lcov --compat-libtool --directory . --capture --output-file coverage/app.info
+@ENABLE_COV_TRUE@	lcov --extract coverage/app.info '*.c' --output-file coverage/app2.info
+@ENABLE_COV_TRUE@	genhtml -o coverage/ coverage/app2.info
+
+@ENABLE_COV_TRUE@cov:
+@ENABLE_COV_TRUE@	make cov-report
+
+@ENABLE_COV_TRUE@clean-local:
+@ENABLE_COV_TRUE@	make cov-reset
+
+@ENABLE_COV_TRUE@check:
+@ENABLE_COV_TRUE@	make cov
+
+@ENABLE_CPPCHECK_TRUE@cppcheck:
+@ENABLE_CPPCHECK_TRUE@	$(CPPCHECK) -q -v -f --enable=all -i tool/cmdline.c lib tool
 
 # Maintainer rules.
 

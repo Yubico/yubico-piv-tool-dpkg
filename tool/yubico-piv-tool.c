@@ -1,5 +1,5 @@
  /*
- * Copyright (c) 2014 Yubico AB
+ * Copyright (c) 2014-2015 Yubico AB
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include "ykpiv.h"
 
@@ -83,7 +84,7 @@ static void print_version(ykpiv_state *state) {
   if(ykpiv_get_version(state, version, sizeof(version)) == YKPIV_OK) {
     printf("Applet version %s found.\n", version);
   } else {
-    fprintf(stderr, "Failed to retreive apple version.\n");
+    fprintf(stderr, "Failed to retrieve applet version.\n");
   }
 }
 
@@ -106,7 +107,7 @@ static bool generate_key(ykpiv_state *state, const char *slot,
   EC_KEY *eckey = NULL;
   EC_POINT *point = NULL;
 
-  sscanf(slot, "%x", &key);
+  sscanf(slot, "%2x", &key);
   templ[3] = key;
 
   output_file = open_file(output_file_name, OUTPUT);
@@ -283,11 +284,15 @@ static bool import_key(ykpiv_state *state, enum enum_key_format key_format,
   X509 *cert = NULL;
   bool ret = false;
 
-  sscanf(slot, "%x", &key);
+  sscanf(slot, "%2x", &key);
 
   input_file = open_file(input_file_name, INPUT);
   if(!input_file) {
     return false;
+  }
+
+  if(isatty(fileno(input_file))) {
+    fprintf(stderr, "Please paste the private key...\n");
   }
 
   if(key_format == key_format_arg_PEM) {
@@ -410,6 +415,10 @@ static bool import_cert(ykpiv_state *state, enum enum_key_format cert_format,
   input_file = open_file(input_file_name, INPUT);
   if(!input_file) {
     return false;
+  }
+
+  if(isatty(fileno(input_file))) {
+    fprintf(stderr, "Please paste the certificate...\n");
   }
 
   if(cert_format == key_format_arg_PEM) {
@@ -547,12 +556,16 @@ static bool request_certificate(ykpiv_state *state, enum enum_key_format key_for
   const unsigned char *oid;
   int nid;
 
-  sscanf(slot, "%x", &key);
+  sscanf(slot, "%2x", &key);
 
   input_file = open_file(input_file_name, INPUT);
   output_file = open_file(output_file_name, OUTPUT);
   if(!input_file || !output_file) {
     goto request_out;
+  }
+
+  if(isatty(fileno(input_file))) {
+    fprintf(stderr, "Please paste the public key...\n");
   }
 
   if(key_format == key_format_arg_PEM) {
@@ -616,7 +629,6 @@ static bool request_certificate(ykpiv_state *state, enum enum_key_format key_for
     goto request_out;
   }
 
-  memset(digest, 0, sizeof(digest));
   memcpy(digest, oid, oid_len);
   /* XXX: this should probably use X509_REQ_digest() but that's buggy */
   if(!ASN1_item_digest(ASN1_ITEM_rptr(X509_REQ_INFO), md, req->req_info,
@@ -677,6 +689,8 @@ static bool request_certificate(ykpiv_state *state, enum enum_key_format key_for
       goto request_out;
     }
     M_ASN1_BIT_STRING_set(req->signature, signature, sig_len);
+    /* mark that all bits should be used. */
+    req->signature->flags = ASN1_STRING_FLAG_BITS_LEFT;
   }
 
   if(key_format == key_format_arg_PEM) {
@@ -726,12 +740,16 @@ static bool selfsign_certificate(ykpiv_state *state, enum enum_key_format key_fo
   int nid;
   unsigned int md_len;
 
-  sscanf(slot, "%x", &key);
+  sscanf(slot, "%2x", &key);
 
   input_file = open_file(input_file_name, INPUT);
   output_file = open_file(output_file_name, OUTPUT);
   if(!input_file || !output_file) {
     goto selfsign_out;
+  }
+
+  if(isatty(fileno(input_file))) {
+    fprintf(stderr, "Please paste the public key...\n");
   }
 
   if(key_format == key_format_arg_PEM) {
@@ -855,7 +873,6 @@ static bool selfsign_certificate(ykpiv_state *state, enum enum_key_format key_fo
   }
   x509->sig_alg->algorithm = OBJ_nid2obj(nid);
   x509->cert_info->signature->algorithm = x509->sig_alg->algorithm;
-  memset(digest, 0, sizeof(digest));
   memcpy(digest, oid, oid_len);
   /* XXX: this should probably use X509_digest() but that looks buggy */
   if(!ASN1_item_digest(ASN1_ITEM_rptr(X509_CINF), md, x509->cert_info,
@@ -872,6 +889,10 @@ static bool selfsign_certificate(ykpiv_state *state, enum enum_key_format key_fo
       goto selfsign_out;
     }
     M_ASN1_BIT_STRING_set(x509->signature, signature, sig_len);
+    /* setting flags to ASN1_STRING_FLAG_BITS_LEFT here marks that no bits
+     * should be subtracted from the bit string, thus making sure that the
+     * certificate can be validated. */
+    x509->signature->flags = ASN1_STRING_FLAG_BITS_LEFT;
   }
 
   if(key_format == key_format_arg_PEM) {
@@ -1000,11 +1021,15 @@ static bool sign_file(ykpiv_state *state, const char *input, const char *output,
   int algo;
   int nid;
 
-  sscanf(slot, "%x", &key);
+  sscanf(slot, "%2x", &key);
 
   input_file = open_file(input, INPUT);
   if(!input_file) {
     return false;
+  }
+
+  if(isatty(fileno(input_file))) {
+    fprintf(stderr, "Please paste the input...\n");
   }
 
   output_file = open_file(output, OUTPUT);
@@ -1176,6 +1201,7 @@ int main(int argc, char *argv[]) {
       unsigned char key[KEY_LEN];
       size_t key_len = sizeof(key);
       if(ykpiv_hex_decode(args_info.key_arg, strlen(args_info.key_arg), key, &key_len) != YKPIV_OK) {
+        fprintf(stderr, "Failed decoding key!\n");
         return EXIT_FAILURE;
       }
 
@@ -1220,8 +1246,10 @@ int main(int argc, char *argv[]) {
             unsigned char new_key[KEY_LEN];
             size_t new_key_len = sizeof(new_key);
             if(ykpiv_hex_decode(args_info.new_key_arg, strlen(args_info.new_key_arg), new_key, &new_key_len) != YKPIV_OK) {
+              fprintf(stderr, "Failed decoding new key!\n");
               ret = EXIT_FAILURE;
             } else if(ykpiv_set_mgmkey(state, new_key) != YKPIV_OK) {
+              fprintf(stderr, "Failed setting the new key!\n");
               ret = EXIT_FAILURE;
             } else {
               fprintf(stderr, "Successfully set new management key.\n");
@@ -1331,9 +1359,10 @@ int main(int argc, char *argv[]) {
             ret = EXIT_FAILURE;
           }
         } else {
-          fprintf(stderr, "The %s action needs a pin (-P) and a new-pin (-N).\n",
+          fprintf(stderr, "The %s action needs a %s (-P) and a new-pin (-N).\n",
               action == action_arg_changeMINUS_pin ? "change-pin" :
-              action == action_arg_changeMINUS_puk ? "change-puk" : "unblock-pin");
+              action == action_arg_changeMINUS_puk ? "change-puk" : "unblock-pin",
+              action == action_arg_unblockMINUS_pin ? "puk" : "pin");
           ret = EXIT_FAILURE;
         }
         break;

@@ -31,6 +31,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <ctype.h>
 
 #include <openssl/des.h>
 #include <openssl/rand.h>
@@ -211,7 +212,7 @@ ykpiv_rc ykpiv_connect(ykpiv_state *state, const char *wanted) {
     apdu.st.lc = sizeof(aid);
     memcpy(apdu.st.data, aid, sizeof(aid));
 
-    if((res = send_data(state, &apdu, data, &recv_len, &sw) != YKPIV_OK)) {
+    if((res = send_data(state, &apdu, data, &recv_len, &sw)) != YKPIV_OK) {
       return res;
     } else if(sw == 0x9000) {
       return YKPIV_OK;
@@ -420,12 +421,15 @@ ykpiv_rc ykpiv_set_mgmkey(ykpiv_state *state, const unsigned char *new_key) {
 
   for(i = 0; i < 3; i++) {
     const_DES_cblock key_tmp;
+    DES_key_schedule ks_tmp;
+    int ret;
     memcpy(key_tmp, new_key + i * 8, 8);
-    if(DES_is_weak_key(&key_tmp) == 1) {
+    ret = DES_set_key_checked(&key_tmp, &ks_tmp);
+    if(ret != 0) {
       if(state->verbose) {
 	fprintf(stderr, "Won't set new key '");
-	dump_hex(new_key + i, 8);
-	fprintf(stderr, "' since it's considered weak.\n");
+	dump_hex(new_key + i * 8, 8);
+	fprintf(stderr, "' since it's %s.\n", ret == -1 ? "got odd parity" : "weak");
       }
       return YKPIV_GENERIC_ERROR;
     }
@@ -462,10 +466,12 @@ ykpiv_rc ykpiv_hex_decode(const char *hex_in, size_t in_len,
   }
   *out_len = in_len / 2;
   for(i = 0; i < in_len; i++) {
-    char *ind_ptr = strchr(hex_translate, *hex_in++);
+    char *ind_ptr = strchr(hex_translate, tolower(*hex_in++));
     int index = 0;
     if(ind_ptr) {
       index = ind_ptr - hex_translate;
+    } else {
+      return YKPIV_PARSE_ERROR;
     }
     if(first) {
       *hex_out = index << 4;
