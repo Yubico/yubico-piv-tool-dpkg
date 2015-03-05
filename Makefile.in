@@ -122,6 +122,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ld-version-script.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 \
 	$(top_srcdir)/m4/manywarnings.m4 $(top_srcdir)/m4/pkg.m4 \
+	$(top_srcdir)/m4/valgrind-tests.m4 \
 	$(top_srcdir)/m4/warnings.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -302,6 +303,7 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+VALGRIND = @VALGRIND@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 abs_builddir = @abs_builddir@
@@ -359,9 +361,10 @@ top_srcdir = @top_srcdir@
 SUBDIRS = lib tool
 ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = windows.mk mac.mk tool/tests/basic.sh \
-	doc/CertificateAuthorityWithNEO.txt \
-	doc/Windows-Certificate.txt \
-	doc/YubiKey-NEO-PIV-Introduction.txt
+	doc/Certificate_Authority_with_NEO.adoc \
+	doc/OS_X_code_signing.adoc doc/SSH_with_PIV_and_PKCS11.adoc \
+	doc/Windows_certificate.adoc \
+	doc/YubiKey_NEO_PIV_introduction.adoc
 all: all-recursive
 
 .SUFFIXES:
@@ -830,7 +833,7 @@ uninstall-am:
 # Maintainer rules.
 
 check-doc-dist:
-	perl -pe "s,^EXTRA_DIST \+= .*,EXTRA_DIST += `cd $(srcdir) && ls doc/*.txt | xargs echo`," < $(srcdir)/Makefile.am > check-doc-dist.tmp
+	perl -pe "s,^EXTRA_DIST \+= .*,EXTRA_DIST += `cd $(srcdir) && ls doc/*.adoc | xargs echo`," < $(srcdir)/Makefile.am > check-doc-dist.tmp
 	diff -ur $(srcdir)/Makefile.am check-doc-dist.tmp || \
 		(rm -f check-doc-dist.tmp; echo 'error: please update $(srcdir)/Makefile.am to include all docs'; exit 1)
 	rm -f check-doc-dist.tmp

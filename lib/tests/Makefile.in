@@ -114,6 +114,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ld-version-script.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 \
 	$(top_srcdir)/m4/manywarnings.m4 $(top_srcdir)/m4/pkg.m4 \
+	$(top_srcdir)/m4/valgrind-tests.m4 \
 	$(top_srcdir)/m4/warnings.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -471,6 +472,7 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+VALGRIND = @VALGRIND@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 abs_builddir = @abs_builddir@
@@ -530,6 +532,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_builddir)/lib
 AM_LDFLAGS = -no-install
 LDADD = ../libykpiv.la
 TESTS = $(check_PROGRAMS)
+TESTS_ENVIRONMENT = $(VALGRIND)
 all: all-am
 
 .SUFFIXES:
