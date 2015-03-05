@@ -41,12 +41,14 @@ extern "C" {
 enum enum_action { action__NULL = -1, action_arg_version = 0, action_arg_generate, action_arg_setMINUS_mgmMINUS_key, action_arg_reset, action_arg_pinMINUS_retries, action_arg_importMINUS_key, action_arg_importMINUS_certificate, action_arg_setMINUS_chuid, action_arg_requestMINUS_certificate, action_arg_verifyMINUS_pin, action_arg_changeMINUS_pin, action_arg_changeMINUS_puk, action_arg_unblockMINUS_pin, action_arg_selfsignMINUS_certificate, action_arg_deleteMINUS_certificate };
 enum enum_slot { slot__NULL = -1, slot_arg_9a = 0, slot_arg_9c, slot_arg_9d, slot_arg_9e };
 enum enum_algorithm { algorithm__NULL = -1, algorithm_arg_RSA1024 = 0, algorithm_arg_RSA2048, algorithm_arg_ECCP256 };
-enum enum_key_format { key_format__NULL = -1, key_format_arg_PEM = 0, key_format_arg_PKCS12 };
+enum enum_hash { hash__NULL = -1, hash_arg_SHA1 = 0, hash_arg_SHA256, hash_arg_SHA512 };
+enum enum_key_format { key_format__NULL = -1, key_format_arg_PEM = 0, key_format_arg_PKCS12, key_format_arg_GZIP };
 
 /** @brief Where the command line options are stored */
 struct gengetopt_args_info
 {
   const char *help_help; /**< @brief Print help and exit help description.  */
+  const char *full_help_help; /**< @brief Print help, including hidden options, and exit help description.  */
   const char *version_help; /**< @brief Print version and exit help description.  */
   int verbose_arg;	/**< @brief Print more information (default='0').  */
   char * verbose_orig;	/**< @brief Print more information original value given at command line.  */
@@ -68,6 +70,9 @@ struct gengetopt_args_info
   enum enum_algorithm algorithm_arg;	/**< @brief What algorithm to use (default='RSA2048').  */
   char * algorithm_orig;	/**< @brief What algorithm to use original value given at command line.  */
   const char *algorithm_help; /**< @brief What algorithm to use help description.  */
+  enum enum_hash hash_arg;	/**< @brief Hash to use for signatures (default='SHA256').  */
+  char * hash_orig;	/**< @brief Hash to use for signatures original value given at command line.  */
+  const char *hash_help; /**< @brief Hash to use for signatures help description.  */
   char * new_key_arg;	/**< @brief New authentication key to use.  */
   char * new_key_orig;	/**< @brief New authentication key to use original value given at command line.  */
   const char *new_key_help; /**< @brief New authentication key to use help description.  */
@@ -98,8 +103,11 @@ struct gengetopt_args_info
   char * new_pin_arg;	/**< @brief New pin/puk code for changing.  */
   char * new_pin_orig;	/**< @brief New pin/puk code for changing original value given at command line.  */
   const char *new_pin_help; /**< @brief New pin/puk code for changing help description.  */
+  int sign_flag;	/**< @brief Sign data (default=off).  */
+  const char *sign_help; /**< @brief Sign data help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
+  unsigned int full_help_given ;	/**< @brief Whether full-help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
   unsigned int verbose_given ;	/**< @brief Whether verbose was given.  */
   unsigned int reader_given ;	/**< @brief Whether reader was given.  */
@@ -107,6 +115,7 @@ struct gengetopt_args_info
   unsigned int action_given ;	/**< @brief Whether action was given.  */
   unsigned int slot_given ;	/**< @brief Whether slot was given.  */
   unsigned int algorithm_given ;	/**< @brief Whether algorithm was given.  */
+  unsigned int hash_given ;	/**< @brief Whether hash was given.  */
   unsigned int new_key_given ;	/**< @brief Whether new-key was given.  */
   unsigned int pin_retries_given ;	/**< @brief Whether pin-retries was given.  */
   unsigned int puk_retries_given ;	/**< @brief Whether puk-retries was given.  */
@@ -117,6 +126,7 @@ struct gengetopt_args_info
   unsigned int subject_given ;	/**< @brief Whether subject was given.  */
   unsigned int pin_given ;	/**< @brief Whether pin was given.  */
   unsigned int new_pin_given ;	/**< @brief Whether new-pin was given.  */
+  unsigned int sign_given ;	/**< @brief Whether sign was given.  */
 
 } ;
 
@@ -138,6 +148,8 @@ extern const char *gengetopt_args_info_usage;
 extern const char *gengetopt_args_info_description;
 /** @brief all the lines making the help output */
 extern const char *gengetopt_args_info_help[];
+/** @brief all the lines making the full help output (including hidden options) */
+extern const char *gengetopt_args_info_full_help[];
 
 /**
  * The command line parser
@@ -200,6 +212,10 @@ int cmdline_parser_file_save(const char *filename,
  */
 void cmdline_parser_print_help(void);
 /**
+ * Print the full help (including hidden options)
+ */
+void cmdline_parser_print_full_help(void);
+/**
  * Print the version
  */
 void cmdline_parser_print_version(void);
@@ -244,6 +260,7 @@ int cmdline_parser_required (struct gengetopt_args_info *args_info,
 extern const char *cmdline_parser_action_values[];  /**< @brief Possible values for action. */
 extern const char *cmdline_parser_slot_values[];  /**< @brief Possible values for slot. */
 extern const char *cmdline_parser_algorithm_values[];  /**< @brief Possible values for algorithm. */
+extern const char *cmdline_parser_hash_values[];  /**< @brief Possible values for hash. */
 extern const char *cmdline_parser_key_format_values[];  /**< @brief Possible values for key-format. */
 
 

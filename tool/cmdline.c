@@ -33,8 +33,9 @@ const char *gengetopt_args_info_versiontext = "";
 
 const char *gengetopt_args_info_description = "";
 
-const char *gengetopt_args_info_help[] = {
+const char *gengetopt_args_info_full_help[] = {
   "  -h, --help             Print help and exit",
+  "      --full-help        Print help, including hidden options, and exit",
   "  -V, --version          Print version and exit",
   "  -v, --verbose[=INT]    Print more information  (default=`0')",
   "  -r, --reader=STRING    Only use a matching reader  (default=`Yubikey')",
@@ -44,21 +45,56 @@ const char *gengetopt_args_info_help[] = {
   "  -s, --slot=ENUM        What key slot to operate on  (possible values=\"9a\",\n                           \"9c\", \"9d\", \"9e\")",
   "\n       9a is for PIV Authentication\n       9c is for Digital Signature (PIN always checked)\n       9d is for Key Management\n       9e is for Card Authentication (PIN never checked)\n",
   "  -A, --algorithm=ENUM   What algorithm to use  (possible values=\"RSA1024\",\n                           \"RSA2048\", \"ECCP256\" default=`RSA2048')",
+  "  -H, --hash=ENUM        Hash to use for signatures  (possible values=\"SHA1\",\n                           \"SHA256\", \"SHA512\" default=`SHA256')",
   "  -n, --new-key=STRING   New authentication key to use",
   "      --pin-retries=INT  Number of retries before the pin code is blocked",
   "      --puk-retries=INT  Number of retries before the puk code is blocked",
   "  -i, --input=STRING     Filename to use as input, - for stdin  (default=`-')",
   "  -o, --output=STRING    Filename to use as output, - for stdout  (default=`-')",
-  "  -K, --key-format=ENUM  Format of the key being read/written  (possible\n                           values=\"PEM\", \"PKCS12\" default=`PEM')",
+  "  -K, --key-format=ENUM  Format of the key being read/written  (possible\n                           values=\"PEM\", \"PKCS12\", \"GZIP\" default=`PEM')",
   "  -p, --password=STRING  Password for decryption of private key file",
   "  -S, --subject=STRING   The subject to use for certificate request",
   "\n       The subject must be written as:\n       /CN=host.example.com/OU=test/O=example.com/\n",
   "  -P, --pin=STRING       Pin/puk code for verification",
   "  -N, --new-pin=STRING   New pin/puk code for changing",
+  "      --sign             Sign data  (default=off)",
     0
 };
 
+static void
+init_help_array(void)
+{
+  gengetopt_args_info_help[0] = gengetopt_args_info_full_help[0];
+  gengetopt_args_info_help[1] = gengetopt_args_info_full_help[1];
+  gengetopt_args_info_help[2] = gengetopt_args_info_full_help[2];
+  gengetopt_args_info_help[3] = gengetopt_args_info_full_help[3];
+  gengetopt_args_info_help[4] = gengetopt_args_info_full_help[4];
+  gengetopt_args_info_help[5] = gengetopt_args_info_full_help[5];
+  gengetopt_args_info_help[6] = gengetopt_args_info_full_help[6];
+  gengetopt_args_info_help[7] = gengetopt_args_info_full_help[7];
+  gengetopt_args_info_help[8] = gengetopt_args_info_full_help[8];
+  gengetopt_args_info_help[9] = gengetopt_args_info_full_help[9];
+  gengetopt_args_info_help[10] = gengetopt_args_info_full_help[10];
+  gengetopt_args_info_help[11] = gengetopt_args_info_full_help[11];
+  gengetopt_args_info_help[12] = gengetopt_args_info_full_help[12];
+  gengetopt_args_info_help[13] = gengetopt_args_info_full_help[13];
+  gengetopt_args_info_help[14] = gengetopt_args_info_full_help[14];
+  gengetopt_args_info_help[15] = gengetopt_args_info_full_help[15];
+  gengetopt_args_info_help[16] = gengetopt_args_info_full_help[16];
+  gengetopt_args_info_help[17] = gengetopt_args_info_full_help[17];
+  gengetopt_args_info_help[18] = gengetopt_args_info_full_help[18];
+  gengetopt_args_info_help[19] = gengetopt_args_info_full_help[19];
+  gengetopt_args_info_help[20] = gengetopt_args_info_full_help[20];
+  gengetopt_args_info_help[21] = gengetopt_args_info_full_help[21];
+  gengetopt_args_info_help[22] = gengetopt_args_info_full_help[22];
+  gengetopt_args_info_help[23] = 0; 
+  
+}
+
+const char *gengetopt_args_info_help[24];
+
 typedef enum {ARG_NO
+  , ARG_FLAG
   , ARG_STRING
   , ARG_INT
   , ARG_ENUM
@@ -79,7 +115,8 @@ cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *pro
 const char *cmdline_parser_action_values[] = {"version", "generate", "set-mgm-key", "reset", "pin-retries", "import-key", "import-certificate", "set-chuid", "request-certificate", "verify-pin", "change-pin", "change-puk", "unblock-pin", "selfsign-certificate", "delete-certificate", 0}; /*< Possible values for action. */
 const char *cmdline_parser_slot_values[] = {"9a", "9c", "9d", "9e", 0}; /*< Possible values for slot. */
 const char *cmdline_parser_algorithm_values[] = {"RSA1024", "RSA2048", "ECCP256", 0}; /*< Possible values for algorithm. */
-const char *cmdline_parser_key_format_values[] = {"PEM", "PKCS12", 0}; /*< Possible values for key-format. */
+const char *cmdline_parser_hash_values[] = {"SHA1", "SHA256", "SHA512", 0}; /*< Possible values for hash. */
+const char *cmdline_parser_key_format_values[] = {"PEM", "PKCS12", "GZIP", 0}; /*< Possible values for key-format. */
 
 static char *
 gengetopt_strdup (const char *s);
@@ -88,6 +125,7 @@ static
 void clear_given (struct gengetopt_args_info *args_info)
 {
   args_info->help_given = 0 ;
+  args_info->full_help_given = 0 ;
   args_info->version_given = 0 ;
   args_info->verbose_given = 0 ;
   args_info->reader_given = 0 ;
@@ -95,6 +133,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->action_given = 0 ;
   args_info->slot_given = 0 ;
   args_info->algorithm_given = 0 ;
+  args_info->hash_given = 0 ;
   args_info->new_key_given = 0 ;
   args_info->pin_retries_given = 0 ;
   args_info->puk_retries_given = 0 ;
@@ -105,6 +144,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->subject_given = 0 ;
   args_info->pin_given = 0 ;
   args_info->new_pin_given = 0 ;
+  args_info->sign_given = 0 ;
 }
 
 static
@@ -123,6 +163,8 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->slot_orig = NULL;
   args_info->algorithm_arg = algorithm_arg_RSA2048;
   args_info->algorithm_orig = NULL;
+  args_info->hash_arg = hash_arg_SHA256;
+  args_info->hash_orig = NULL;
   args_info->new_key_arg = NULL;
   args_info->new_key_orig = NULL;
   args_info->pin_retries_orig = NULL;
@@ -141,6 +183,7 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->pin_orig = NULL;
   args_info->new_pin_arg = NULL;
   args_info->new_pin_orig = NULL;
+  args_info->sign_flag = 0;
   
 }
 
@@ -148,27 +191,30 @@ static
 void init_args_info(struct gengetopt_args_info *args_info)
 {
 
-
-  args_info->help_help = gengetopt_args_info_help[0] ;
-  args_info->version_help = gengetopt_args_info_help[1] ;
-  args_info->verbose_help = gengetopt_args_info_help[2] ;
-  args_info->reader_help = gengetopt_args_info_help[3] ;
-  args_info->key_help = gengetopt_args_info_help[4] ;
-  args_info->action_help = gengetopt_args_info_help[5] ;
+  init_help_array(); 
+  args_info->help_help = gengetopt_args_info_full_help[0] ;
+  args_info->full_help_help = gengetopt_args_info_full_help[1] ;
+  args_info->version_help = gengetopt_args_info_full_help[2] ;
+  args_info->verbose_help = gengetopt_args_info_full_help[3] ;
+  args_info->reader_help = gengetopt_args_info_full_help[4] ;
+  args_info->key_help = gengetopt_args_info_full_help[5] ;
+  args_info->action_help = gengetopt_args_info_full_help[6] ;
   args_info->action_min = 0;
   args_info->action_max = 0;
-  args_info->slot_help = gengetopt_args_info_help[7] ;
-  args_info->algorithm_help = gengetopt_args_info_help[9] ;
-  args_info->new_key_help = gengetopt_args_info_help[10] ;
-  args_info->pin_retries_help = gengetopt_args_info_help[11] ;
-  args_info->puk_retries_help = gengetopt_args_info_help[12] ;
-  args_info->input_help = gengetopt_args_info_help[13] ;
-  args_info->output_help = gengetopt_args_info_help[14] ;
-  args_info->key_format_help = gengetopt_args_info_help[15] ;
-  args_info->password_help = gengetopt_args_info_help[16] ;
-  args_info->subject_help = gengetopt_args_info_help[17] ;
-  args_info->pin_help = gengetopt_args_info_help[19] ;
-  args_info->new_pin_help = gengetopt_args_info_help[20] ;
+  args_info->slot_help = gengetopt_args_info_full_help[8] ;
+  args_info->algorithm_help = gengetopt_args_info_full_help[10] ;
+  args_info->hash_help = gengetopt_args_info_full_help[11] ;
+  args_info->new_key_help = gengetopt_args_info_full_help[12] ;
+  args_info->pin_retries_help = gengetopt_args_info_full_help[13] ;
+  args_info->puk_retries_help = gengetopt_args_info_full_help[14] ;
+  args_info->input_help = gengetopt_args_info_full_help[15] ;
+  args_info->output_help = gengetopt_args_info_full_help[16] ;
+  args_info->key_format_help = gengetopt_args_info_full_help[17] ;
+  args_info->password_help = gengetopt_args_info_full_help[18] ;
+  args_info->subject_help = gengetopt_args_info_full_help[19] ;
+  args_info->pin_help = gengetopt_args_info_full_help[21] ;
+  args_info->new_pin_help = gengetopt_args_info_full_help[22] ;
+  args_info->sign_help = gengetopt_args_info_full_help[23] ;
   
 }
 
@@ -205,6 +251,15 @@ cmdline_parser_print_help (void)
   print_help_common();
   while (gengetopt_args_info_help[i])
     printf("%s\n", gengetopt_args_info_help[i++]);
+}
+
+void
+cmdline_parser_print_full_help (void)
+{
+  int i = 0;
+  print_help_common();
+  while (gengetopt_args_info_full_help[i])
+    printf("%s\n", gengetopt_args_info_full_help[i++]);
 }
 
 void
@@ -306,6 +361,7 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   args_info->action_arg = 0;
   free_string_field (&(args_info->slot_orig));
   free_string_field (&(args_info->algorithm_orig));
+  free_string_field (&(args_info->hash_orig));
   free_string_field (&(args_info->new_key_arg));
   free_string_field (&(args_info->new_key_orig));
   free_string_field (&(args_info->pin_retries_orig));
@@ -404,6 +460,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
 
   if (args_info->help_given)
     write_into_file(outfile, "help", 0, 0 );
+  if (args_info->full_help_given)
+    write_into_file(outfile, "full-help", 0, 0 );
   if (args_info->version_given)
     write_into_file(outfile, "version", 0, 0 );
   if (args_info->verbose_given)
@@ -417,6 +475,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "slot", args_info->slot_orig, cmdline_parser_slot_values);
   if (args_info->algorithm_given)
     write_into_file(outfile, "algorithm", args_info->algorithm_orig, cmdline_parser_algorithm_values);
+  if (args_info->hash_given)
+    write_into_file(outfile, "hash", args_info->hash_orig, cmdline_parser_hash_values);
   if (args_info->new_key_given)
     write_into_file(outfile, "new-key", args_info->new_key_orig, 0);
   if (args_info->pin_retries_given)
@@ -437,6 +497,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "pin", args_info->pin_orig, 0);
   if (args_info->new_pin_given)
     write_into_file(outfile, "new-pin", args_info->new_pin_orig, 0);
+  if (args_info->sign_given)
+    write_into_file(outfile, "sign", 0, 0 );
   
 
   i = EXIT_SUCCESS;
@@ -795,6 +857,9 @@ int update_arg(void *field, char **orig_field,
     val = possible_values[found];
 
   switch(arg_type) {
+  case ARG_FLAG:
+    *((int *)field) = !*((int *)field);
+    break;
   case ARG_INT:
     if (val) *((int *)field) = strtol (val, &stop_char, 0);
     break;
@@ -828,6 +893,7 @@ int update_arg(void *field, char **orig_field,
   /* store the original value */
   switch(arg_type) {
   case ARG_NO:
+  case ARG_FLAG:
     break;
   default:
     if (value && orig_field) {
@@ -1019,6 +1085,7 @@ cmdline_parser_internal (
 
       static struct option long_options[] = {
         { "help",	0, NULL, 'h' },
+        { "full-help",	0, NULL, 0 },
         { "version",	0, NULL, 'V' },
         { "verbose",	2, NULL, 'v' },
         { "reader",	1, NULL, 'r' },
@@ -1026,6 +1093,7 @@ cmdline_parser_internal (
         { "action",	1, NULL, 'a' },
         { "slot",	1, NULL, 's' },
         { "algorithm",	1, NULL, 'A' },
+        { "hash",	1, NULL, 'H' },
         { "new-key",	1, NULL, 'n' },
         { "pin-retries",	1, NULL, 0 },
         { "puk-retries",	1, NULL, 0 },
@@ -1036,10 +1104,11 @@ cmdline_parser_internal (
         { "subject",	1, NULL, 'S' },
         { "pin",	1, NULL, 'P' },
         { "new-pin",	1, NULL, 'N' },
+        { "sign",	0, NULL, 0 },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVv::r:k:a:s:A:n:i:o:K:p:S:P:N:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVv::r:k:a:s:A:H:n:i:o:K:p:S:P:N:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -1120,6 +1189,18 @@ cmdline_parser_internal (
               &(local_args_info.algorithm_given), optarg, cmdline_parser_algorithm_values, "RSA2048", ARG_ENUM,
               check_ambiguity, override, 0, 0,
               "algorithm", 'A',
+              additional_error))
+            goto failure;
+        
+          break;
+        case 'H':	/* Hash to use for signatures.  */
+        
+        
+          if (update_arg( (void *)&(args_info->hash_arg), 
+               &(args_info->hash_orig), &(args_info->hash_given),
+              &(local_args_info.hash_given), optarg, cmdline_parser_hash_values, "SHA256", ARG_ENUM,
+              check_ambiguity, override, 0, 0,
+              "hash", 'H',
               additional_error))
             goto failure;
         
@@ -1222,6 +1303,12 @@ cmdline_parser_internal (
           break;
 
         case 0:	/* Long option with no short option */
+          if (strcmp (long_options[option_index].name, "full-help") == 0) {
+            cmdline_parser_print_full_help ();
+            cmdline_parser_free (&local_args_info);
+            exit (EXIT_SUCCESS);
+          }
+
           /* Number of retries before the pin code is blocked.  */
           if (strcmp (long_options[option_index].name, "pin-retries") == 0)
           {
@@ -1246,6 +1333,18 @@ cmdline_parser_internal (
                 &(local_args_info.puk_retries_given), optarg, 0, 0, ARG_INT,
                 check_ambiguity, override, 0, 0,
                 "puk-retries", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Sign data.  */
+          else if (strcmp (long_options[option_index].name, "sign") == 0)
+          {
+          
+          
+            if (update_arg((void *)&(args_info->sign_flag), 0, &(args_info->sign_given),
+                &(local_args_info.sign_given), optarg, 0, 0, ARG_FLAG,
+                check_ambiguity, override, 1, 0, "sign", '-',
                 additional_error))
               goto failure;
           

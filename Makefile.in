@@ -112,7 +112,6 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	build-aux/missing build-aux/ltmain.sh \
 	$(top_srcdir)/build-aux/ar-lib $(top_srcdir)/build-aux/compile \
 	$(top_srcdir)/build-aux/config.guess \
-	$(top_srcdir)/build-aux/config.rpath \
 	$(top_srcdir)/build-aux/config.sub \
 	$(top_srcdir)/build-aux/install-sh \
 	$(top_srcdir)/build-aux/ltmain.sh \
@@ -257,7 +256,6 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GENGETOPT = @GENGETOPT@
 GREP = @GREP@
-HAVE_LIBWINSCARD = @HAVE_LIBWINSCARD@
 HELP2MAN = @HELP2MAN@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -269,12 +267,9 @@ LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
-LIBWINSCARD = @LIBWINSCARD@
-LIBWINSCARD_PREFIX = @LIBWINSCARD_PREFIX@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
-LTLIBWINSCARD = @LTLIBWINSCARD@
 LT_AGE = @LT_AGE@
 LT_CURRENT = @LT_CURRENT@
 LT_REVISION = @LT_REVISION@
@@ -300,6 +295,7 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PCSC_CFLAGS = @PCSC_CFLAGS@
 PCSC_LIBS = @PCSC_LIBS@
 PCSC_MACOSX_LIBS = @PCSC_MACOSX_LIBS@
+PCSC_WIN_LIBS = @PCSC_WIN_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 RANLIB = @RANLIB@
 SED = @SED@
@@ -362,7 +358,10 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = lib tool
 ACLOCAL_AMFLAGS = -I m4
-EXTRA_DIST = windows.mk mac.mk tool/tests/basic.sh
+EXTRA_DIST = windows.mk mac.mk tool/tests/basic.sh \
+	doc/CertificateAuthorityWithNEO.txt \
+	doc/Windows-Certificate.txt \
+	doc/YubiKey-NEO-PIV-Introduction.txt
 all: all-recursive
 
 .SUFFIXES:
@@ -830,6 +829,12 @@ uninstall-am:
 
 # Maintainer rules.
 
+check-doc-dist:
+	perl -pe "s,^EXTRA_DIST \+= .*,EXTRA_DIST += `cd $(srcdir) && ls doc/*.txt | xargs echo`," < $(srcdir)/Makefile.am > check-doc-dist.tmp
+	diff -ur $(srcdir)/Makefile.am check-doc-dist.tmp || \
+		(rm -f check-doc-dist.tmp; echo 'error: please update $(srcdir)/Makefile.am to include all docs'; exit 1)
+	rm -f check-doc-dist.tmp
+
 ChangeLog:
 	cd $(srcdir) && git2cl > ChangeLog
 
@@ -845,7 +850,7 @@ release:
 		grep -q "Version $(VERSION) .released `date -I`" || \
 		(echo 'error: Update date/version in $(srcdir)/NEWS.'; exit 1)
 	rm -f $(srcdir)/ChangeLog
-	make ChangeLog distcheck
+	make check-doc-dist ChangeLog distcheck
 	gpg --detach-sign --default-key $(KEYID) $(PACKAGE)-$(VERSION).tar.gz
 	gpg --verify $(PACKAGE)-$(VERSION).tar.gz.sig
 	git tag -sm "$(PACKAGE)-$(VERSION)" $(PACKAGE)-$(VERSION)
