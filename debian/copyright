@@ -1,7 +1,6 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: yubico-piv-tool
-Upstream-Contact: Yubico Open Source Maintainers <ossmaint@yubico.com>
-Source: http://opensource.yubico.com/yubico-piv-tool/
+Source: https://developers.yubico.com/yubico-piv-tool/
 
 Files: *
 Copyright: Copyright (c) 2014 Yubico AB

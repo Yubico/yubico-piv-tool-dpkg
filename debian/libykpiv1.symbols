@@ -1,4 +1,4 @@
-libykpiv.so.0 libykpiv0 #MINVER#
+libykpiv.so.1 libykpiv1 #MINVER#
  YKPIV_0.1.0@YKPIV_0.1.0 0.1.0
  ykpiv_authenticate@YKPIV_0.1.0 0.1.0
  ykpiv_check_version@YKPIV_0.1.0 0.1.0
