@@ -1,3 +1,18 @@
+2014-11-14  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: NEWS for 0.1.2
+
+2014-11-12  Klas Lindfors <klas@yubico.com>
+
+	* tool/util.c, tool/util.h, tool/yubico-piv-tool.c: check length of
+	private key components before setting the card functions only accepts key components of correct size so
+	here we add 0 before if they're shorter (usually one byte shorter)
+	thus fixing the issue where the card returned 6f00
+
+2014-11-10  Klas Lindfors <klas@yubico.com>
+
+	* NEWS, configure.ac: bump versions after release
+
 2014-11-10  Klas Lindfors <klas@yubico.com>
 
 	* Makefile.am: dist the docs, and check that all docs are included
