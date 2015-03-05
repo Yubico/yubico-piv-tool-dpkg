@@ -104,6 +104,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 check_PROGRAMS = parse_name$(EXEEXT)
+@ENABLE_COV_TRUE@am__append_1 = --coverage
 subdir = tool/tests
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/build-aux/depcomp \
@@ -407,6 +408,7 @@ CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
+CPPCHECK = @CPPCHECK@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
@@ -528,7 +530,7 @@ TESTS_ENVIRONMENT = export VERSION=$(PACKAGE_VERSION); export \
 AM_CFLAGS = $(WARN_CFLAGS)
 AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_builddir)/lib \
 	-I$(top_srcdir)/tool -I$(top_builddir)/tool $(OPENSSL_CFLAGS)
-AM_LDFLAGS = -no-install
+AM_LDFLAGS = -no-install $(am__append_1)
 parse_name_LDADD = ../libpiv_util.la $(OPENSSL_LIBS)
 TESTS = basic.sh $(check_PROGRAMS)
 all: all-am

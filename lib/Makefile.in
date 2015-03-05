@@ -108,6 +108,7 @@ build_triplet = @build@
 host_triplet = @host@
 @HAVE_LD_VERSION_SCRIPT_TRUE@am__append_1 = -Wl,--version-script=$(srcdir)/ykpiv.map
 @HAVE_LD_VERSION_SCRIPT_FALSE@am__append_2 = -export-symbols-regex '^ykpiv_.*'
+@ENABLE_COV_TRUE@am__append_3 = --coverage
 subdir = lib
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(srcdir)/ykpiv-version.h.in $(srcdir)/ykpiv.pc.in \
@@ -285,6 +286,7 @@ CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
+CPPCHECK = @CPPCHECK@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
@@ -402,7 +404,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = . tests
-AM_CFLAGS = $(WERROR_CFLAGS) $(WARN_CFLAGS)
+AM_CFLAGS = $(WERROR_CFLAGS) $(WARN_CFLAGS) $(am__append_3)
 AM_CPPFLAGS = $(OPENSSL_CFLAGS) $(PCSC_CFLAGS)
 lib_LTLIBRARIES = libykpiv.la
 libykpiv_la_SOURCES = ykpiv.c version.c ykpiv.pc.in ykpiv.map \
@@ -417,6 +419,7 @@ libykpiv_la_LDFLAGS = -no-undefined -version-info \
 	$(am__append_2)
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ykpiv.pc
+@ENABLE_COV_TRUE@AM_LDFLAGS = --coverage
 all: all-recursive
 
 .SUFFIXES:
