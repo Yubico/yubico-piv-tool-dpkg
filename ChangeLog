@@ -1,3 +1,79 @@
+2014-12-18  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: news for 0.1.3
+
+2014-12-18  Klas Lindfors <klas@yubico.com>
+
+	* configure.ac: correctly bump versions
+
+2014-12-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: add more feedback for successful actions
+
+2014-12-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: diagnostic output for generate key
+
+2014-12-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: switch diagnostic output to stderr
+
+2014-12-17  Klas Lindfors <klas@yubico.com>
+
+	* doc/OS_X_code_signing.adoc: s/codesigning/code signing/g
+
+2014-12-09  Klas Lindfors <klas@yubico.com>
+
+	* configure.ac, lib/tests/Makefile.am, m4/valgrind-tests.m4,
+	tool/tests/Makefile.am: add valgrind for tests
+
+2014-12-09  Klas Lindfors <klas@yubico.com>
+
+	* doc/SSH_with_PIV_and_PKCS11.adoc: text about ssh-agent support
+
+2014-12-09  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am, doc/SSH_with_PIV_and_PKCS11.adoc: add instructions
+	for SSH with PIV
+
+2014-12-09  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am: doc files changed names.
+
+2014-12-09  Henrik Stråth <minisu@users.noreply.github.com>
+
+	* README: Update README
+
+2014-12-09  Henrik Stråth <henrik@yubico.com>
+
+	* doc/{CertificateAuthorityWithNEO.txt =>
+	Certificate_Authority_with_NEO.adoc}, doc/{OS-X-Codesigning.txt =>
+	OS_X_code_signing.adoc}, doc/{Windows-Certificate.txt =>
+	Windows_certificate.adoc}, doc/{YubiKey-NEO-PIV-Introduction.txt =>
+	YubiKey_NEO_PIV_introduction.adoc}: Renamed doc files to snake case.
+
+2014-12-05  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am: add new doc to EXTRA_DIST
+
+2014-12-05  Klas Lindfors <klas@yubico.com>
+
+	* doc/OS-X-Codesigning.txt: more text
+
+2014-12-05  Klas Lindfors <klas@yubico.com>
+
+	* doc/OS-X-Codesigning.txt: add some text about how to use for
+	codesigning on OS X
+
+2014-12-05  Klas Lindfors <klas@yubico.com>
+
+	* tool/cmdline.ggo, tool/util.h, tool/yubico-piv-tool.c: add DER
+	format for certificate import
+
+2014-11-14  Klas Lindfors <klas@yubico.com>
+
+	* NEWS, configure.ac: bump versions after release
+
 2014-11-14  Klas Lindfors <klas@yubico.com>
 
 	* NEWS: NEWS for 0.1.2

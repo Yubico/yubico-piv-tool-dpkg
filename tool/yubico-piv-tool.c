@@ -83,7 +83,7 @@ static void print_version(ykpiv_state *state) {
   if(ykpiv_get_version(state, version, sizeof(version)) == YKPIV_OK) {
     printf("Applet version %s found.\n", version);
   } else {
-    printf("Failed to retreive apple version.\n");
+    fprintf(stderr, "Failed to retreive apple version.\n");
   }
 }
 
@@ -405,7 +405,7 @@ static bool import_cert(ykpiv_state *state, enum enum_key_format cert_format,
   PKCS12 *p12 = NULL;
   EVP_PKEY *private_key = NULL;
   int compress = 0;
-  int cert_len;
+  int cert_len = -1;
 
   input_file = open_file(input_file_name, INPUT);
   if(!input_file) {
@@ -418,7 +418,12 @@ static bool import_cert(ykpiv_state *state, enum enum_key_format cert_format,
       fprintf(stderr, "Failed loading certificate for import.\n");
       goto import_cert_out;
     }
-    cert_len = i2d_X509(cert, NULL);
+  } else if(cert_format == key_format_arg_DER) {
+    cert = d2i_X509_fp(input_file, NULL);
+    if(!cert) {
+      fprintf(stderr, "Failed loading certificate for import.\n");
+      goto import_cert_out;
+    }
   } else if(cert_format == key_format_arg_PKCS12) {
     p12 = d2i_PKCS12_fp(input_file, NULL);
     if(!p12) {
@@ -429,7 +434,6 @@ static bool import_cert(ykpiv_state *state, enum enum_key_format cert_format,
       fprintf(stderr, "Failed to parse PKCS12 structure.\n");
       goto import_cert_out;
     }
-    cert_len = i2d_X509(cert, NULL);
   } else if (cert_format == key_format_arg_GZIP) {
     struct stat st;
 
@@ -443,6 +447,9 @@ static bool import_cert(ykpiv_state *state, enum enum_key_format cert_format,
     /* TODO: more formats go here */
     fprintf(stderr, "Unknown key format.\n");
     goto import_cert_out;
+  }
+  if(cert_len == -1) {
+    cert_len = i2d_X509(cert, NULL);
   }
 
   {
@@ -976,7 +983,7 @@ static bool delete_certificate(ykpiv_state *state, enum enum_slot slot) {
     fprintf(stderr, "Failed deleting object.\n");
     return false;
   } else {
-    fprintf(stdout, "Certificate deleted.\n");
+    fprintf(stderr, "Certificate deleted.\n");
     return true;
   }
 }
@@ -1199,6 +1206,8 @@ int main(int argc, char *argv[]) {
         if(args_info.slot_arg != slot__NULL) {
           if(generate_key(state, args_info.slot_orig, args_info.algorithm_arg, args_info.output_arg, args_info.key_format_arg) == false) {
             ret = EXIT_FAILURE;
+          } else {
+            fprintf(stderr, "Successfully generated a new private key.\n");
           }
         } else {
           fprintf(stderr, "The generate action needs a slot (-s) to operate on.\n");
@@ -1215,7 +1224,7 @@ int main(int argc, char *argv[]) {
             } else if(ykpiv_set_mgmkey(state, new_key) != YKPIV_OK) {
               ret = EXIT_FAILURE;
             } else {
-              printf("Successfully set new management key.\n");
+              fprintf(stderr, "Successfully set new management key.\n");
             }
           } else {
             fprintf(stderr, "The new management key has to be exactly %d character.\n", KEY_LEN * 2);
@@ -1231,7 +1240,7 @@ int main(int argc, char *argv[]) {
 	  fprintf(stderr, "Reset failed, are pincodes blocked?\n");
           ret = EXIT_FAILURE;
         } else {
-          printf("Successfully reset the applet.\n");
+          fprintf(stderr, "Successfully reset the applet.\n");
         }
         break;
       case action_arg_pinMINUS_retries:
@@ -1239,7 +1248,7 @@ int main(int argc, char *argv[]) {
           if(set_pin_retries(state, args_info.pin_retries_arg, args_info.puk_retries_arg, verbosity) == false) {
             ret = EXIT_FAILURE;
           } else {
-            printf("Successfully changed pin retries to %d and puk retries to %d, both codes have been reset to default now.\n",
+            fprintf(stderr, "Successfully changed pin retries to %d and puk retries to %d, both codes have been reset to default now.\n",
                 args_info.pin_retries_arg, args_info.puk_retries_arg);
           }
         } else {
@@ -1252,7 +1261,7 @@ int main(int argc, char *argv[]) {
           if(import_key(state, args_info.key_format_arg, args_info.input_arg, args_info.slot_orig, args_info.password_arg) == false) {
             ret = EXIT_FAILURE;
           } else {
-            printf("Successfully imported a new private key.\n");
+            fprintf(stderr, "Successfully imported a new private key.\n");
           }
         } else {
           fprintf(stderr, "The import action needs a slot (-s) to operate on.\n");
@@ -1264,7 +1273,7 @@ int main(int argc, char *argv[]) {
           if(import_cert(state, args_info.key_format_arg, args_info.input_arg, args_info.slot_arg, args_info.password_arg) == false) {
             ret = EXIT_FAILURE;
           } else {
-            printf("Successfully imported a new certificate.\n");
+            fprintf(stderr, "Successfully imported a new certificate.\n");
           }
         } else {
           fprintf(stderr, "The import action needs a slot (-s) to operate on.\n");
@@ -1275,7 +1284,7 @@ int main(int argc, char *argv[]) {
         if(set_chuid(state, verbosity) == false) {
           ret = EXIT_FAILURE;
         } else {
-          printf("Successfully set new CHUID.\n");
+          fprintf(stderr, "Successfully set new CHUID.\n");
         }
         break;
       case action_arg_requestMINUS_certificate:
@@ -1290,13 +1299,15 @@ int main(int argc, char *argv[]) {
                 args_info.slot_orig, args_info.subject_arg, args_info.hash_arg,
                 args_info.output_arg) == false) {
             ret = EXIT_FAILURE;
+          } else {
+            fprintf(stderr, "Successfully generated a certificate request.\n");
           }
         }
         break;
       case action_arg_verifyMINUS_pin:
         if(args_info.pin_arg) {
           if(verify_pin(state, args_info.pin_arg)) {
-            printf("Successfully verified PIN.\n");
+            fprintf(stderr, "Successfully verified PIN.\n");
           } else {
             ret = EXIT_FAILURE;
           }
@@ -1311,9 +1322,9 @@ int main(int argc, char *argv[]) {
         if(args_info.pin_arg && args_info.new_pin_arg) {
           if(change_pin(state, action, args_info.pin_arg, args_info.new_pin_arg)) {
             if(action == action_arg_unblockMINUS_pin) {
-              printf("Successfully unblocked the pin code.\n");
+              fprintf(stderr, "Successfully unblocked the pin code.\n");
             } else {
-              printf("Successfully changed the %s code.\n",
+              fprintf(stderr, "Successfully changed the %s code.\n",
                   action == action_arg_changeMINUS_pin ? "pin" : "puk");
             }
           } else {
@@ -1338,6 +1349,8 @@ int main(int argc, char *argv[]) {
                 args_info.slot_orig, args_info.subject_arg, args_info.hash_arg,
                 args_info.output_arg) == false) {
             ret = EXIT_FAILURE;
+          } else {
+            fprintf(stderr, "Successfully generated a new self signed certificate.\n");
           }
         }
         break;
