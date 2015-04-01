@@ -2,4 +2,4 @@ yubico-piv-tool (0.1.5-1) unstable; urgency=low
 
   * Initial release. (Closes: #779837)
 
- -- Klas Lindfors <klas@yubico.com>  Thu, 05 Mar 2015 12:30:40 +0100
+ -- Hans-Christoph Steiner <hans@eds.org>  Mon, 30 Mar 2015 16:53:01 -0400
