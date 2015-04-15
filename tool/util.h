@@ -37,7 +37,7 @@
 #define INPUT 1
 #define OUTPUT 2
 
-void dump_hex(unsigned const char*, unsigned int);
+void dump_hex(unsigned const char*, unsigned int, FILE*, bool);
 int set_length(unsigned char*, int);
 int get_length(const unsigned char*, int*);
 X509_NAME *parse_name(const char*);
@@ -45,5 +45,7 @@ unsigned char get_algorithm(EVP_PKEY*);
 FILE *open_file(const char*, int);
 int get_object_id(enum enum_slot slot);
 bool set_component_with_len(unsigned char**, const BIGNUM*, int);
+bool prepare_rsa_signature(const unsigned char*, unsigned int, unsigned char*,
+    unsigned int*, int);
 
 #endif
