@@ -4,10 +4,12 @@ Yubico PIV Tool
 Introduction
 ------------
 
-This is a command line tool to interact with the PIV applet on a
-https://www.yubico.com[YubiKey NEO].
-Among other functions it supports, generating keys on device, importing keys
-and certificates and creating certificate requests.
+The Yubico PIV tool is used for interacting with the Privilege and
+Identification Card (PIV) applet on a https://www.yubico.com[YubiKey NEO].
+
+With it you may generate keys on the device, importing keys and
+certificates, and create certificate requests, and other operations.
+A shared library and a command-line tool is included.
 
 License
 -------
@@ -60,7 +62,7 @@ Building from Git
 
 Recent versions of autoconf, automake, pkg-config and libtool must
 be installed.  Help2man is used to generate the manpages.  Gengetopt
-is needed for command line parameter handling.
+version 2.22.6 or later is needed for command line parameter handling.
 
 Generate the build system using:
 
@@ -118,3 +120,12 @@ Change the management key used for administrative authentication:
 Delete a certificate in slot 9a:
 
   yubico-piv-tool -a delete-certificate -s 9a
+
+Show some information on certificates and other data:
+
+  yubico-piv-tool -a status
+
+Read out the certificate from a slot and then run a signature test:
+
+  yubico-piv-tool -a read-cert -s 9a
+  yubico-piv-tool -a verify-pin -P 123456 -a test-signature -s 9a

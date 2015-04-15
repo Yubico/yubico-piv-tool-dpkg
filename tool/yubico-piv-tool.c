@@ -79,12 +79,21 @@ unsigned const char sha512oid[] = {
 
 #define KEY_LEN 24
 
-static void print_version(ykpiv_state *state) {
+static void print_version(ykpiv_state *state, const char *output_file_name) {
   char version[7];
+  FILE *output_file = open_file(output_file_name, OUTPUT);
+  if(!output_file) {
+    fprintf(stderr, "Failed opening output_file_name\n");
+  }
+
   if(ykpiv_get_version(state, version, sizeof(version)) == YKPIV_OK) {
-    printf("Applet version %s found.\n", version);
+    fprintf(output_file, "Applet version %s found.\n", version);
   } else {
     fprintf(stderr, "Failed to retrieve applet version.\n");
+  }
+
+  if(output_file != stdout) {
+    fclose(output_file);
   }
 }
 
@@ -524,8 +533,7 @@ static bool set_chuid(ykpiv_state *state, int verbose) {
   }
   if(verbose) {
     fprintf(stderr, "Setting the CHUID to: ");
-    dump_hex(chuid, sizeof(chuid));
-    fprintf(stderr, "\n");
+    dump_hex(chuid, sizeof(chuid), stderr, true);
   }
   if((res = ykpiv_save_object(state, YKPIV_OBJ_CHUID, chuid, sizeof(chuid))) != YKPIV_OK) {
     fprintf(stderr, "Failed communicating with device: %s\n", ykpiv_strerror(res));
@@ -1009,6 +1017,66 @@ static bool delete_certificate(ykpiv_state *state, enum enum_slot slot) {
   }
 }
 
+static bool read_certificate(ykpiv_state *state, enum enum_slot slot,
+    enum enum_key_format key_format, const char *output_file_name) {
+  FILE *output_file;
+  int object = get_object_id(slot);
+  unsigned char data[2048];
+  const unsigned char *ptr = data;
+  unsigned long len = sizeof(data);
+  int cert_len;
+  bool ret = false;
+  X509 *x509 = NULL;
+
+  if(key_format != key_format_arg_PEM && key_format != key_format_arg_DER) {
+    fprintf(stderr, "Only PEM and DER format are supported for read-certificate.\n");
+    return false;
+  }
+
+  output_file = open_file(output_file_name, OUTPUT);
+  if(!output_file) {
+    return false;
+  }
+
+  if(ykpiv_fetch_object(state, object, data, &len) != YKPIV_OK) {
+    fprintf(stderr, "Failed fetching certificate.\n");
+    goto read_cert_out;
+  }
+
+  if(*ptr++ == 0x70) {
+    ptr += get_length(ptr, &cert_len);
+    if(key_format == key_format_arg_PEM) {
+      x509 = X509_new();
+      if(!x509) {
+        fprintf(stderr, "Failed allocating x509 structure.\n");
+        goto read_cert_out;
+      }
+      x509 = d2i_X509(NULL, &ptr, cert_len);
+      if(!x509) {
+        fprintf(stderr, "Failed parsing x509 information.\n");
+        goto read_cert_out;
+      }
+      PEM_write_X509(output_file, x509);
+      ret = true;
+    } else { /* key_format_arg_DER */
+      /* XXX: This will just dump the raw data in tag 0x70.. */
+      fwrite(ptr, (size_t)cert_len, 1, output_file);
+      ret = true;
+    }
+  } else {
+    fprintf(stderr, "Failed parsing data.\n");
+  }
+
+read_cert_out:
+  if(output_file != stdout) {
+    fclose(output_file);
+  }
+  if(x509) {
+    X509_free(x509);
+  }
+  return ret;
+}
+
 static bool sign_file(ykpiv_state *state, const char *input, const char *output,
     const char *slot, enum enum_algorithm algorithm, enum enum_hash hash,
     int verbosity) {
@@ -1019,7 +1087,7 @@ static bool sign_file(ykpiv_state *state, const char *input, const char *output,
   unsigned char hashed[EVP_MAX_MD_SIZE];
   bool ret = false;
   int algo;
-  int nid;
+  const EVP_MD *md;
 
   sscanf(slot, "%2x", &key);
 
@@ -1053,21 +1121,17 @@ static bool sign_file(ykpiv_state *state, const char *input, const char *output,
   }
 
   {
-    const EVP_MD *md;
     EVP_MD_CTX *mdctx;
 
     switch(hash) {
       case hash_arg_SHA1:
         md = EVP_sha1();
-        nid = NID_sha1;
         break;
       case hash_arg_SHA256:
         md = EVP_sha256();
-        nid = NID_sha256;
         break;
       case hash_arg_SHA512:
         md = EVP_sha512();
-        nid = NID_sha512;
         break;
       case hash__NULL:
       default:
@@ -1085,31 +1149,13 @@ static bool sign_file(ykpiv_state *state, const char *input, const char *output,
 
     if(verbosity) {
       fprintf(stderr, "file hashed as: ");
-      dump_hex(hashed, hash_len);
-      fprintf(stderr, "\n");
+      dump_hex(hashed, hash_len, stderr, true);
     }
     EVP_MD_CTX_destroy(mdctx);
   }
 
   if(algo == YKPIV_ALGO_RSA1024 || algo == YKPIV_ALGO_RSA2048) {
-    X509_SIG digestInfo;
-    X509_ALGOR algor;
-    ASN1_TYPE parameter;
-    ASN1_OCTET_STRING digest;
-    unsigned char buf[1024];
-    unsigned char *ptr = hashed;
-
-    memcpy(buf, hashed, hash_len);
-
-    digestInfo.algor = &algor;
-    digestInfo.algor->algorithm = OBJ_nid2obj(nid);
-    digestInfo.algor->parameter = &parameter;
-    digestInfo.algor->parameter->type = V_ASN1_NULL;
-    digestInfo.algor->parameter->value.ptr = NULL;
-    digestInfo.digest = &digest;
-    digestInfo.digest->data = buf;
-    digestInfo.digest->length = (int)hash_len;
-    hash_len = (unsigned int)i2d_X509_SIG(&digestInfo, &ptr);
+    prepare_rsa_signature(hashed, hash_len, hashed, &hash_len, EVP_MD_type(md));
   }
 
   {
@@ -1123,8 +1169,7 @@ static bool sign_file(ykpiv_state *state, const char *input, const char *output,
 
     if(verbosity) {
       fprintf(stderr, "file signed as: ");
-      dump_hex(buf, len);
-      fprintf(stderr, "\n");
+      dump_hex(buf, len, stderr, true);
     }
     fwrite(buf, 1, len, output_file);
     ret = true;
@@ -1142,6 +1187,303 @@ out:
   return ret;
 }
 
+static void print_cert_info(ykpiv_state *state, enum enum_slot slot, const EVP_MD *md,
+    FILE *output) {
+  int object = get_object_id(slot);
+  unsigned char data[2048];
+  const unsigned char *ptr = data;
+  unsigned long len = sizeof(data);
+  int cert_len;
+  X509 *x509 = NULL;
+  X509_NAME *subj;
+  BIO *bio = NULL;
+
+  if(ykpiv_fetch_object(state, object, data, &len) != YKPIV_OK) {
+    fprintf(output, "No data available.\n");
+    return;
+  }
+
+  if(*ptr++ == 0x70) {
+    unsigned int md_len = sizeof(data);
+    ASN1_TIME *not_before, *not_after;
+
+    ptr += get_length(ptr, &cert_len);
+    x509 = X509_new();
+    if(!x509) {
+      fprintf(output, "Allocation failure.\n");
+      return;
+    }
+    x509 = d2i_X509(NULL, &ptr, cert_len);
+    if(!x509) {
+      fprintf(output, "Unknown data present.\n");
+      goto cert_out;
+    }
+    {
+      EVP_PKEY *key = X509_get_pubkey(x509);
+      if(!key) {
+        fprintf(output, "Parse error.\n");
+        goto cert_out;
+      }
+      fprintf(output, "\n\tAlgorithm:\t");
+      switch(get_algorithm(key)) {
+        case YKPIV_ALGO_RSA1024:
+          fprintf(output, "RSA1024\n");
+          break;
+        case YKPIV_ALGO_RSA2048:
+          fprintf(output, "RSA2048\n");
+          break;
+        case YKPIV_ALGO_ECCP256:
+          fprintf(output, "ECCP256\n");
+          break;
+        default:
+          fprintf(output, "Unknown\n");
+      }
+    }
+    subj = X509_get_subject_name(x509);
+    if(!subj) {
+      fprintf(output, "Parse error.\n");
+      goto cert_out;
+    }
+    fprintf(output, "\tSubject DN:\t");
+    X509_NAME_print_ex_fp(output, subj, 0, XN_FLAG_COMPAT);
+    fprintf(output, "\n");
+    subj = X509_get_issuer_name(x509);
+    if(!subj) {
+      fprintf(output, "Parse error.\n");
+      goto cert_out;
+    }
+    fprintf(output, "\tIssuer DN:\t");
+    X509_NAME_print_ex_fp(output, subj, 0, XN_FLAG_COMPAT);
+    fprintf(output, "\n");
+    X509_digest(x509, md, data, &md_len);
+    fprintf(output, "\tFingerprint:\t");
+    dump_hex(data, md_len, output, false);
+
+    bio = BIO_new_fp(output, BIO_NOCLOSE | BIO_FP_TEXT);
+    not_before = X509_get_notBefore(x509);
+    if(not_before) {
+      fprintf(output, "\tNot Before:\t");
+      ASN1_TIME_print(bio, not_before);
+      fprintf(output, "\n");
+    }
+    not_after = X509_get_notAfter(x509);
+    if(not_after) {
+      fprintf(output, "\tNot After:\t");
+      ASN1_TIME_print(bio, not_after);
+      fprintf(output, "\n");
+    }
+  } else {
+    fprintf(output, "Parse error.\n");
+    return;
+  }
+cert_out:
+  if(x509) {
+    X509_free(x509);
+  }
+  if(bio) {
+    BIO_free(bio);
+  }
+}
+
+static bool status(ykpiv_state *state, enum enum_hash hash,
+  const char *output_file_name) {
+  const EVP_MD *md;
+  unsigned char chuid[2048];
+  long unsigned len = sizeof(chuid);
+  FILE *output_file = open_file(output_file_name, OUTPUT);
+  if(!output_file) {
+    return false;
+  }
+
+  switch(hash) {
+    case hash_arg_SHA1:
+      md = EVP_sha1();
+      break;
+    case hash_arg_SHA256:
+      md = EVP_sha256();
+      break;
+    case hash_arg_SHA512:
+      md = EVP_sha512();
+      break;
+    case hash__NULL:
+    default:
+      return false;
+  }
+
+  fprintf(output_file, "CHUID:\t");
+  if(ykpiv_fetch_object(state, YKPIV_OBJ_CHUID, chuid, &len) != YKPIV_OK) {
+    fprintf(output_file, "No data available\n");
+  } else {
+    dump_hex(chuid, len, output_file, false);
+  }
+
+  fprintf(output_file, "Slot 9a:\t");
+  print_cert_info(state, slot_arg_9a, md, output_file);
+  fprintf(output_file, "Slot 9c:\t");
+  print_cert_info(state, slot_arg_9c, md, output_file);
+  fprintf(output_file, "Slot 9d:\t");
+  print_cert_info(state, slot_arg_9d, md, output_file);
+  fprintf(output_file, "Slot 9e:\t");
+  print_cert_info(state, slot_arg_9e, md, output_file);
+
+  {
+    int tries;
+    ykpiv_verify(state, NULL, &tries);
+    fprintf(output_file, "PIN tries left:\t%d\n", tries);
+  }
+
+  if(output_file != stdout) {
+    fclose(output_file);
+  }
+  return true;
+}
+
+static bool test_signature(ykpiv_state *state, enum enum_slot slot,
+    enum enum_hash hash, const char *input_file_name,
+    enum enum_key_format cert_format, int verbose) {
+  const EVP_MD *md;
+  bool ret = false;
+  unsigned char data[1024];
+  unsigned int data_len;
+  X509 *x509 = NULL;
+  EVP_PKEY *pubkey;
+  FILE *input_file = open_file(input_file_name, INPUT);
+
+  if(!input_file) {
+    fprintf(stderr, "Failed opening input file %s.\n", input_file_name);
+    return false;
+  }
+
+  if(isatty(fileno(input_file))) {
+    fprintf(stderr, "Please paste the certificate to verify against...\n");
+  }
+
+  if(cert_format == key_format_arg_PEM) {
+    x509 = PEM_read_X509(input_file, NULL, NULL, NULL);
+  } else if(cert_format == key_format_arg_DER) {
+    x509 = d2i_X509_fp(input_file, NULL);
+  } else {
+    fprintf(stderr, "Only PEM or DER format is supported for test-signature.\n");
+    goto test_out;
+  }
+  if(!x509) {
+    fprintf(stderr, "Failed loading certificate for test-signature.\n");
+    goto test_out;
+  }
+
+  switch(hash) {
+    case hash_arg_SHA1:
+      md = EVP_sha1();
+      break;
+    case hash_arg_SHA256:
+      md = EVP_sha256();
+      break;
+    case hash_arg_SHA512:
+      md = EVP_sha512();
+      break;
+    case hash__NULL:
+    default:
+      return false;
+  }
+
+  {
+    unsigned char rand[128];
+    EVP_MD_CTX *mdctx;
+    if(RAND_pseudo_bytes(rand, 128) == -1) {
+      fprintf(stderr, "error: no randomness.\n");
+      return false;
+    }
+
+    mdctx = EVP_MD_CTX_create();
+    EVP_DigestInit_ex(mdctx, md, NULL);
+    EVP_DigestUpdate(mdctx, rand, 128);
+    EVP_DigestFinal_ex(mdctx, data, &data_len);
+    if(verbose) {
+      fprintf(stderr, "Test data hashes as: ");
+      dump_hex(data, data_len, stderr, true);
+    }
+  }
+
+  {
+    unsigned char signature[1024];
+    unsigned char encoded[1024];
+    unsigned char *ptr = data;
+    unsigned int enc_len;
+    size_t sig_len = sizeof(signature);
+    int key = 0;
+    unsigned char algorithm;
+
+    pubkey = X509_get_pubkey(x509);
+    if(!pubkey) {
+      fprintf(stderr, "Parse error.\n");
+      goto test_out;
+    }
+    algorithm = get_algorithm(pubkey);
+    if(algorithm == 0) {
+      goto test_out;
+    }
+    sscanf(cmdline_parser_slot_values[slot], "%2x", &key);
+    if(algorithm == YKPIV_ALGO_RSA1024 || algorithm == YKPIV_ALGO_RSA2048) {
+      prepare_rsa_signature(data, data_len, encoded, &enc_len, EVP_MD_type(md));
+      ptr = encoded;
+    } else {
+      enc_len = data_len;
+    }
+    if(ykpiv_sign_data(state, ptr, enc_len, signature, &sig_len, algorithm, key)
+      != YKPIV_OK) {
+      fprintf(stderr, "Failed signing test data.\n");
+      goto test_out;
+    }
+
+    switch(algorithm) {
+      case YKPIV_ALGO_RSA1024:
+      case YKPIV_ALGO_RSA2048:
+        {
+          RSA *rsa = EVP_PKEY_get1_RSA(pubkey);
+          if(!rsa) {
+            fprintf(stderr, "Failed getting RSA pubkey.\n");
+            goto test_out;
+          }
+
+          if(RSA_verify(EVP_MD_type(md), data, data_len, signature, sig_len, rsa) == 1) {
+            fprintf(stderr, "Successful RSA verification.\n");
+            ret = true;
+            goto test_out;
+          } else {
+            fprintf(stderr, "Failed RSA verification.\n");
+            goto test_out;
+          }
+        }
+
+        break;
+      case YKPIV_ALGO_ECCP256:
+        {
+          EC_KEY *ec = EVP_PKEY_get1_EC_KEY(pubkey);
+          if(ECDSA_verify(0, data, (int)data_len, signature, (int)sig_len, ec) == 1) {
+            fprintf(stderr, "Successful ECDSA verification.\n");
+            ret = true;
+            goto test_out;
+          } else {
+            fprintf(stderr, "Failed ECDSA verification.\n");
+            goto test_out;
+          }
+        }
+        break;
+      default:
+        fprintf(stderr, "Unknown algorithm.\n");
+        goto test_out;
+    }
+  }
+test_out:
+  if(x509) {
+    X509_free(x509);
+  }
+  if(input_file != stdin) {
+    fclose(input_file);
+  }
+  return ret;
+}
+
 int main(int argc, char *argv[]) {
   struct gengetopt_args_info args_info;
   ykpiv_state *state;
@@ -1155,6 +1497,67 @@ int main(int argc, char *argv[]) {
   }
 
   verbosity = args_info.verbose_arg + (int)args_info.verbose_given;
+
+  for(i = 0; i < args_info.action_given; i++) {
+    action = *(args_info.action_arg + i);
+    switch(action) {
+      case action_arg_requestMINUS_certificate:
+      case action_arg_selfsignMINUS_certificate:
+        if(!args_info.subject_arg) {
+          fprintf(stderr, "The '%s' action needs a subject (-S) to operate on.\n",
+              cmdline_parser_action_values[action]);
+          return EXIT_FAILURE;
+        }
+      case action_arg_generate:
+      case action_arg_importMINUS_key:
+      case action_arg_importMINUS_certificate:
+      case action_arg_deleteMINUS_certificate:
+      case action_arg_readMINUS_certificate:
+      case action_arg_testMINUS_signature:
+        if(args_info.slot_arg == slot__NULL) {
+          fprintf(stderr, "The '%s' action needs a slot (-s) to operate on.\n",
+              cmdline_parser_action_values[action]);
+          return EXIT_FAILURE;
+        }
+        break;
+      case action_arg_changeMINUS_pin:
+      case action_arg_changeMINUS_puk:
+      case action_arg_unblockMINUS_pin:
+        if(!args_info.new_pin_arg) {
+          fprintf(stderr, "The '%s' action needs a new-pin (-N).\n",
+              cmdline_parser_action_values[action]);
+          return EXIT_FAILURE;
+        }
+      case action_arg_verifyMINUS_pin:
+        if(!args_info.pin_arg) {
+          fprintf(stderr, "The '%s' action needs a pin (-P).\n",
+              cmdline_parser_action_values[action]);
+          return EXIT_FAILURE;
+        }
+        break;
+      case action_arg_setMINUS_mgmMINUS_key:
+        if(!args_info.new_key_arg) {
+          fprintf(stderr, "The '%s' action needs the new-key (-n) argument.\n",
+              cmdline_parser_action_values[action]);
+          return EXIT_FAILURE;
+        }
+        break;
+      case action_arg_pinMINUS_retries:
+        if(!args_info.pin_retries_arg || !args_info.puk_retries_arg) {
+          fprintf(stderr, "The '%s' action needs both --pin-retries and --puk-retries arguments.\n",
+              cmdline_parser_action_values[action]);
+          return EXIT_FAILURE;
+        }
+        break;
+      case action_arg_setMINUS_chuid:
+      case action_arg_version:
+      case action_arg_reset:
+      case action_arg_status:
+      case action__NULL:
+      default:
+        continue;
+    }
+  }
 
   if(ykpiv_init(&state, verbosity) != YKPIV_OK) {
     fprintf(stderr, "Failed initializing library.\n");
@@ -1178,7 +1581,7 @@ int main(int argc, char *argv[]) {
       case action_arg_setMINUS_chuid:
       case action_arg_deleteMINUS_certificate:
         if(verbosity) {
-          fprintf(stderr, "Authenticating since action %d needs that.\n", action);
+          fprintf(stderr, "Authenticating since action '%s' needs that.\n", cmdline_parser_action_values[action]);
         }
         needs_auth = true;
         break;
@@ -1190,10 +1593,13 @@ int main(int argc, char *argv[]) {
       case action_arg_changeMINUS_puk:
       case action_arg_unblockMINUS_pin:
       case action_arg_selfsignMINUS_certificate:
+      case action_arg_readMINUS_certificate:
+      case action_arg_status:
+      case action_arg_testMINUS_signature:
       case action__NULL:
       default:
         if(verbosity) {
-          fprintf(stderr, "Action %d does not need authentication.\n", action);
+          fprintf(stderr, "Action '%s' does not need authentication.\n", cmdline_parser_action_values[action]);
         }
         continue;
     }
@@ -1222,44 +1628,35 @@ int main(int argc, char *argv[]) {
   for(i = 0; i < args_info.action_given; i++) {
     action = *(args_info.action_arg + i);
     if(verbosity) {
-      fprintf(stderr, "Now processing for action %d.\n", action);
+      fprintf(stderr, "Now processing for action '%s'.\n",
+          cmdline_parser_action_values[action]);
     }
     switch(action) {
       case action_arg_version:
-        print_version(state);
+        print_version(state, args_info.output_arg);
         break;
       case action_arg_generate:
-        if(args_info.slot_arg != slot__NULL) {
-          if(generate_key(state, args_info.slot_orig, args_info.algorithm_arg, args_info.output_arg, args_info.key_format_arg) == false) {
-            ret = EXIT_FAILURE;
-          } else {
-            fprintf(stderr, "Successfully generated a new private key.\n");
-          }
-        } else {
-          fprintf(stderr, "The generate action needs a slot (-s) to operate on.\n");
+        if(generate_key(state, args_info.slot_orig, args_info.algorithm_arg, args_info.output_arg, args_info.key_format_arg) == false) {
           ret = EXIT_FAILURE;
+        } else {
+          fprintf(stderr, "Successfully generated a new private key.\n");
         }
         break;
       case action_arg_setMINUS_mgmMINUS_key:
-        if(args_info.new_key_arg) {
-          if(strlen(args_info.new_key_arg) == (KEY_LEN * 2)){
-            unsigned char new_key[KEY_LEN];
-            size_t new_key_len = sizeof(new_key);
-            if(ykpiv_hex_decode(args_info.new_key_arg, strlen(args_info.new_key_arg), new_key, &new_key_len) != YKPIV_OK) {
-              fprintf(stderr, "Failed decoding new key!\n");
-              ret = EXIT_FAILURE;
-            } else if(ykpiv_set_mgmkey(state, new_key) != YKPIV_OK) {
-              fprintf(stderr, "Failed setting the new key!\n");
-              ret = EXIT_FAILURE;
-            } else {
-              fprintf(stderr, "Successfully set new management key.\n");
-            }
-          } else {
-            fprintf(stderr, "The new management key has to be exactly %d character.\n", KEY_LEN * 2);
+        if(strlen(args_info.new_key_arg) == (KEY_LEN * 2)){
+          unsigned char new_key[KEY_LEN];
+          size_t new_key_len = sizeof(new_key);
+          if(ykpiv_hex_decode(args_info.new_key_arg, strlen(args_info.new_key_arg), new_key, &new_key_len) != YKPIV_OK) {
+            fprintf(stderr, "Failed decoding new key!\n");
             ret = EXIT_FAILURE;
+          } else if(ykpiv_set_mgmkey(state, new_key) != YKPIV_OK) {
+            fprintf(stderr, "Failed setting the new key!\n");
+            ret = EXIT_FAILURE;
+          } else {
+            fprintf(stderr, "Successfully set new management key.\n");
           }
         } else {
-          fprintf(stderr, "The set-mgm-key action needs the new-key (-n) argument.\n");
+          fprintf(stderr, "The new management key has to be exactly %d character.\n", KEY_LEN * 2);
           ret = EXIT_FAILURE;
         }
         break;
@@ -1272,40 +1669,25 @@ int main(int argc, char *argv[]) {
         }
         break;
       case action_arg_pinMINUS_retries:
-        if(args_info.pin_retries_arg && args_info.puk_retries_arg) {
-          if(set_pin_retries(state, args_info.pin_retries_arg, args_info.puk_retries_arg, verbosity) == false) {
-            ret = EXIT_FAILURE;
-          } else {
-            fprintf(stderr, "Successfully changed pin retries to %d and puk retries to %d, both codes have been reset to default now.\n",
-                args_info.pin_retries_arg, args_info.puk_retries_arg);
-          }
-        } else {
-          fprintf(stderr, "The pin-retries action needs both --pin-retries and --puk-retries arguments.\n");
+        if(set_pin_retries(state, args_info.pin_retries_arg, args_info.puk_retries_arg, verbosity) == false) {
           ret = EXIT_FAILURE;
+        } else {
+          fprintf(stderr, "Successfully changed pin retries to %d and puk retries to %d, both codes have been reset to default now.\n",
+              args_info.pin_retries_arg, args_info.puk_retries_arg);
         }
         break;
       case action_arg_importMINUS_key:
-        if(args_info.slot_arg != slot__NULL) {
-          if(import_key(state, args_info.key_format_arg, args_info.input_arg, args_info.slot_orig, args_info.password_arg) == false) {
-            ret = EXIT_FAILURE;
-          } else {
-            fprintf(stderr, "Successfully imported a new private key.\n");
-          }
-        } else {
-          fprintf(stderr, "The import action needs a slot (-s) to operate on.\n");
+        if(import_key(state, args_info.key_format_arg, args_info.input_arg, args_info.slot_orig, args_info.password_arg) == false) {
           ret = EXIT_FAILURE;
+        } else {
+          fprintf(stderr, "Successfully imported a new private key.\n");
         }
         break;
       case action_arg_importMINUS_certificate:
-        if(args_info.slot_arg != slot__NULL) {
-          if(import_cert(state, args_info.key_format_arg, args_info.input_arg, args_info.slot_arg, args_info.password_arg) == false) {
-            ret = EXIT_FAILURE;
-          } else {
-            fprintf(stderr, "Successfully imported a new certificate.\n");
-          }
-        } else {
-          fprintf(stderr, "The import action needs a slot (-s) to operate on.\n");
+        if(import_cert(state, args_info.key_format_arg, args_info.input_arg, args_info.slot_arg, args_info.password_arg) == false) {
           ret = EXIT_FAILURE;
+        } else {
+          fprintf(stderr, "Successfully imported a new certificate.\n");
         }
         break;
       case action_arg_setMINUS_chuid:
@@ -1316,81 +1698,64 @@ int main(int argc, char *argv[]) {
         }
         break;
       case action_arg_requestMINUS_certificate:
-        if(args_info.slot_arg == slot__NULL) {
-          fprintf(stderr, "The request-certificate action needs a slot (-s) to operate on.\n");
-          ret = EXIT_FAILURE;
-        } else if(!args_info.subject_arg) {
-          fprintf(stderr, "The request-certificate action needs a subject (-S) to operate on.\n");
+        if(request_certificate(state, args_info.key_format_arg, args_info.input_arg,
+              args_info.slot_orig, args_info.subject_arg, args_info.hash_arg,
+              args_info.output_arg) == false) {
           ret = EXIT_FAILURE;
         } else {
-          if(request_certificate(state, args_info.key_format_arg, args_info.input_arg,
-                args_info.slot_orig, args_info.subject_arg, args_info.hash_arg,
-                args_info.output_arg) == false) {
-            ret = EXIT_FAILURE;
-          } else {
-            fprintf(stderr, "Successfully generated a certificate request.\n");
-          }
+          fprintf(stderr, "Successfully generated a certificate request.\n");
         }
         break;
       case action_arg_verifyMINUS_pin:
-        if(args_info.pin_arg) {
-          if(verify_pin(state, args_info.pin_arg)) {
-            fprintf(stderr, "Successfully verified PIN.\n");
-          } else {
-            ret = EXIT_FAILURE;
-          }
+        if(verify_pin(state, args_info.pin_arg)) {
+          fprintf(stderr, "Successfully verified PIN.\n");
         } else {
-          fprintf(stderr, "The verify-pin action needs a pin (-P).\n");
           ret = EXIT_FAILURE;
         }
         break;
       case action_arg_changeMINUS_pin:
       case action_arg_changeMINUS_puk:
       case action_arg_unblockMINUS_pin:
-        if(args_info.pin_arg && args_info.new_pin_arg) {
-          if(change_pin(state, action, args_info.pin_arg, args_info.new_pin_arg)) {
-            if(action == action_arg_unblockMINUS_pin) {
-              fprintf(stderr, "Successfully unblocked the pin code.\n");
-            } else {
-              fprintf(stderr, "Successfully changed the %s code.\n",
-                  action == action_arg_changeMINUS_pin ? "pin" : "puk");
-            }
+        if(change_pin(state, action, args_info.pin_arg, args_info.new_pin_arg)) {
+          if(action == action_arg_unblockMINUS_pin) {
+            fprintf(stderr, "Successfully unblocked the pin code.\n");
           } else {
-            ret = EXIT_FAILURE;
+            fprintf(stderr, "Successfully changed the %s code.\n",
+                action == action_arg_changeMINUS_pin ? "pin" : "puk");
           }
         } else {
-          fprintf(stderr, "The %s action needs a %s (-P) and a new-pin (-N).\n",
-              action == action_arg_changeMINUS_pin ? "change-pin" :
-              action == action_arg_changeMINUS_puk ? "change-puk" : "unblock-pin",
-              action == action_arg_unblockMINUS_pin ? "puk" : "pin");
           ret = EXIT_FAILURE;
         }
         break;
       case action_arg_selfsignMINUS_certificate:
-        if(args_info.slot_arg == slot__NULL) {
-          fprintf(stderr, "The selfsign-certificate action needs a slot (-s) to operate on.\n");
-          ret = EXIT_FAILURE;
-        } else if(!args_info.subject_arg) {
-          fprintf(stderr, "The selfsign-certificate action needs a subject (-S) to operate on.\n");
+        if(selfsign_certificate(state, args_info.key_format_arg, args_info.input_arg,
+              args_info.slot_orig, args_info.subject_arg, args_info.hash_arg,
+              args_info.output_arg) == false) {
           ret = EXIT_FAILURE;
         } else {
-          if(selfsign_certificate(state, args_info.key_format_arg, args_info.input_arg,
-                args_info.slot_orig, args_info.subject_arg, args_info.hash_arg,
-                args_info.output_arg) == false) {
-            ret = EXIT_FAILURE;
-          } else {
-            fprintf(stderr, "Successfully generated a new self signed certificate.\n");
-          }
+          fprintf(stderr, "Successfully generated a new self signed certificate.\n");
         }
         break;
       case action_arg_deleteMINUS_certificate:
-        if(args_info.slot_arg == slot__NULL) {
-          fprintf(stderr, "The delete-certificate action needs a slot (-s) to operate on.\n");
+        if(delete_certificate(state, args_info.slot_arg) == false) {
           ret = EXIT_FAILURE;
-        } else {
-          if(delete_certificate(state, args_info.slot_arg) == false) {
-            ret = EXIT_FAILURE;
-          }
+        }
+        break;
+      case action_arg_readMINUS_certificate:
+        if(read_certificate(state, args_info.slot_arg, args_info.key_format_arg,
+              args_info.output_arg) == false) {
+          ret = EXIT_FAILURE;
+        }
+        break;
+      case action_arg_status:
+        if(status(state, args_info.hash_arg, args_info.output_arg) == false) {
+          ret = EXIT_FAILURE;
+        }
+        break;
+      case action_arg_testMINUS_signature:
+        if(test_signature(state, args_info.slot_arg, args_info.hash_arg,
+              args_info.input_arg, args_info.key_format_arg, verbosity) == false) {
+          ret = EXIT_FAILURE;
         }
         break;
       case action__NULL:

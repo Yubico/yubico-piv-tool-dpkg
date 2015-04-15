@@ -1,3 +1,134 @@
+2015-03-23  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: release 0.1.6
+
+2015-03-20  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: drop openssl/err.h again
+
+2015-03-20  Klas Lindfors <klas@yubico.com>
+
+	* tool/util.c, tool/util.h, tool/yubico-piv-tool.c: replace
+	EVP_MD_CTX_verify() stuff with RSA_verify()/ECDSA_verify() since the EVP_MD_CTX stuff doesn't seem to exist on osx at all.
+
+2015-03-20  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: NEWS for 0.1.6
+
+2015-03-18  Klas Lindfors <klas@yubico.com>
+
+	* README, tool/cmdline.ggo, tool/yubico-piv-tool.c,
+	tool/yubico-piv-tool.h2m: add a test-signature action that takes a certificate in and does a signature with the given
+	slot, then verifying that signature with the given certificate.
+
+2015-03-20  Klas Lindfors <klas@yubico.com>
+
+	* windows.mk: bump openssl version
+
+2015-03-19  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: add missing } that's why you should always build before push..
+
+2015-03-19  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: move up validation of pin-retries
+	parameters
+
+2015-03-19  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: move more validation of parameters
+	together
+
+2015-03-19  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: write version to output file
+
+2015-03-19  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: call get_algorithm() to get the algorithm as it was already implemented..
+
+2015-03-19  Klas Lindfors <klas@yubico.com>
+
+	* doc/YubiKey_NEO_PIV_introduction.adoc: give a better link for PIV
+	standards
+
+2015-03-19  Klas Lindfors <klas@yubico.com>
+
+	* README: mention version of gengetopt required
+
+2015-03-18  Klas Lindfors <klas@yubico.com>
+
+	* tool/util.c, tool/util.h, tool/yubico-piv-tool.c: refactor
+	dump_hex to drop some redundant code
+
+2015-03-18  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: make parts of argument validation cleaner
+
+2015-03-18  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: write action name instead of number
+
+2015-03-18  Klas Lindfors <klas@yubico.com>
+
+	* README: space to fix formatting
+
+2015-03-18  Klas Lindfors <klas@yubico.com>
+
+	* README: add status to README relates #17
+
+2015-03-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: break out after error
+
+2015-03-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: print out slot/cert algorithm in status relates #17
+
+2015-03-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: write CHUID in status relates #17
+
+2015-03-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: write out number of pin tries left references #17
+
+2015-03-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: verify with NULL pin now reports tries without
+	decrementing
+
+2015-03-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/cmdline.ggo, tool/yubico-piv-tool.c: add status action and
+	print certificate information relates #17
+
+2015-03-17  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: don't try to parse returned data if it was an error
+
+2015-03-17  Klas Lindfors <klas@yubico.com>
+
+	* tool/cmdline.ggo, tool/yubico-piv-tool.c: add a read-certificate
+	action
+
+2015-03-05  Simon Josefsson <simon@josefsson.org>
+
+	* README: Slight word tweak.
+
+2015-02-20  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am: add fasc.pl to the distribution
+
+2015-02-19  Klas Lindfors <klas@yubico.com>
+
+	* doc/YubiKey_NEO_PIV_introduction.adoc: add that pin has to be
+	verified for reset retry counters
+
+2015-02-04  Klas Lindfors <klas@yubico.com>
+
+	* NEWS, configure.ac: bump versions
+
 2015-02-04  Klas Lindfors <klas@yubico.com>
 
 	* NEWS: NEWS for 0.1.5
