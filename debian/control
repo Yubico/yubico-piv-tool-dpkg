@@ -14,6 +14,7 @@ Architecture: any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: pcscd
 Description: Library for communication with the YubiKey NEO PIV applet
  The Yubico PIV tool is used for interacting with the Privilege and
  Identification Card (PIV) applet on a YubiKey NEO. With it you may
