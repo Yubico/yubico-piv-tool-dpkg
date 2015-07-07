@@ -1,3 +1,11 @@
+yubico-piv-tool (1.0.0-1) unstable; urgency=low
+
+  * New upstream version.
+  * Update README.source.
+  * Add gbp.conf.
+
+ -- Simon Josefsson <simon@josefsson.org>  Tue, 07 Jul 2015 22:47:03 +0200
+
 yubico-piv-tool (0.1.6-1) unstable; urgency=low
 
   * New upstream version.
