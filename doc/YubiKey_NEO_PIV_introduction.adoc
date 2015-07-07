@@ -48,8 +48,8 @@ The PIN and PUK should be changed as well.
   puk=`dd if=/dev/random bs=1 count=6 2>/dev/null | hexdump -v -e '/1 "%u"'|cut -c1-8`
   echo $puk
 
-  yubico-piv-tool -k $key -a change-pin -P 123456 -N $pin
-  yubico-piv-tool -k $key -a change-puk -P 12345678 -N $puk
+  yubico-piv-tool -a change-pin -P 123456 -N $pin
+  yubico-piv-tool -a change-puk -P 12345678 -N $puk
 
 Other useful commands
 ---------------------
@@ -81,11 +81,13 @@ Software
 --------
 
 Card management has been tested with the tools from the OpenSC
-project, specifically piv-tool, and Yubico's yubico-piv-tool.  Basic
-features should work with any PIV compliant middleware.
+project, specifically piv-tool, and Yubico's PIV software (see
+below).  Basic features should work with any PIV compliant 
+middleware.
 
 * https://github.com/OpenSC/OpenSC/wiki
 * https://developers.yubico.com/yubico-piv-tool/
+* https://developers.yubico.com/yubikey-piv-manager/
 * https://github.com/OpenSC/OpenSC/wiki/US-PIV
 * https://github.com/OpenSC/OpenSC/wiki/PivTool
 
