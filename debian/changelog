@@ -4,6 +4,7 @@ yubico-piv-tool (1.0.0-1) unstable; urgency=low
   * Update README.source.
   * Add gbp.conf.
   * Add Alessio as uploader, and update upstream-signing-key.pgp.
+  * Update symbols.
 
  -- Simon Josefsson <simon@josefsson.org>  Tue, 07 Jul 2015 22:47:03 +0200
 
