@@ -230,8 +230,16 @@ ykpiv_rc ykpiv_transfer_data(ykpiv_state *state, const unsigned char *templ,
   const unsigned char *in_ptr = in_data;
   unsigned long max_out = *out_len;
   ykpiv_rc res;
+  long rc;
   *out_len = 0;
 
+  rc = SCardBeginTransaction(state->card);
+  if(rc != SCARD_S_SUCCESS) {
+    if(state->verbose) {
+      fprintf(stderr, "error: Failed to being pcsc transaction, rc=%08lx\n", rc);
+    }
+    return YKPIV_PCSC_ERROR;
+  }
   do {
     size_t this_size = 0xff;
     unsigned long recv_len = 0xff;
@@ -290,6 +298,13 @@ ykpiv_rc ykpiv_transfer_data(ykpiv_state *state, const unsigned char *templ,
     memcpy(out_data, data, recv_len - 2);
     out_data += recv_len - 2;
     *out_len += recv_len - 2;
+  }
+  rc = SCardEndTransaction(state->card, SCARD_LEAVE_CARD);
+  if(rc != SCARD_S_SUCCESS) {
+    if(state->verbose) {
+      fprintf(stderr, "error: Failed to end pcsc transaction, rc=%08lx\n", rc);
+    }
+    return YKPIV_PCSC_ERROR;
   }
   return YKPIV_OK;
 }
@@ -483,11 +498,10 @@ ykpiv_rc ykpiv_hex_decode(const char *hex_in, size_t in_len,
   return YKPIV_OK;
 }
 
-ykpiv_rc ykpiv_sign_data(ykpiv_state *state,
+static ykpiv_rc _general_authenticate(ykpiv_state *state,
     const unsigned char *raw_in, size_t in_len,
-    unsigned char *sign_out, size_t *out_len,
-    unsigned char algorithm, unsigned char key) {
-
+    unsigned char *out, size_t *out_len,
+    unsigned char algorithm, unsigned char key, bool decipher) {
   unsigned char indata[1024];
   unsigned char *dataptr = indata;
   unsigned char data[1024];
@@ -507,14 +521,23 @@ ykpiv_rc ykpiv_sign_data(ykpiv_state *state,
       if(pad_len == 0) {
 	pad_len = 256;
       }
-      if(in_len + RSA_PKCS1_PADDING_SIZE > pad_len) {
-	return YKPIV_SIZE_ERROR;
+      if(!decipher) {
+	if(in_len + RSA_PKCS1_PADDING_SIZE > pad_len) {
+	  return YKPIV_SIZE_ERROR;
+	}
+	RSA_padding_add_PKCS1_type_1(sign_in, pad_len, raw_in, in_len);
+	in_len = pad_len;
+      } else {
+	if(in_len != pad_len) {
+	  return YKPIV_SIZE_ERROR;
+	}
+	memcpy(sign_in, raw_in, in_len);
       }
-      RSA_padding_add_PKCS1_type_1(sign_in, pad_len, raw_in, in_len);
-      in_len = pad_len;
       break;
     case YKPIV_ALGO_ECCP256:
-      if(in_len > 32) {
+      if(!decipher && in_len > 32) {
+	return YKPIV_SIZE_ERROR;
+      } else if(decipher && in_len != 65) {
 	return YKPIV_SIZE_ERROR;
       }
       memcpy(sign_in, raw_in, in_len);
@@ -535,7 +558,7 @@ ykpiv_rc ykpiv_sign_data(ykpiv_state *state,
   dataptr += set_length(dataptr, in_len + bytes + 3);
   *dataptr++ = 0x82;
   *dataptr++ = 0x00;
-  *dataptr++ = 0x81;
+  *dataptr++ = algorithm == YKPIV_ALGO_ECCP256 && decipher ? 0x85 : 0x81;
   dataptr += set_length(dataptr, in_len);
   memcpy(dataptr, sign_in, (size_t)in_len);
   dataptr += in_len;
@@ -577,8 +600,25 @@ ykpiv_rc ykpiv_sign_data(ykpiv_state *state,
     return YKPIV_SIZE_ERROR;
   }
   *out_len = len;
-  memcpy(sign_out, dataptr, len);
+  memcpy(out, dataptr, len);
   return YKPIV_OK;
+}
+
+ykpiv_rc ykpiv_sign_data(ykpiv_state *state,
+    const unsigned char *raw_in, size_t in_len,
+    unsigned char *sign_out, size_t *out_len,
+    unsigned char algorithm, unsigned char key) {
+
+  return _general_authenticate(state, raw_in, in_len, sign_out, out_len,
+      algorithm, key, false);
+}
+
+
+ykpiv_rc ykpiv_decipher_data(ykpiv_state *state, const unsigned char *in,
+    size_t in_len, unsigned char *out, size_t *out_len,
+    unsigned char algorithm, unsigned char key) {
+  return _general_authenticate(state, in, in_len, out, out_len,
+      algorithm, key, true);
 }
 
 ykpiv_rc ykpiv_get_version(ykpiv_state *state, char *version, size_t len) {
@@ -632,24 +672,12 @@ ykpiv_rc ykpiv_verify(ykpiv_state *state, const char *pin, int *tries) {
   } else if(sw == 0x9000) {
     return YKPIV_OK;
   } else if((sw >> 8) == 0x63) {
-    if(state->verbose) {
-      if(pin) {
-	fprintf(stderr, "Pin verification failed, ");
-      }
-      fprintf(stderr, "%d tries left before pin is blocked.\n", sw & 0xff);
-    }
     *tries = (sw & 0xff);
     return YKPIV_WRONG_PIN;
   } else if(sw == 0x6983) {
-    if(state->verbose) {
-      fprintf(stderr, "Pin code blocked, use unblock-pin action to unblock.\n");
-    }
     *tries = 0;
     return YKPIV_WRONG_PIN;
   } else {
-    if(state->verbose) {
-      fprintf(stderr, "Pin code verification failed with code %x.\n", sw);
-    }
     return YKPIV_GENERIC_ERROR;
   }
 }
