@@ -1,3 +1,84 @@
+2015-07-10  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: NEWS for 1.0.1
+
+2015-07-09  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: drop unused variable found with clang scan-build
+
+2015-07-09  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: check result from get_length() found with clang scan-build
+
+2015-07-09  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: avoid copying data to NULL pointer found by clang scan-build
+
+2015-07-09  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: don't do memcpy with NULL argument found with clang scan-build
+
+2015-07-09  Klas Lindfors <klas@yubico.com>
+
+	* windows.mk: strip away unneeded stuff from the windows openssl
+	build
+
+2015-07-09  Klas Lindfors <klas@yubico.com>
+
+	* mac.mk: add openssl to mac build since the openssl bundled with mac is old and deprecated we build
+	our own instead
+
+2015-07-08  Klas Lindfors <klas@yubico.com>
+
+	* configure.ac: let the pkg-config check for openssl check for
+	libcrypto instead since we only use libcrypto
+
+2015-07-08  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.pc.in: add Requires.private on libcrypto
+
+2015-07-03  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.adoc: remove extra \
+
+2015-07-03  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am, tool/{yubico-piv-tool.h2a => yubico-piv-tool.adoc}: 
+	name include file .adoc instead
+
+2015-07-03  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.h2a: use asciidoc comments for comments in
+	asciidoc file
+
+2015-07-01  Klas Lindfors <klas@yubico.com>
+
+	* COPYING, Makefile.am, README, configure.ac, lib/Makefile.am,
+	lib/error.c, lib/internal.h, lib/tests/Makefile.am,
+	lib/tests/basic.c, lib/tests/parse_key.c, lib/version.c,
+	lib/ykpiv-version.h.in, lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map,
+	mac.mk, tool/Makefile.am, tool/cmdline.ggo, tool/tests/Makefile.am,
+	tool/tests/basic.sh, tool/tests/parse_name.c, tool/util.c,
+	tool/util.h, tool/yubico-piv-tool.c, tool/yubico-piv-tool.h2a,
+	tool/yubico-piv-tool.h2m, tools/fasc.pl, windows.mk: relicense to
+	2-clause BSD license
+
+2015-07-01  Klas Lindfors <klas@yubico.com>
+
+	* Makefile.am, configure.ac: add help2adoc processing on release
+
+2015-07-01  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.h2a: add include file for help2adoc
+
+2015-06-23  Klas Lindfors <klas@yubico.com>
+
+	* windows.mk: bump openssl version for windows build
+
+2015-06-23  Klas Lindfors <klas@yubico.com>
+
+	* NEWS, configure.ac: bump versions
+
 2015-06-23  Klas Lindfors <klas@yubico.com>
 
 	* NEWS: NEWS for 1.0.0
