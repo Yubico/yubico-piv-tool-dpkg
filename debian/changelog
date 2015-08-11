@@ -1,3 +1,10 @@
+yubico-piv-tool (1.0.1-1) unstable; urgency=low
+
+  * New upstream version.
+    - Update debian/copyright to match GPL->BSD relicense.
+
+ -- Simon Josefsson <simon@josefsson.org>  Tue, 11 Aug 2015 14:02:39 +0200
+
 yubico-piv-tool (1.0.0-1) unstable; urgency=low
 
   * New upstream version.
