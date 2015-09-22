@@ -1,3 +1,29 @@
+2015-09-04  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: NEWS for 1.0.2
+
+2015-08-24  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: authentication failed is supposed to be 0x63cX not
+	0x630X so mask everything but the low 4 bits for remaining tries
+
+2015-08-20  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: continue looping over the readers if one fails during
+	setup also continues if a reader fails when selecting (no applet)
+
+2015-08-13  Klas Lindfors <klali@avm.se>
+
+	* : Merge pull request #26 from syzzer/query-for-pin Query for PIN/PUK/mgmt-key if not supplied on command line
+
+2015-08-10  Klas Lindfors <klas@yubico.com>
+
+	* BLURB: drop BLURB (not used)
+
+2015-07-10  Klas Lindfors <klas@yubico.com>
+
+	* NEWS, configure.ac: bump versions
+
 2015-07-10  Klas Lindfors <klas@yubico.com>
 
 	* NEWS: NEWS for 1.0.1
