@@ -26,7 +26,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-AC_INIT([yubico-piv-tool], [1.0.2])
+AC_INIT([yubico-piv-tool], [1.0.3])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -35,7 +35,7 @@ AC_CONFIG_MACRO_DIR([m4])
 # Interfaces added:                             AGE++
 # Interfaces removed:                           AGE=0
 AC_SUBST([LT_CURRENT], 1)
-AC_SUBST([LT_REVISION], 7)
+AC_SUBST([LT_REVISION], 8)
 AC_SUBST([LT_AGE], 0)
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
@@ -79,13 +79,16 @@ fi
 
 if test "x$with_backend" = xcheck; then
   AC_CHECK_HEADERS([PCSC/winscard.h])
+  AC_CHECK_HEADERS([winscard.h])
   AC_MSG_CHECKING([between Mac/Windows winscard])
   if test "x$ac_cv_header_PCSC_winscard_h" = xyes; then
     with_backend=macscard
     AC_MSG_RESULT([Mac])
-  else
+  elif test "x$ac_cv_header_winscard_h" = xyes; then
     with_backend=winscard
     AC_MSG_RESULT([Windows])
+  else
+    AC_MSG_RESULT([no])
   fi
 fi
 
@@ -120,7 +123,7 @@ if test "x$with_backend" = xpcsc || test "x$with_backend" = xwinscard \
   || test "x$with_backend" = xmacscard; then
   AC_DEFINE([BACKEND_PCSC], 1, [Define to 1 if you the PCSC backend.])
 else
-  AC_MSG_ERROR([cannot find PCSC/winscard library/headers])
+  AC_MSG_ERROR([cannot find PCSC library])
 fi
 
 AC_ARG_ENABLE([coverage],

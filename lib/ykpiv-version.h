@@ -43,7 +43,7 @@ extern "C"
 	 * version number.  Used together with ykneomgr_check_version() to verify
 	 * header file and run-time library consistency.
 	 */
-#define YKPIV_VERSION_STRING "1.0.2"
+#define YKPIV_VERSION_STRING "1.0.3"
 
 	/**
 	 * YKPIV_VERSION_NUMBER

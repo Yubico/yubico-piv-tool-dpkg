@@ -978,7 +978,7 @@ static bool change_pin(ykpiv_state *state, enum enum_action action, const char *
   char pinbuf[9] = {0};
   char new_pinbuf[9] = {0};
   const char *name = action == action_arg_changeMINUS_pin ? "pin" : "puk";
-  const char *new_name = action == action_arg_changeMINUS_pin ? "new pin" : "new puk";
+  const char *new_name = action == action_arg_changeMINUS_puk ? "new puk" : "new pin";
   int sw;
   size_t pin_len;
   size_t new_len;
@@ -1021,7 +1021,7 @@ static bool change_pin(ykpiv_state *state, enum enum_action action, const char *
     return false;
   } else if(sw != 0x9000) {
     if((sw >> 8) == 0x63) {
-      int tries = sw & 0xff;
+      int tries = sw & 0xf;
       fprintf(stderr, "Failed verifying %s code, now %d tries left before blocked.\n",
           name, tries);
     } else if(sw == 0x6983) {
