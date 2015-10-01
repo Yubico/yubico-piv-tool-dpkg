@@ -1,3 +1,32 @@
+2015-10-01  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: NEWS for 1.0.3
+
+2015-09-28  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: use 261 byte buffer for receive
+
+2015-09-24  Alessio Di Mauro <alessio@yubico.com>
+
+	* tool/yubico-piv-tool.c: Mask more one pin change.
+
+2015-09-16  Klas Lindfors <klas@yubico.com>
+
+	* configure.ac: Output a no if nothing is found on windows/mac check
+
+2015-09-16  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: unblock-pin shouldn't tell you new puk
+
+2015-09-16  Klas Lindfors <klas@yubico.com>
+
+	* configure.ac: don't auto-select windows backend on else less confusing to fall through, also better message for no pcsc
+	library found
+
+2015-09-04  Klas Lindfors <klas@yubico.com>
+
+	* NEWS, configure.ac: bump versions
+
 2015-09-04  Klas Lindfors <klas@yubico.com>
 
 	* NEWS: NEWS for 1.0.2
