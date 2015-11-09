@@ -15,6 +15,8 @@ Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: pcscd
+Replaces: libykpiv0
+Conflicts: libykpiv0
 Description: Library for communication with the YubiKey PIV
  application. The Yubico PIV tool is used for interacting with the
  Personal Identity Verification Card (PIV) application on a YubiKey.
