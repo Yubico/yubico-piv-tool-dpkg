@@ -6,7 +6,10 @@
 override_dh_install:
 	chrpath -d $(CURDIR)/debian/tmp/usr/bin/*
 	chrpath -d $(CURDIR)/debian/tmp/usr/lib/*/libykpiv.so.*
+	chrpath -d $(CURDIR)/debian/tmp/usr/lib/*/libykcs11.so.*
 	find debian/tmp -name \*.la -delete
+	find debian/tmp -name libykcs11.a -delete
+	find debian/tmp -name ykcs11-version.h -delete
 	dh_install --fail-missing
 
 override_dh_auto_configure:
