@@ -1,3 +1,9 @@
+yubico-piv-tool (1.1.0-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Alessio Di Mauro <alessio@yubico.com>  Mon, 09 Nov 2015 09:30:26 +0100
+
 yubico-piv-tool (1.0.3-1) unstable; urgency=low
 
   * New upstream version.
