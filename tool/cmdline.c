@@ -34,30 +34,32 @@ const char *gengetopt_args_info_versiontext = "";
 const char *gengetopt_args_info_description = "";
 
 const char *gengetopt_args_info_full_help[] = {
-  "  -h, --help             Print help and exit",
-  "      --full-help        Print help, including hidden options, and exit",
-  "  -V, --version          Print version and exit",
-  "  -v, --verbose[=INT]    Print more information  (default=`0')",
-  "  -r, --reader=STRING    Only use a matching reader  (default=`Yubikey')",
-  "  -k, --key=STRING       Authentication key to use\n                           (default=`010203040506070801020304050607080102030405060708')",
-  "  -a, --action=ENUM      Action to take  (possible values=\"version\",\n                           \"generate\", \"set-mgm-key\", \"reset\",\n                           \"pin-retries\", \"import-key\",\n                           \"import-certificate\", \"set-chuid\",\n                           \"request-certificate\", \"verify-pin\",\n                           \"change-pin\", \"change-puk\", \"unblock-pin\",\n                           \"selfsign-certificate\", \"delete-certificate\",\n                           \"read-certificate\", \"status\",\n                           \"test-signature\", \"test-decipher\")",
+  "  -h, --help               Print help and exit",
+  "      --full-help          Print help, including hidden options, and exit",
+  "  -V, --version            Print version and exit",
+  "  -v, --verbose[=INT]      Print more information  (default=`0')",
+  "  -r, --reader=STRING      Only use a matching reader  (default=`Yubikey')",
+  "  -k, --key[=STRING]       Authentication key to use\n                             (default=`010203040506070801020304050607080102030405060708')",
+  "  -a, --action=ENUM        Action to take  (possible values=\"version\",\n                             \"generate\", \"set-mgm-key\", \"reset\",\n                             \"pin-retries\", \"import-key\",\n                             \"import-certificate\", \"set-chuid\",\n                             \"request-certificate\", \"verify-pin\",\n                             \"change-pin\", \"change-puk\", \"unblock-pin\",\n                             \"selfsign-certificate\", \"delete-certificate\",\n                             \"read-certificate\", \"status\",\n                             \"test-signature\", \"test-decipher\",\n                             \"list-readers\")",
   "\n       Multiple actions may be given at once and will be executed in order\n       for example --action=verify-pin --action=request-certificate\n",
-  "  -s, --slot=ENUM        What key slot to operate on  (possible values=\"9a\",\n                           \"9c\", \"9d\", \"9e\")",
-  "\n       9a is for PIV Authentication\n       9c is for Digital Signature (PIN always checked)\n       9d is for Key Management\n       9e is for Card Authentication (PIN never checked)\n",
-  "  -A, --algorithm=ENUM   What algorithm to use  (possible values=\"RSA1024\",\n                           \"RSA2048\", \"ECCP256\" default=`RSA2048')",
-  "  -H, --hash=ENUM        Hash to use for signatures  (possible values=\"SHA1\",\n                           \"SHA256\", \"SHA512\" default=`SHA256')",
-  "  -n, --new-key=STRING   New authentication key to use",
-  "      --pin-retries=INT  Number of retries before the pin code is blocked",
-  "      --puk-retries=INT  Number of retries before the puk code is blocked",
-  "  -i, --input=STRING     Filename to use as input, - for stdin  (default=`-')",
-  "  -o, --output=STRING    Filename to use as output, - for stdout  (default=`-')",
-  "  -K, --key-format=ENUM  Format of the key being read/written  (possible\n                           values=\"PEM\", \"PKCS12\", \"GZIP\", \"DER\"\n                           default=`PEM')",
-  "  -p, --password=STRING  Password for decryption of private key file",
-  "  -S, --subject=STRING   The subject to use for certificate request",
+  "  -s, --slot=ENUM          What key slot to operate on  (possible\n                             values=\"9a\", \"9c\", \"9d\", \"9e\", \"82\",\n                             \"83\", \"84\", \"85\", \"86\", \"87\", \"88\",\n                             \"89\", \"8a\", \"8b\", \"8c\", \"8d\", \"8e\",\n                             \"8f\", \"90\", \"91\", \"92\", \"93\", \"94\",\n                             \"95\")",
+  "\n       9a is for PIV Authentication\n       9c is for Digital Signature (PIN always checked)\n       9d is for Key Management\n       9e is for Card Authentication (PIN never checked)\n       82-95 is for Retired Key Management\n",
+  "  -A, --algorithm=ENUM     What algorithm to use  (possible values=\"RSA1024\",\n                             \"RSA2048\", \"ECCP256\", \"ECCP384\"\n                             default=`RSA2048')",
+  "  -H, --hash=ENUM          Hash to use for signatures  (possible\n                             values=\"SHA1\", \"SHA256\", \"SHA384\",\n                             \"SHA512\" default=`SHA256')",
+  "  -n, --new-key=STRING     New authentication key to use",
+  "      --pin-retries=INT    Number of retries before the pin code is blocked",
+  "      --puk-retries=INT    Number of retries before the puk code is blocked",
+  "  -i, --input=STRING       Filename to use as input, - for stdin  (default=`-')",
+  "  -o, --output=STRING      Filename to use as output, - for stdout\n                             (default=`-')",
+  "  -K, --key-format=ENUM    Format of the key being read/written  (possible\n                             values=\"PEM\", \"PKCS12\", \"GZIP\", \"DER\"\n                             default=`PEM')",
+  "  -p, --password=STRING    Password for decryption of private key file",
+  "  -S, --subject=STRING     The subject to use for certificate request",
   "\n       The subject must be written as:\n       /CN=host.example.com/OU=test/O=example.com/\n",
-  "  -P, --pin=STRING       Pin/puk code for verification",
-  "  -N, --new-pin=STRING   New pin/puk code for changing",
-  "      --sign             Sign data  (default=off)",
+  "  -P, --pin=STRING         Pin/puk code for verification",
+  "  -N, --new-pin=STRING     New pin/puk code for changing",
+  "      --pin-policy=ENUM    Set pin policy for action generate or import-key\n                             (possible values=\"never\", \"once\", \"always\")",
+  "      --touch-policy=ENUM  Set touch policy for action generate, import-key or\n                             set-mgm-key  (possible values=\"never\",\n                             \"always\")",
+  "      --sign               Sign data  (default=off)",
     0
 };
 
@@ -87,11 +89,13 @@ init_help_array(void)
   gengetopt_args_info_help[20] = gengetopt_args_info_full_help[20];
   gengetopt_args_info_help[21] = gengetopt_args_info_full_help[21];
   gengetopt_args_info_help[22] = gengetopt_args_info_full_help[22];
-  gengetopt_args_info_help[23] = 0; 
+  gengetopt_args_info_help[23] = gengetopt_args_info_full_help[23];
+  gengetopt_args_info_help[24] = gengetopt_args_info_full_help[24];
+  gengetopt_args_info_help[25] = 0; 
   
 }
 
-const char *gengetopt_args_info_help[24];
+const char *gengetopt_args_info_help[26];
 
 typedef enum {ARG_NO
   , ARG_FLAG
@@ -112,11 +116,13 @@ cmdline_parser_internal (int argc, char **argv, struct gengetopt_args_info *args
 static int
 cmdline_parser_required2 (struct gengetopt_args_info *args_info, const char *prog_name, const char *additional_error);
 
-const char *cmdline_parser_action_values[] = {"version", "generate", "set-mgm-key", "reset", "pin-retries", "import-key", "import-certificate", "set-chuid", "request-certificate", "verify-pin", "change-pin", "change-puk", "unblock-pin", "selfsign-certificate", "delete-certificate", "read-certificate", "status", "test-signature", "test-decipher", 0}; /*< Possible values for action. */
-const char *cmdline_parser_slot_values[] = {"9a", "9c", "9d", "9e", 0}; /*< Possible values for slot. */
-const char *cmdline_parser_algorithm_values[] = {"RSA1024", "RSA2048", "ECCP256", 0}; /*< Possible values for algorithm. */
-const char *cmdline_parser_hash_values[] = {"SHA1", "SHA256", "SHA512", 0}; /*< Possible values for hash. */
+const char *cmdline_parser_action_values[] = {"version", "generate", "set-mgm-key", "reset", "pin-retries", "import-key", "import-certificate", "set-chuid", "request-certificate", "verify-pin", "change-pin", "change-puk", "unblock-pin", "selfsign-certificate", "delete-certificate", "read-certificate", "status", "test-signature", "test-decipher", "list-readers", 0}; /*< Possible values for action. */
+const char *cmdline_parser_slot_values[] = {"9a", "9c", "9d", "9e", "82", "83", "84", "85", "86", "87", "88", "89", "8a", "8b", "8c", "8d", "8e", "8f", "90", "91", "92", "93", "94", "95", 0}; /*< Possible values for slot. */
+const char *cmdline_parser_algorithm_values[] = {"RSA1024", "RSA2048", "ECCP256", "ECCP384", 0}; /*< Possible values for algorithm. */
+const char *cmdline_parser_hash_values[] = {"SHA1", "SHA256", "SHA384", "SHA512", 0}; /*< Possible values for hash. */
 const char *cmdline_parser_key_format_values[] = {"PEM", "PKCS12", "GZIP", "DER", 0}; /*< Possible values for key-format. */
+const char *cmdline_parser_pin_policy_values[] = {"never", "once", "always", 0}; /*< Possible values for pin-policy. */
+const char *cmdline_parser_touch_policy_values[] = {"never", "always", 0}; /*< Possible values for touch-policy. */
 
 static char *
 gengetopt_strdup (const char *s);
@@ -144,6 +150,8 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->subject_given = 0 ;
   args_info->pin_given = 0 ;
   args_info->new_pin_given = 0 ;
+  args_info->pin_policy_given = 0 ;
+  args_info->touch_policy_given = 0 ;
   args_info->sign_given = 0 ;
 }
 
@@ -183,6 +191,10 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->pin_orig = NULL;
   args_info->new_pin_arg = NULL;
   args_info->new_pin_orig = NULL;
+  args_info->pin_policy_arg = pin_policy__NULL;
+  args_info->pin_policy_orig = NULL;
+  args_info->touch_policy_arg = touch_policy__NULL;
+  args_info->touch_policy_orig = NULL;
   args_info->sign_flag = 0;
   
 }
@@ -214,7 +226,9 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->subject_help = gengetopt_args_info_full_help[19] ;
   args_info->pin_help = gengetopt_args_info_full_help[21] ;
   args_info->new_pin_help = gengetopt_args_info_full_help[22] ;
-  args_info->sign_help = gengetopt_args_info_full_help[23] ;
+  args_info->pin_policy_help = gengetopt_args_info_full_help[23] ;
+  args_info->touch_policy_help = gengetopt_args_info_full_help[24] ;
+  args_info->sign_help = gengetopt_args_info_full_help[25] ;
   
 }
 
@@ -379,6 +393,8 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->pin_orig));
   free_string_field (&(args_info->new_pin_arg));
   free_string_field (&(args_info->new_pin_orig));
+  free_string_field (&(args_info->pin_policy_orig));
+  free_string_field (&(args_info->touch_policy_orig));
   
   
 
@@ -497,6 +513,10 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "pin", args_info->pin_orig, 0);
   if (args_info->new_pin_given)
     write_into_file(outfile, "new-pin", args_info->new_pin_orig, 0);
+  if (args_info->pin_policy_given)
+    write_into_file(outfile, "pin-policy", args_info->pin_policy_orig, cmdline_parser_pin_policy_values);
+  if (args_info->touch_policy_given)
+    write_into_file(outfile, "touch-policy", args_info->touch_policy_orig, cmdline_parser_touch_policy_values);
   if (args_info->sign_given)
     write_into_file(outfile, "sign", 0, 0 );
   
@@ -1089,7 +1109,7 @@ cmdline_parser_internal (
         { "version",	0, NULL, 'V' },
         { "verbose",	2, NULL, 'v' },
         { "reader",	1, NULL, 'r' },
-        { "key",	1, NULL, 'k' },
+        { "key",	2, NULL, 'k' },
         { "action",	1, NULL, 'a' },
         { "slot",	1, NULL, 's' },
         { "algorithm",	1, NULL, 'A' },
@@ -1104,11 +1124,13 @@ cmdline_parser_internal (
         { "subject",	1, NULL, 'S' },
         { "pin",	1, NULL, 'P' },
         { "new-pin",	1, NULL, 'N' },
+        { "pin-policy",	1, NULL, 0 },
+        { "touch-policy",	1, NULL, 0 },
         { "sign",	0, NULL, 0 },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVv::r:k:a:s:A:H:n:i:o:K:p:S:P:N:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVv::r:k::a:s:A:H:n:i:o:K:p:S:P:N:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -1333,6 +1355,34 @@ cmdline_parser_internal (
                 &(local_args_info.puk_retries_given), optarg, 0, 0, ARG_INT,
                 check_ambiguity, override, 0, 0,
                 "puk-retries", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Set pin policy for action generate or import-key.  */
+          else if (strcmp (long_options[option_index].name, "pin-policy") == 0)
+          {
+          
+          
+            if (update_arg( (void *)&(args_info->pin_policy_arg), 
+                 &(args_info->pin_policy_orig), &(args_info->pin_policy_given),
+                &(local_args_info.pin_policy_given), optarg, cmdline_parser_pin_policy_values, 0, ARG_ENUM,
+                check_ambiguity, override, 0, 0,
+                "pin-policy", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Set touch policy for action generate, import-key or set-mgm-key.  */
+          else if (strcmp (long_options[option_index].name, "touch-policy") == 0)
+          {
+          
+          
+            if (update_arg( (void *)&(args_info->touch_policy_arg), 
+                 &(args_info->touch_policy_orig), &(args_info->touch_policy_given),
+                &(local_args_info.touch_policy_given), optarg, cmdline_parser_touch_policy_values, 0, ARG_ENUM,
+                check_ambiguity, override, 0, 0,
+                "touch-policy", '-',
                 additional_error))
               goto failure;
           

@@ -26,7 +26,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-AC_INIT([yubico-piv-tool], [1.0.3])
+AC_INIT([yubico-piv-tool], [1.1.0])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -34,9 +34,9 @@ AC_CONFIG_MACRO_DIR([m4])
 # Interfaces changed/added/removed:   CURRENT++       REVISION=0
 # Interfaces added:                             AGE++
 # Interfaces removed:                           AGE=0
-AC_SUBST([LT_CURRENT], 1)
-AC_SUBST([LT_REVISION], 8)
-AC_SUBST([LT_AGE], 0)
+AC_SUBST([LT_CURRENT], 2)
+AC_SUBST([LT_REVISION], 0)
+AC_SUBST([LT_AGE], 1)
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AM_SILENT_RULES([yes])
@@ -51,6 +51,8 @@ AM_MISSING_PROG(GENGETOPT, gengetopt, $missing_dir)
 PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES(OPENSSL, libcrypto)
+
+#PKG_CHECK_MODULES([LIBNSPR], [nspr], [], [])
 
 gl_LD_VERSION_SCRIPT
 gl_VALGRIND_TESTS
@@ -180,6 +182,29 @@ if test "$gl_gcc_warnings" = yes; then
   gl_WARN_ADD([-fdiagnostics-show-option])
 fi
 
+AC_ARG_ENABLE([ykcs11-debug],
+              [AS_HELP_STRING([--enable-ykcs11-debug],
+                              [enables YKCS11 debug messages])],
+                              [enable_ykcs11_debug="$enableval"],
+                              [enable_ykcs11_debug="no"])
+
+AS_IF([test "x$enable_ykcs11_debug" != xno],
+            [AC_DEFINE([YKCS11_DBG], [1], [Regular debug flag])
+             AC_DEFINE([YKCS11_DINOUT], [1], [Function accessed/left debug flag])],
+      [true],
+            [AC_DEFINE([YKCS11_DBG], [0], [Regular debug flag])
+            AC_DEFINE([YKCS11_DINOUT], [0], [Function accessed/left debug flag])])
+
+AC_SUBST(YKPIV_VERSION_MAJOR, `echo $PACKAGE_VERSION | sed 's/\(.*\)\..*\..*/\1/g'`)
+AC_SUBST(YKPIV_VERSION_MINOR, `echo $PACKAGE_VERSION | sed 's/.*\.\(.*\)\..*/\1/g'`)
+AC_SUBST(YKPIV_VERSION_PATCH, `echo $PACKAGE_VERSION | sed 's/.*\..*\.\(.*\)/\1/g'`)
+AC_SUBST(YKPIV_VERSION_NUMBER, `printf "0x%02x%02x%02x" $YKPIV_VERSION_MAJOR $YKPIV_VERSION_MINOR $YKPIV_VERSION_PATCH`)
+
+AC_SUBST(YKCS11_VERSION_MAJOR, `echo $PACKAGE_VERSION | sed 's/\(.*\)\..*\..*/\1/g'`)
+AC_SUBST(YKCS11_VERSION_MINOR, `echo $PACKAGE_VERSION | sed 's/.*\.\(.*\)\..*/\1/g'`)
+AC_SUBST(YKCS11_VERSION_PATCH, `echo $PACKAGE_VERSION | sed 's/.*\..*\.\(.*\)/\1/g'`)
+AC_SUBST(YKCS11_VERSION_NUMBER, `printf "0x%02x%02x%02x" $YKCS11_VERSION_MAJOR $YKCS11_VERSION_MINOR $YKCS11_VERSION_PATCH`)
+
 AC_CONFIG_FILES([
   Makefile
   lib/Makefile
@@ -188,6 +213,9 @@ AC_CONFIG_FILES([
   tool/tests/Makefile
   lib/ykpiv-version.h
   lib/ykpiv.pc
+  ykcs11/Makefile
+  ykcs11/ykcs11-version.h
+  ykcs11/ykcs11.pc
 ])
 AC_OUTPUT
 
@@ -208,4 +236,5 @@ AC_MSG_NOTICE([summary of build options:
             LIBS:   ${PCSC_WIN_LIBS}
   Mac PCSC
             LIBS:   ${PCSC_MACOSX_LIBS}
+
 ])

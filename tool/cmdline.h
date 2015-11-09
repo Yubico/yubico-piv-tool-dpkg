@@ -38,11 +38,13 @@ extern "C" {
 #define CMDLINE_PARSER_VERSION VERSION
 #endif
 
-enum enum_action { action__NULL = -1, action_arg_version = 0, action_arg_generate, action_arg_setMINUS_mgmMINUS_key, action_arg_reset, action_arg_pinMINUS_retries, action_arg_importMINUS_key, action_arg_importMINUS_certificate, action_arg_setMINUS_chuid, action_arg_requestMINUS_certificate, action_arg_verifyMINUS_pin, action_arg_changeMINUS_pin, action_arg_changeMINUS_puk, action_arg_unblockMINUS_pin, action_arg_selfsignMINUS_certificate, action_arg_deleteMINUS_certificate, action_arg_readMINUS_certificate, action_arg_status, action_arg_testMINUS_signature, action_arg_testMINUS_decipher };
-enum enum_slot { slot__NULL = -1, slot_arg_9a = 0, slot_arg_9c, slot_arg_9d, slot_arg_9e };
-enum enum_algorithm { algorithm__NULL = -1, algorithm_arg_RSA1024 = 0, algorithm_arg_RSA2048, algorithm_arg_ECCP256 };
-enum enum_hash { hash__NULL = -1, hash_arg_SHA1 = 0, hash_arg_SHA256, hash_arg_SHA512 };
+enum enum_action { action__NULL = -1, action_arg_version = 0, action_arg_generate, action_arg_setMINUS_mgmMINUS_key, action_arg_reset, action_arg_pinMINUS_retries, action_arg_importMINUS_key, action_arg_importMINUS_certificate, action_arg_setMINUS_chuid, action_arg_requestMINUS_certificate, action_arg_verifyMINUS_pin, action_arg_changeMINUS_pin, action_arg_changeMINUS_puk, action_arg_unblockMINUS_pin, action_arg_selfsignMINUS_certificate, action_arg_deleteMINUS_certificate, action_arg_readMINUS_certificate, action_arg_status, action_arg_testMINUS_signature, action_arg_testMINUS_decipher, action_arg_listMINUS_readers };
+enum enum_slot { slot__NULL = -1, slot_arg_9a = 0, slot_arg_9c, slot_arg_9d, slot_arg_9e, slot_arg_82, slot_arg_83, slot_arg_84, slot_arg_85, slot_arg_86, slot_arg_87, slot_arg_88, slot_arg_89, slot_arg_8a, slot_arg_8b, slot_arg_8c, slot_arg_8d, slot_arg_8e, slot_arg_8f, slot_arg_90, slot_arg_91, slot_arg_92, slot_arg_93, slot_arg_94, slot_arg_95 };
+enum enum_algorithm { algorithm__NULL = -1, algorithm_arg_RSA1024 = 0, algorithm_arg_RSA2048, algorithm_arg_ECCP256, algorithm_arg_ECCP384 };
+enum enum_hash { hash__NULL = -1, hash_arg_SHA1 = 0, hash_arg_SHA256, hash_arg_SHA384, hash_arg_SHA512 };
 enum enum_key_format { key_format__NULL = -1, key_format_arg_PEM = 0, key_format_arg_PKCS12, key_format_arg_GZIP, key_format_arg_DER };
+enum enum_pin_policy { pin_policy__NULL = -1, pin_policy_arg_never = 0, pin_policy_arg_once, pin_policy_arg_always };
+enum enum_touch_policy { touch_policy__NULL = -1, touch_policy_arg_never = 0, touch_policy_arg_always };
 
 /** @brief Where the command line options are stored */
 struct gengetopt_args_info
@@ -103,6 +105,12 @@ struct gengetopt_args_info
   char * new_pin_arg;	/**< @brief New pin/puk code for changing.  */
   char * new_pin_orig;	/**< @brief New pin/puk code for changing original value given at command line.  */
   const char *new_pin_help; /**< @brief New pin/puk code for changing help description.  */
+  enum enum_pin_policy pin_policy_arg;	/**< @brief Set pin policy for action generate or import-key.  */
+  char * pin_policy_orig;	/**< @brief Set pin policy for action generate or import-key original value given at command line.  */
+  const char *pin_policy_help; /**< @brief Set pin policy for action generate or import-key help description.  */
+  enum enum_touch_policy touch_policy_arg;	/**< @brief Set touch policy for action generate, import-key or set-mgm-key.  */
+  char * touch_policy_orig;	/**< @brief Set touch policy for action generate, import-key or set-mgm-key original value given at command line.  */
+  const char *touch_policy_help; /**< @brief Set touch policy for action generate, import-key or set-mgm-key help description.  */
   int sign_flag;	/**< @brief Sign data (default=off).  */
   const char *sign_help; /**< @brief Sign data help description.  */
   
@@ -126,6 +134,8 @@ struct gengetopt_args_info
   unsigned int subject_given ;	/**< @brief Whether subject was given.  */
   unsigned int pin_given ;	/**< @brief Whether pin was given.  */
   unsigned int new_pin_given ;	/**< @brief Whether new-pin was given.  */
+  unsigned int pin_policy_given ;	/**< @brief Whether pin-policy was given.  */
+  unsigned int touch_policy_given ;	/**< @brief Whether touch-policy was given.  */
   unsigned int sign_given ;	/**< @brief Whether sign was given.  */
 
 } ;
@@ -262,6 +272,8 @@ extern const char *cmdline_parser_slot_values[];  /**< @brief Possible values fo
 extern const char *cmdline_parser_algorithm_values[];  /**< @brief Possible values for algorithm. */
 extern const char *cmdline_parser_hash_values[];  /**< @brief Possible values for hash. */
 extern const char *cmdline_parser_key_format_values[];  /**< @brief Possible values for key-format. */
+extern const char *cmdline_parser_pin_policy_values[];  /**< @brief Possible values for pin-policy. */
+extern const char *cmdline_parser_touch_policy_values[];  /**< @brief Possible values for touch-policy. */
 
 
 #ifdef __cplusplus
