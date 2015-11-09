@@ -15,12 +15,12 @@ Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: pcscd
-Description: Library for communication with the YubiKey NEO PIV applet
- The Yubico PIV tool is used for interacting with the Privilege and
- Identification Card (PIV) applet on a YubiKey NEO. With it you may
- generate keys on the device, importing keys and certificates, and
- create certificate requests, and other operations.  A shared library
- and a command-line tool is included.
+Description: Library for communication with the YubiKey PIV
+ application. The Yubico PIV tool is used for interacting with the
+ Personal Identity Verification Card (PIV) application on a YubiKey.
+ With it you may generate keys on the device, import keys and
+ certificates, create certificate requests, and other operations. A
+ shared library, a PKCS#11 module a command-line tool are included.
  .
  This package contains the run-time shared library.  You normally don't
  need to install it manually.
@@ -29,23 +29,39 @@ Package: libykpiv-dev
 Architecture: any
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}, libykpiv1 (= ${binary:Version})
-Description: Development files for the YubiKey NEO PIV applet library
- The Yubico PIV tool is used for interacting with the Privilege and
- Identification Card (PIV) applet on a YubiKey NEO. With it you may
- generate keys on the device, importing keys and certificates, and
- create certificate requests, and other operations.  A shared library
- and a command-line tool is included.
+Description: Library for communication with the YubiKey PIV
+ application. The Yubico PIV tool is used for interacting with the
+ Personal Identity Verification Card (PIV) application on a YubiKey.
+ With it you may generate keys on the device, import keys and
+ certificates, create certificate requests, and other operations. A
+ shared library, a PKCS#11 module and a command-line tool are
+ included.
  .
  This package contains the development files for the library.
+
+Package: libykcs11-1
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends}, libykpiv1 (= ${binary:Version})
+Description: PKCS#11 module for communication with the YubiKey PIV
+ application. The Yubico PIV tool is used for interacting with the
+ Personal Identity Verification Card (PIV) application on a YubiKey.
+ With it you may generate keys on the device, import keys and
+ certificates, create certificate requests, and other operations. A
+ shared library, a PKCS#11 module and a command-line tool are
+ included.
+ .
+ This package contains the PKCS#11 module. You normally don't need to
+ install it manually.
 
 Package: yubico-piv-tool
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Command line tool for the YubiKey NEO PIV applet
- The Yubico PIV tool is used for interacting with the Privilege and
- Identification Card (PIV) applet on a YubiKey NEO. With it you may
- generate keys on the device, importing keys and certificates, and
- create certificate requests, and other operations.  A shared library
- and a command-line tool is included.
+Description: Command line tool for the YubiKey PIV application. The
+ Yubico PIV tool is used for interacting with the Personal Identity
+ Verification Card (PIV) application on a YubiKey. With it you may
+ generate keys on the device, import keys and certificates, create
+ certificate requests, and other operations. A shared library, a
+ PKCS#11 module and command-line tool are included.
  .
  This package contains the command-line tool.
