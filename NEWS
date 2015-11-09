@@ -1,5 +1,11 @@
 yubico-piv-tool NEWS -- History of user-visible changes.        -*- outline -*-
 
+* Version 1.1.0 (released 2015-11-06)
+
+** Support for YubiKey 4 stuff.
+
+** Add ykcs11.
+
 * Version 1.0.3 (released 2015-10-01)
 
 ** Correct wording on unblock-pin action.

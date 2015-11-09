@@ -1,3 +1,209 @@
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* Makefile.am: Apparently order matters.
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* Makefile.am: Add ykcs11 release notes to automake.
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* : commit 94f8d57af94a3bba3c04f37ef0bd0b1e662e3c32 Author: Alessio
+	Di Mauro <alessio@yubico.com> Date:   Fri Nov 6 16:10:35 2015 +0100
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: YKCS11: print out signature related data only if
+	debug is enabled.
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* doc/YKCS11_release_notes.adoc: YKCS11: update docs.
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* configure.ac, ykcs11/debug.h: YKCS11: turn off debug by default
+	and make it a configure option (--enable-ykcs11-debug).
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* : commit a8825c99f32860120af9e2d8a6f8100e8fefb974 Author: Alessio
+	Di Mauro <alessio@yubico.com> Date:   Fri Nov 6 13:58:46 2015 +0100
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* Makefile.am, README, doc/Certificate_Authority.adoc,
+	doc/Certificate_Authority_with_NEO.adoc,
+	doc/OS_X_code_signing.adoc, doc/SSH_with_PIV_and_PKCS11.adoc,
+	doc/Windows_certificate.adoc,
+	doc/YubiKey_NEO_PIV_introduction.adoc,
+	doc/YubiKey_PIV_introduction.adoc, tool/yubico-piv-tool.adoc,
+	tool/yubico-piv-tool.h2m: Replace YubiKey NEO with YubiKey.
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* README, doc/Certificate_Authority_with_NEO.adoc,
+	doc/OS_X_code_signing.adoc, doc/SSH_with_PIV_and_PKCS11.adoc,
+	doc/Windows_certificate.adoc,
+	doc/YubiKey_NEO_PIV_introduction.adoc, lib/error.c, lib/ykpiv.c,
+	tool/yubico-piv-tool.adoc, tool/yubico-piv-tool.c,
+	tool/yubico-piv-tool.h2m: Change applet to application.
+
+2015-11-06  Klas Lindfors <klali@avm.se>
+
+	* : Merge pull request #34 from chevah/doc-ssh-pkey-export Update Neo SSH integration guide.
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: YKCS11: expose module version.
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* configure.ac: fixup ykcs11-version.h with the correct symbols.
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/openssl_utils.c, ykcs11/ykcs11.c, ykcs11/yubico_token.c: 
+	YKCS11: remove some warnings.
+
+2015-11-06  Klas Lindfors <klas@yubico.com>
+
+	* build-and-test.sh: for travis: set -e later and hope for the
+	best..
+
+2015-11-06  Klas Lindfors <klas@yubico.com>
+
+	* : commit 3b4947ed9e57e4da504a0390e5e2d4d392bed91e Author: Klas
+	Lindfors <klas@yubico.com> Date:   Fri Nov 6 10:42:48 2015 +0100
+
+2015-11-06  Adi Roiban <adi.roiban@chevah.com>
+
+	* doc/SSH_with_PIV_and_PKCS11.adoc: Update docs.
+
+2015-11-05  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/obj_types.h, ykcs11/objects.c: Constify.  Whitespace.
+
+2015-11-05  Alessio Di Mauro <alessio@yubico.com>
+
+	* m4/manywarnings.m4: Drop Wmudflap
+
+2015-11-05  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c: YKCS11: add check on buffer length.
+
+2015-11-05  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c: YKCS11: initialize more.
+
+2015-11-05  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/debug.h: YKCS11: makde DBG variadic in every case.
+
+2015-11-05  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c: YKCS11: remove more messsages
+
+2015-11-05  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/debug.h, ykcs11/mechanisms.c, ykcs11/objects.c,
+	ykcs11/openssl_utils.c, ykcs11/token_vendors.c, ykcs11/ykcs11.c,
+	ykcs11/yubico_token.c: YKCS11: Change DBG to print to stderr.
+
+2015-11-05  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: YKCS11: Remove some useless comments.
+
+2015-11-05  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: YKCS11: add more precondition checks during
+	SingInit.
+
+2015-11-04  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c: YKCS11: fix type typo.
+
+2015-11-04  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c, ykcs11/objects.h, ykcs11/openssl_utils.c,
+	ykcs11/openssl_utils.h, ykcs11/pkcs11t.h, ykcs11/token_vendors.c,
+	ykcs11/token_vendors.h, ykcs11/ykcs11.c: YKCS11: added certificate
+	deletion.
+
+2015-11-02  Alessio Di Mauro <alessio@yubico.com>
+
+	* lib/ykpiv.c: Initialize context to -1 and always call establish
+	context.
+
+2015-10-28  Klas Lindfors <klas@yubico.com>
+
+	* : commit f46a4713bdc742f0619041a0c150920f064d25e7 Merge: aff57db
+	f558983 Author: Klas Lindfors <klas@yubico.com> Date:   Wed Oct 28
+	16:08:00 2015 +0100
+
+2015-10-28  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: add an error print for failing
+	set-pin-retries
+
+2015-10-28  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/token_vendors.c, ykcs11/ykcs11.c, ykcs11/yubico_token.c: 
+	YKCS11: Suppress some warnings.
+
+2015-10-28  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/token_vendors.c: Indent.
+
+2015-10-28  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/mechanisms.c, ykcs11/token_vendors.c,
+	ykcs11/token_vendors.h, ykcs11/ykcs11.c, ykcs11/ykcs11.h: YKCS11:
+	added support for touch and PIN policy during generate.
+
+2015-10-27  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/mechanisms.c, ykcs11/objects.c, ykcs11/objects.h,
+	ykcs11/pkcs11t.h, ykcs11/token_vendors.c, ykcs11/token_vendors.h,
+	ykcs11/ykcs11.c, ykcs11/ykcs11.h: Added support for touch and change
+	policy during key import.
+
+2015-10-23  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c, ykcs11/openssl_utils.c, ykcs11/openssl_utils.h: 
+	YKCS11: Added raw certificate extraction.
+
+2015-10-23  Klas Lindfors <klas@yubico.com>
+
+	* ykcs11/Makefile.am: export functions for mac correctly C_ matches what we should export for pkcs11
+
+2015-10-20  Klas Lindfors <klas@yubico.com>
+
+	* : commit 066ea79211c0dfbdf05719c35235d17583b6fde7 Author: Klas
+	Lindfors <klas@yubico.com> Date:   Thu Oct 15 09:20:42 2015 +0200
+
+2015-10-09  Klas Lindfors <klas@yubico.com>
+
+	* tool/cmdline.ggo, tool/yubico-piv-tool.c: read key from stdin if
+	no key is given as argument
+
+2015-10-09  Klas Lindfors <klas@yubico.com>
+
+	* lib/tests/Makefile.am, tool/tests/Makefile.am: actually run
+	valgrind for the tests
+
+2015-10-07  Klas Lindfors <klas@yubico.com>
+
+	* .travis.yml, build-and-test.sh, mac.mk: try travis for osx
+
+2015-10-01  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: bump version in NEWS
+
+2015-10-01  Klas Lindfors <klas@yubico.com>
+
+	* configure.ac: bump version
+
 2015-10-01  Klas Lindfors <klas@yubico.com>
 
 	* NEWS: NEWS for 1.0.3
@@ -9,6 +215,34 @@
 2015-09-24  Alessio Di Mauro <alessio@yubico.com>
 
 	* tool/yubico-piv-tool.c: Mask more one pin change.
+
+2015-09-24  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/token_vendors.c, ykcs11/token_vendors.h, ykcs11/ykcs11.c: 
+	Move login into common functions.
+
+2015-09-24  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Fix return value check on parse_readers.
+
+2015-09-18  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: use in, not signinput to actually sign
+	anything in the ecc case
+
+2015-09-17  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/openssl_utils.c, ykcs11/vendors.c, ykcs11/ykcs11.c: Minor
+	fixes.
+
+2015-09-17  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c: Export more info for EC keys too.
+
+2015-09-17  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c, ykcs11/openssl_utils.c, ykcs11/openssl_utils.h: 
+	Export more public key parameters.
 
 2015-09-16  Klas Lindfors <klas@yubico.com>
 
@@ -23,31 +257,448 @@
 	* configure.ac: don't auto-select windows backend on else less confusing to fall through, also better message for no pcsc
 	library found
 
-2015-09-04  Klas Lindfors <klas@yubico.com>
+2015-09-11  Klas Lindfors <klas@yubico.com>
 
-	* NEWS, configure.ac: bump versions
+	* Makefile.am: add ykcs11 to cppcheck
+
+2015-09-09  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/yubico_token.c: Fix some warnings.
+
+2015-09-09  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/token_vendors.h, ykcs11/utils.c, ykcs11/utils.h,
+	ykcs11/ykcs11.c, ykcs11/yubico_token.c, ykcs11/yubico_token.h: Add
+	parsing of model number.
+
+2015-09-09  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/slot_vendors.c, ykcs11/slot_vendors.h,
+	ykcs11/yubico_slot.c, ykcs11/yubico_slot.h: Remove get slot
+	description and use the reader string from pcsclite.
+
+2015-09-09  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/utils.c, ykcs11/ykcs11.c: Imporve support for multiple
+	readers/cards.
+
+2015-09-09  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c, ykcs11/openssl_utils.c, ykcs11/openssl_utils.h,
+	ykcs11/token_vendors.c: Minor cleanups.
+
+2015-09-09  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Free more.
+
+2015-09-08  Alessio Di Mauro <alessio@yubico.com>
+
+	* : commit 99ebfdf37c218e6426438d0ac131ea77440e5a26 Author: Alessio
+	Di Mauro <alessio@yubico.com> Date:   Tue Sep 8 18:00:48 2015 +0200
+
+2015-09-08  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.map: remove ykpiv_sign_data2() from map
+
+2015-09-08  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, tool/yubico-piv-tool.c, ykcs11/ykcs11.c: drop
+	ykpiv_sign_data2() and change ykpiv_sign_data() to not pad
+
+2015-09-08  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: let ykpiv_connect() call ykpiv_list_readers()
+
+2015-09-08  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, tool/cmdline.ggo,
+	tool/yubico-piv-tool.c, ykcs11/ykcs11.c: add list-readers action to
+	tool also refactor ykpiv_list_readers() a bit
+
+2015-09-07  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map, ykcs11/ykcs11.c: drop
+	ykpiv_connect2() and add ykpiv_list_readers()
+
+2015-09-07  Klas Lindfors <klas@yubico.com>
+
+	* : commit 8c411f4473d337f1669fe5f1b1e01d21a17bfb5f Author: Klas
+	Lindfors <klas@yubico.com> Date:   Mon Sep 7 14:33:26 2015 +0200
+
+2015-09-07  Klas Lindfors <klas@yubico.com>
+
+	* : commit 1b8d819cc2c3638c81c4c9239f2d44e4eca22c8f Author: Klas
+	Lindfors <klas@yubico.com> Date:   Fri Sep 4 09:22:32 2015 +0200
 
 2015-09-04  Klas Lindfors <klas@yubico.com>
 
 	* NEWS: NEWS for 1.0.2
+
+2015-09-02  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c, ykcs11/ykcs11.c: More cleanup.
+
+2015-09-02  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c, ykcs11/token_vendors.c: Fixed typo.
+
+2015-09-01  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c, ykcs11/objects.h, ykcs11/openssl_utils.c,
+	ykcs11/token_vendors.c, ykcs11/token_vendors.h, ykcs11/ykcs11.c: 
+	Added key import.
+
+2015-08-28  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c, ykcs11/objects.h, ykcs11/token_vendors.c,
+	ykcs11/token_vendors.h, ykcs11/ykcs11.c: Initial stab at private key
+	import.
+
+2015-08-28  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/mechanisms.h, ykcs11/objects.c, ykcs11/objects.h,
+	ykcs11/openssl_utils.c, ykcs11/openssl_utils.h,
+	ykcs11/token_vendors.c, ykcs11/token_vendors.h, ykcs11/ykcs11.c: 
+	Added certificate import
+
+2015-08-26  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Squalch more warnings.
+
+2015-08-25  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/mechanisms.c: Remove some warnings.
+
+2015-08-25  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/mechanisms.c, ykcs11/mechanisms.h, ykcs11/ykcs11.c: Add of
+	DigestInit.
+
+2015-08-26  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/openssl_utils.c: Fixed x509 certificate created during
+	generation to comply with OpenSSL 1.0.1i more strict rules.
+
+2015-08-24  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/utils.c, ykcs11/utils.h, ykcs11/ykcs11.c: Strip DER
+	encoding from EC signatures.
+
+2015-08-24  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Use longer buffer to store the signature.
+
+2015-08-24  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/mechanisms.c, ykcs11/pkcs11t.h, ykcs11/yubico_token.c: Add
+	support for ECDSA_SHA256.
 
 2015-08-24  Klas Lindfors <klas@yubico.com>
 
 	* lib/ykpiv.c: authentication failed is supposed to be 0x63cX not
 	0x630X so mask everything but the low 4 bits for remaining tries
 
+2015-08-21  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: More debug messages.
+
+2015-08-21  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Temporary fix for multiple logins.
+
+2015-08-21  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Add debug messages for failed login.
+
+2015-08-21  Alessio Di Mauro <alessio@yubico.com>
+
+	* configure.ac, ykcs11/Makefile.am, ykcs11/pkcs11t.h,
+	ykcs11/slot_vendors.c: Removed nspr stuff.
+
+2015-08-20  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Close the operation after sign is done.
+
+2015-08-20  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: More debug messages and precondition checks.
+
+2015-08-20  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/debug.h, ykcs11/token_vendors.h, ykcs11/ykcs11.c,
+	ykcs11/yubico_token.c, ykcs11/yubico_token.h: Use buffer length
+	while storing cert.
+
+2015-08-20  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: More debug messages and precondition checks.
+
+2015-08-20  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Skip PIN initialization.
+
+2015-08-20  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Skip token initialization.
+
+2015-08-20  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/debug.h, ykcs11/ykcs11.c: Add more precondition checks and
+	debug messages.
+
+2015-08-20  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/openssl_utils.c: Fixed PSS (still untested).
+
+2015-08-21  Klas Lindfors <klas@yubico.com>
+
+	* mac.mk: add mac install_name_tool fixes for ykcs11 build
+
+2015-08-21  Klas Lindfors <klas@yubico.com>
+
+	* ykcs11/Makefile.am: fixup filenames and add missing headers
+
+2015-08-21  Klas Lindfors <klas@yubico.com>
+
+	* ykcs11/ykcs11-version.h, ykcs11/ykcs11.pc: drop generated files
+
 2015-08-20  Klas Lindfors <klas@yubico.com>
 
-	* lib/ykpiv.c: continue looping over the readers if one fails during
-	setup also continues if a reader fails when selecting (no applet)
+	* : commit 81f3b608fd6d3de2e03eb006dfe88fd45383a24a Author: Klas
+	Lindfors <klas@yubico.com> Date:   Thu Aug 20 09:25:18 2015 +0200
+
+2015-08-19  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/openssl_utils.c: Removed unnecessary line.
+
+2015-08-19  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/mechanisms.c: Fixed RSA_X_509 padding.
+
+2015-08-19  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/mechanisms.c, ykcs11/ykcs11.c: Fixed unhashed sign
+	mechanisms.
+
+2015-08-19  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c, ykcs11/openssl_utils.c, ykcs11/openssl_utils.h: 
+	More free.
 
 2015-08-13  Klas Lindfors <klali@avm.se>
 
 	* : Merge pull request #26 from syzzer/query-for-pin Query for PIN/PUK/mgmt-key if not supplied on command line
 
+2015-08-12  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/openssl_utils.c, ykcs11/ykcs11.c: Fixed wrong free.
+
+2015-08-12  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Added simple logout function.
+
+2015-08-12  Alessio Di Mauro <alessio@yubico.com>
+
+	* lib/ykpiv.c, ykcs11/debug.h, ykcs11/mechanisms.c,
+	ykcs11/openssl_utils.c, ykcs11/ykcs11.c: Fixed pkcs1.5 padding
+
+2015-08-11  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Update object in the session (when the object
+	wasn't there to begin with).
+
+2015-08-11  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/debug.h, ykcs11/objects.c, ykcs11/openssl_utils.c,
+	ykcs11/token_vendors.c, ykcs11/ykcs11.c: Update object in the
+	session after key creation (if object already exists).
+
+2015-08-11  Alessio Di Mauro <alessio@yubico.com>
+
+	* tool/util.c, tool/util.h, ykcs11/debug.h, ykcs11/openssl_utils.c,
+	ykcs11/token_vendors.c: Added certificate import on key generation.
+
+2015-08-11  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/debug.h, ykcs11/mechanisms.c, ykcs11/openssl_utils.c,
+	ykcs11/openssl_utils.h, ykcs11/pkcs11t.h, ykcs11/token_vendors.c,
+	ykcs11/utils.c, ykcs11/utils.h, ykcs11/ykcs11.c, ykcs11/ykcs11.h: 
+	Added EC key generation.
+
 2015-08-10  Klas Lindfors <klas@yubico.com>
 
 	* BLURB: drop BLURB (not used)
+
+2015-08-07  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/debug.h, ykcs11/mechanisms.c, ykcs11/mechanisms.h,
+	ykcs11/objects.c, ykcs11/openssl_utils.c, ykcs11/token_vendors.c,
+	ykcs11/token_vendors.h, ykcs11/ykcs11.c, ykcs11/ykcs11.h,
+	ykcs11/yubico_token.c: First stab at key generation.
+
+2015-08-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/Makefile.am, ykcs11/debug.h, ykcs11/mechanisms.c,
+	ykcs11/objects.c, ykcs11/objects.h, ykcs11/openssl_utils.c,
+	ykcs11/utils.c, ykcs11/ykcs11.c, ykcs11/yubico_token.c: Moved debug
+	capabilities to its own file.  Fixed EC point replresentation.
+
+2015-08-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/obj_types.h, ykcs11/objects.c, ykcs11/openssl_utils.c,
+	ykcs11/openssl_utils.h, ykcs11/ykcs11.c: Added more attribute
+	extraction for objects.
+
+2015-08-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/mechanisms.c, ykcs11/mechanisms.h, ykcs11/ykcs11.c: Fixed
+	object attribute matching.  Added ECDSA.
+
+2015-08-05  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/mechanisms.c, ykcs11/mechanisms.h, ykcs11/obj_types.h,
+	ykcs11/objects.c, ykcs11/openssl_types.h, ykcs11/openssl_utils.c,
+	ykcs11/openssl_utils.h, ykcs11/ykcs11.c, ykcs11/ykcs11.h,
+	ykcs11/yubico_token.c: Added PSS (first stab).
+
+2015-08-04  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/Makefile.am, ykcs11/mechanisms.c, ykcs11/mechanisms.h,
+	ykcs11/openssl_types.h, ykcs11/openssl_utils.c,
+	ykcs11/openssl_utils.h, ykcs11/ykcs11.c, ykcs11/ykcs11.h: Added more
+	signature infrestructure.
+
+2015-08-03  Alessio Di Mauro <alessio@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map, ykcs11/mechanisms.c,
+	ykcs11/mechanisms.h, ykcs11/openssl_utils.c, ykcs11/ykcs11.c: Added
+	sign_data2 to libykpiv to disable padding.
+
+2015-08-03  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c, ykcs11/objects.h, ykcs11/ykcs11.c: Hiding
+	private objects if user is not logged in.
+
+2015-08-03  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/obj_types.h, ykcs11/objects.c, ykcs11/objects.h,
+	ykcs11/ykcs11.c: Added object matching.
+
+2015-07-31  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c, ykcs11/openssl_utils.c, ykcs11/openssl_utils.h,
+	ykcs11/pkcs11t.h, ykcs11/ykcs11.c: Improvement on sign and object
+	handling.
+
+2015-07-30  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/Makefile.am, ykcs11/mechanisms.c, ykcs11/mechanisms.h,
+	ykcs11/obj_types.h, ykcs11/objects.c, ykcs11/objects.h,
+	ykcs11/openssl_utils.c, ykcs11/openssl_utils.h,
+	ykcs11/token_vendors.c, ykcs11/token_vendors.h, ykcs11/utils.c,
+	ykcs11/ykcs11.c, ykcs11/ykcs11.h, ykcs11/yubico_token.c,
+	ykcs11/yubico_token.h: First crude signature implementation plus
+	additional refactor.
+
+2015-07-28  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/obj_types.h, ykcs11/objects.c: Start to do some crypto.
+
+2015-07-28  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/Makefile.am, ykcs11/mechanisms.c, ykcs11/mechanisms.h,
+	ykcs11/obj_types.h, ykcs11/objects.c, ykcs11/objects.h,
+	ykcs11/token_vendors.h, ykcs11/utils.c, ykcs11/utils.h,
+	ykcs11/ykcs11.c, ykcs11/ykcs11.h, ykcs11/yubico_token.c: Yet another
+	refactor of objects.
+
+2015-07-28  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/Makefile.am, ykcs11/slot_vendors.c, ykcs11/slot_vendors.h,
+	ykcs11/token_vendors.c, ykcs11/token_vendors.h, ykcs11/utils.c,
+	ykcs11/vendor_ids.h, ykcs11/vendors.c, ykcs11/vendors.h,
+	ykcs11/ykcs11.c, ykcs11/yubico.c, ykcs11/yubico.h,
+	ykcs11/yubico_slot.c, ykcs11/yubico_slot.h, ykcs11/yubico_token.c,
+	ykcs11/yubico_token.h: Separated slot vendors and token vendors.
+
+2015-07-27  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/mechanisms.c, ykcs11/mechanisms.h, ykcs11/utils.c,
+	ykcs11/utils.h, ykcs11/vendors.c, ykcs11/vendors.h,
+	ykcs11/ykcs11.c, ykcs11/ykcs11.h, ykcs11/ykcs11.map,
+	ykcs11/yubico.c, ykcs11/yubico.h: Started major overhaul of slot
+	vendors and token vendors.
+
+2015-07-24  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Some improvements on sign.
+
+2015-07-24  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/obj_types.h, ykcs11/objects.c, ykcs11/vendors.c,
+	ykcs11/vendors.h, ykcs11/ykcs11.c, ykcs11/yubico.c, ykcs11/yubico.h: 
+	Refactor more.
+
+2015-07-22  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/objects.c, ykcs11/ykcs11.c: Refined get attribute value.
+
+2015-07-21  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/obj_types.h, ykcs11/objects.c, ykcs11/pkcs11t.h,
+	ykcs11/ykcs11.c, ykcs11/yubico.c: More object handling.
+
+2015-07-20  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/Makefile.am, ykcs11/obj_types.h, ykcs11/objects.c,
+	ykcs11/objects.h, ykcs11/pkcs11t.h, ykcs11/utils.h,
+	ykcs11/vendors.c, ykcs11/vendors.h, ykcs11/ykcs11.c,
+	ykcs11/yubico.c, ykcs11/yubico.h: Initial work to add object
+	handling.
+
+2015-07-16  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/utils.c, ykcs11/vendors.c, ykcs11/vendors.h,
+	ykcs11/ykcs11.c, ykcs11/yubico.c, ykcs11/yubico.h: Added mechanisms
+	handling.
+
+2015-07-16  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/pkcs11t.h, ykcs11/utils.c, ykcs11/vendors.c,
+	ykcs11/vendors.h, ykcs11/ykcs11.c, ykcs11/yubico.c, ykcs11/yubico.h: 
+	More refactoring.
+
+2015-07-15  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: More work on login.
+
+2015-07-15  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Added basic session handling.
+
+2015-07-15  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/utils.c, ykcs11/utils.h: Added utils files.
+
+2015-07-15  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Changed tokenless to with_token.
+
+2015-07-14  Alessio Di Mauro <alessio@yubico.com>
+
+	* lib/ykpiv.h, ykcs11/pkcs11t.h, ykcs11/ykcs11.c: Added basic
+	version of login.
+
+2015-07-14  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Handle token presence in slots.
+
+2015-07-14  Alessio Di Mauro <alessio@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map, ykcs11/Makefile.am,
+	ykcs11/vendors.c, ykcs11/vendors.h, ykcs11/ykcs11.c,
+	ykcs11/yubico.c, ykcs11/yubico.h: Major refactor and vendor
+	abstraction.
 
 2015-07-10  Klas Lindfors <klas@yubico.com>
 
@@ -85,12 +736,36 @@
 
 2015-07-08  Klas Lindfors <klas@yubico.com>
 
-	* configure.ac: let the pkg-config check for openssl check for
-	libcrypto instead since we only use libcrypto
+	* : commit fe0fd7b774114dd4b50970c2a2133b19075de246 Author: Klas
+	Lindfors <klas@yubico.com> Date:   Wed Jul 8 14:51:45 2015 +0200
 
 2015-07-08  Klas Lindfors <klas@yubico.com>
 
 	* lib/ykpiv.pc.in: add Requires.private on libcrypto
+
+2015-07-07  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Fix debug message.
+
+2015-07-07  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Add a bunch of TODOs.
+
+2015-07-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/pkcs11f.h, ykcs11/ykcs11.c: GetInfo.
+
+2015-07-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/pkcs11t.h, ykcs11/vendors.c, ykcs11/vendors.h,
+	ykcs11/ykcs11.c, ykcs11/yubico.c, ykcs11/yubico.h: More
+	GetTokenInfo.
+
+2015-07-03  Alessio Di Mauro <alessio@yubico.com>
+
+	* lib/ykpiv.c, ykcs11/Makefile.am, ykcs11/vendors.c,
+	ykcs11/vendors.h, ykcs11/ykcs11.c, ykcs11/yubico.c, ykcs11/yubico.h: 
+	Added basic multivendor support for token information.
 
 2015-07-03  Klas Lindfors <klas@yubico.com>
 
@@ -98,13 +773,17 @@
 
 2015-07-03  Klas Lindfors <klas@yubico.com>
 
-	* Makefile.am, tool/{yubico-piv-tool.h2a => yubico-piv-tool.adoc}: 
+	* Makefile.am, tool/yubico-piv-tool.adoc, tool/yubico-piv-tool.h2a: 
 	name include file .adoc instead
 
 2015-07-03  Klas Lindfors <klas@yubico.com>
 
 	* tool/yubico-piv-tool.h2a: use asciidoc comments for comments in
 	asciidoc file
+
+2015-07-03  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: NEWS for yk4beta
 
 2015-07-01  Klas Lindfors <klas@yubico.com>
 
@@ -125,6 +804,88 @@
 2015-07-01  Klas Lindfors <klas@yubico.com>
 
 	* tool/yubico-piv-tool.h2a: add include file for help2adoc
+
+2015-06-30  Alessio Di Mauro <alessio@yubico.com>
+
+	* lib/internal.h, lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map,
+	ykcs11/Makefile.am, ykcs11/ykcs11.c: Added basic version of slot
+	info functions.
+
+2015-06-30  Klas Lindfors <klas@yubico.com>
+
+	* tool/cmdline.ggo: move around texts for help
+
+2015-06-30  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, tool/yubico-piv-tool.c: change IS_XXKEY
+	macros to be YKPIV_IS_XX
+
+2015-06-26  Alessio Di Mauro <alessio@yubico.com>
+
+	* .gitignore, Makefile.am, configure.ac, ykcs11/Makefile.am,
+	ykcs11/pkcs11.h, ykcs11/pkcs11f.h, ykcs11/pkcs11t.h,
+	ykcs11/version.c, ykcs11/ykcs11-version.h,
+	ykcs11/ykcs11-version.h.in, ykcs11/ykcs11.c, ykcs11/ykcs11.map,
+	ykcs11/ykcs11.pc, ykcs11/ykcs11.pc.in: Initial commit for ykcs11.
+
+2015-06-26  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: fix indentation
+
+2015-06-26  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: move padding for signing to ykpiv_sign_data() and only pad if in_len != key_len
+
+2015-06-25  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: better errors for fail on pin-policy and
+	touch-policy
+
+2015-06-25  Klas Lindfors <klas@yubico.com>
+
+	* configure.ac, lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map,
+	tool/cmdline.ggo, tool/yubico-piv-tool.c: add touch for set-mgm-key
+
+2015-06-25  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.h, tool/cmdline.ggo, tool/util.c, tool/util.h,
+	tool/yubico-piv-tool.c: add touch tlv for generate and import-key
+
+2015-06-24  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.h, tool/cmdline.ggo, tool/util.c, tool/util.h,
+	tool/yubico-piv-tool.c: pin policy code for generate and import-key
+
+2015-06-24  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: better errors for generate on
+	non-supported algorithm or slot
+
+2015-06-23  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.h, tool/cmdline.ggo, tool/util.c: add support for
+	retired key objects slots 82-95
+
+2015-06-24  Klas Lindfors <klas@yubico.com>
+
+	* tool/yubico-piv-tool.c: use IS_RSAKEY and IS_ECKEY macros, fix
+	minor stuff for ECCP384
+
+2015-06-24  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h: add macros for IS_ECKEY and IS_RSAKEY,
+	also fix tag on ECCP384
+
+2015-05-27  Klas Lindfors <klas@yubico.com>
+
+	* tool/cmdline.ggo, tool/util.c, tool/util.h,
+	tool/yubico-piv-tool.c: add sha384 hash and refactor some common
+	patterns
+
+2015-05-27  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c, lib/ykpiv.h, tool/cmdline.ggo, tool/util.c,
+	tool/yubico-piv-tool.c: start adding secp384r1
 
 2015-06-23  Klas Lindfors <klas@yubico.com>
 
@@ -505,11 +1266,12 @@
 
 2014-12-09  Henrik Stråth <henrik@yubico.com>
 
-	* doc/{CertificateAuthorityWithNEO.txt =>
-	Certificate_Authority_with_NEO.adoc}, doc/{OS-X-Codesigning.txt =>
-	OS_X_code_signing.adoc}, doc/{Windows-Certificate.txt =>
-	Windows_certificate.adoc}, doc/{YubiKey-NEO-PIV-Introduction.txt =>
-	YubiKey_NEO_PIV_introduction.adoc}: Renamed doc files to snake case.
+	* doc/CertificateAuthorityWithNEO.txt,
+	doc/Certificate_Authority_with_NEO.adoc, doc/OS-X-Codesigning.txt,
+	doc/OS_X_code_signing.adoc, doc/Windows-Certificate.txt,
+	doc/Windows_certificate.adoc, doc/YubiKey-NEO-PIV-Introduction.txt,
+	doc/YubiKey_NEO_PIV_introduction.adoc: Renamed doc files to snake
+	case.
 
 2014-12-05  Klas Lindfors <klas@yubico.com>
 
@@ -554,7 +1316,7 @@
 
 2014-11-10  Klas Lindfors <klas@yubico.com>
 
-	* doc/{Windows-Certificate.asciidoc => Windows-Certificate.txt}: 
+	* doc/Windows-Certificate.asciidoc, doc/Windows-Certificate.txt: 
 	move to .txt for consistency
 
 2014-11-10  Klas Lindfors <klas@yubico.com>
@@ -949,19 +1711,20 @@
 
 2014-06-24  Klas Lindfors <klas@yubico.com>
 
-	* tool/Makefile.am, tool/util.c, tool/{internal.h => util.h},
+	* tool/Makefile.am, tool/internal.h, tool/util.c, tool/util.h,
 	tool/yubico-piv-tool.c: change internal.h to util.h
 
 2014-06-24  Klas Lindfors <klas@yubico.com>
 
-	* .gitignore, Makefile.am, configure.ac, lib/Makefile.am, {tests =>
-	lib/tests}/Makefile.am, {tests => lib/tests}/basic.c, {tests =>
-	lib/tests}/parse_key.c: move lib tests under lib
+	* .gitignore, Makefile.am, configure.ac, lib/Makefile.am,
+	lib/tests/Makefile.am, lib/tests/basic.c, lib/tests/parse_key.c,
+	tests/Makefile.am, tests/basic.c, tests/parse_key.c: move lib tests
+	under lib
 
 2014-06-24  Klas Lindfors <klas@yubico.com>
 
-	* .gitignore, configure.ac, tests/Makefile.am, tool/Makefile.am,
-	tool/tests/Makefile.am, {tests => tool/tests}/basic.sh: move
+	* .gitignore, configure.ac, tests/Makefile.am, tests/basic.sh,
+	tool/Makefile.am, tool/tests/Makefile.am, tool/tests/basic.sh: move
 	basic.sh test to subdir of tool
 
 2014-06-24  Klas Lindfors <klas@yubico.com>
@@ -1132,10 +1895,10 @@
 
 2014-06-16  Klas Lindfors <klas@yubico.com>
 
-	* .gitignore, Makefile.am, configure.ac, tool/Makefile.am,
-	cmdline.ggo => tool/cmdline.ggo, yubico-piv-tool.c =>
-	tool/yubico-piv-tool.c, yubico-piv-tool.h2m =>
-	tool/yubico-piv-tool.h2m: move the cli stuff to subdir tool
+	* .gitignore, Makefile.am, cmdline.ggo, configure.ac,
+	tool/Makefile.am, tool/cmdline.ggo, tool/yubico-piv-tool.c,
+	tool/yubico-piv-tool.h2m, yubico-piv-tool.c, yubico-piv-tool.h2m: 
+	move the cli stuff to subdir tool
 
 2014-05-28  Klas Lindfors <klas@yubico.com>
 
