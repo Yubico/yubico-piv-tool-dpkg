@@ -1,3 +1,30 @@
+2015-11-11  Klas Lindfors <klas@yubico.com>
+
+	* lib/ykpiv.c: always reset the context to SCARD_INVALID_CONTEXT
+	after release
+
+2015-11-10  Alessio Di Mauro <alessio@yubico.com>
+
+	* lib/ykpiv.c: YKPIV: Make sure that context is established only if
+	it is invalid.
+
+2015-11-09  Alessio Di Mauro <alessio@yubico.com>
+
+	* doc/YKCS11_release_notes.adoc: Added reference to PKCS#11 specs in
+	the docs.
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* NEWS: Reword NEWS file.
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* NEWS, configure.ac: Bump version.
+
+2015-11-06  Alessio Di Mauro <alessio@yubico.com>
+
+	* doc/YubiKey_PIV_introduction.adoc: Fix docs.
+
 2015-11-06  Alessio Di Mauro <alessio@yubico.com>
 
 	* Makefile.am: Apparently order matters.
