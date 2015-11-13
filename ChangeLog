@@ -1,3 +1,45 @@
+2015-11-13  Alessio Di Mauro <alessio@yubico.com>
+
+	* NEWS: Version 1.1.2.  Signed-off-by: Alessio Di Mauro <alessio@yubico.com>
+
+2015-11-12  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Remove debug print.
+
+2015-11-12  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/utils.c, ykcs11/ykcs11.c: YKCS11: more elaborate solution
+	for stripping DER encoding from ECDSA signatures.  It is possible to receive different padding length for r and s,
+	where their length is [-1, 1] wrt the component lenght. Take this
+	into account.
+
+2015-11-12  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/tests/ykcs11_tests.c: YKCS11: Do not call initialize for
+	the YKCS11 tests.  If initialize is called, the test requires a YubiKey with a working
+	PIV application in order to function.
+
+2015-11-12  Alessio Di Mauro <alessio@yubico.com>
+
+	* .gitignore, ykcs11/tests/test-suite.log,
+	ykcs11/tests/ykcs11_tests.log, ykcs11/tests/ykcs11_tests.trs: Ignore
+	more.
+
+2015-11-12  Alessio Di Mauro <alessio@yubico.com>
+
+	* .gitignore: Ignore more.
+
+2015-11-12  Alessio Di Mauro <alessio@yubico.com>
+
+	* configure.ac, ykcs11/Makefile.am, ykcs11/tests/Makefile.am,
+	ykcs11/tests/test-suite.log, ykcs11/tests/ykcs11_tests.c,
+	ykcs11/tests/ykcs11_tests.log, ykcs11/tests/ykcs11_tests.trs: 
+	YKCS11: add basic tests.  Signed-off-by: Alessio Di Mauro <alessio@yubico.com>
+
+2015-11-11  Alessio Di Mauro <alessio@yubico.com>
+
+	* NEWS, configure.ac: Bump version.
+
 2015-11-11  Klas Lindfors <klas@yubico.com>
 
 	* lib/ykpiv.c: always reset the context to SCARD_INVALID_CONTEXT
