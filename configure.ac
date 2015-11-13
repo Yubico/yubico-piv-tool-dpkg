@@ -26,7 +26,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-AC_INIT([yubico-piv-tool], [1.1.1])
+AC_INIT([yubico-piv-tool], [1.1.2])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -216,6 +216,7 @@ AC_CONFIG_FILES([
   ykcs11/Makefile
   ykcs11/ykcs11-version.h
   ykcs11/ykcs11.pc
+  ykcs11/tests/Makefile
 ])
 AC_OUTPUT
 
