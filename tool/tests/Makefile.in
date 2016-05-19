@@ -114,7 +114,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-check_PROGRAMS = parse_name$(EXEEXT)
+check_PROGRAMS = parse_name$(EXEEXT) test_inout$(EXEEXT)
 @ENABLE_COV_TRUE@am__append_1 = --coverage
 subdir = tool/tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -139,6 +139,9 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+test_inout_SOURCES = test_inout.c
+test_inout_OBJECTS = test_inout.$(OBJEXT)
+test_inout_DEPENDENCIES = ../libpiv_util.la
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -173,8 +176,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = parse_name.c
-DIST_SOURCES = parse_name.c
+SOURCES = parse_name.c test_inout.c
+DIST_SOURCES = parse_name.c test_inout.c
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -553,6 +556,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_builddir)/lib \
 	-I$(top_srcdir)/tool -I$(top_builddir)/tool $(OPENSSL_CFLAGS)
 AM_LDFLAGS = -no-install $(am__append_1)
 parse_name_LDADD = ../libpiv_util.la $(OPENSSL_LIBS)
+test_inout_LDADD = ../libpiv_util.la
 TESTS = basic.sh $(check_PROGRAMS)
 all: all-am
 
@@ -601,6 +605,10 @@ parse_name$(EXEEXT): $(parse_name_OBJECTS) $(parse_name_DEPENDENCIES) $(EXTRA_pa
 	@rm -f parse_name$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(parse_name_OBJECTS) $(parse_name_LDADD) $(LIBS)
 
+test_inout$(EXEEXT): $(test_inout_OBJECTS) $(test_inout_DEPENDENCIES) $(EXTRA_test_inout_DEPENDENCIES) 
+	@rm -f test_inout$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_inout_OBJECTS) $(test_inout_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -608,6 +616,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse_name.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_inout.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -839,6 +848,13 @@ basic.sh.log: basic.sh
 parse_name.log: parse_name$(EXEEXT)
 	@p='parse_name$(EXEEXT)'; \
 	b='parse_name'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test_inout.log: test_inout$(EXEEXT)
+	@p='test_inout$(EXEEXT)'; \
+	b='test_inout'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \

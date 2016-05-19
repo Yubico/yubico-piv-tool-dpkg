@@ -38,13 +38,14 @@ extern "C" {
 #define CMDLINE_PARSER_VERSION VERSION
 #endif
 
-enum enum_action { action__NULL = -1, action_arg_version = 0, action_arg_generate, action_arg_setMINUS_mgmMINUS_key, action_arg_reset, action_arg_pinMINUS_retries, action_arg_importMINUS_key, action_arg_importMINUS_certificate, action_arg_setMINUS_chuid, action_arg_requestMINUS_certificate, action_arg_verifyMINUS_pin, action_arg_changeMINUS_pin, action_arg_changeMINUS_puk, action_arg_unblockMINUS_pin, action_arg_selfsignMINUS_certificate, action_arg_deleteMINUS_certificate, action_arg_readMINUS_certificate, action_arg_status, action_arg_testMINUS_signature, action_arg_testMINUS_decipher, action_arg_listMINUS_readers };
-enum enum_slot { slot__NULL = -1, slot_arg_9a = 0, slot_arg_9c, slot_arg_9d, slot_arg_9e, slot_arg_82, slot_arg_83, slot_arg_84, slot_arg_85, slot_arg_86, slot_arg_87, slot_arg_88, slot_arg_89, slot_arg_8a, slot_arg_8b, slot_arg_8c, slot_arg_8d, slot_arg_8e, slot_arg_8f, slot_arg_90, slot_arg_91, slot_arg_92, slot_arg_93, slot_arg_94, slot_arg_95 };
+enum enum_action { action__NULL = -1, action_arg_version = 0, action_arg_generate, action_arg_setMINUS_mgmMINUS_key, action_arg_reset, action_arg_pinMINUS_retries, action_arg_importMINUS_key, action_arg_importMINUS_certificate, action_arg_setMINUS_chuid, action_arg_requestMINUS_certificate, action_arg_verifyMINUS_pin, action_arg_changeMINUS_pin, action_arg_changeMINUS_puk, action_arg_unblockMINUS_pin, action_arg_selfsignMINUS_certificate, action_arg_deleteMINUS_certificate, action_arg_readMINUS_certificate, action_arg_status, action_arg_testMINUS_signature, action_arg_testMINUS_decipher, action_arg_listMINUS_readers, action_arg_setMINUS_ccc, action_arg_writeMINUS_object, action_arg_readMINUS_object, action_arg_attest };
+enum enum_slot { slot__NULL = -1, slot_arg_9a = 0, slot_arg_9c, slot_arg_9d, slot_arg_9e, slot_arg_82, slot_arg_83, slot_arg_84, slot_arg_85, slot_arg_86, slot_arg_87, slot_arg_88, slot_arg_89, slot_arg_8a, slot_arg_8b, slot_arg_8c, slot_arg_8d, slot_arg_8e, slot_arg_8f, slot_arg_90, slot_arg_91, slot_arg_92, slot_arg_93, slot_arg_94, slot_arg_95, slot_arg_f9 };
 enum enum_algorithm { algorithm__NULL = -1, algorithm_arg_RSA1024 = 0, algorithm_arg_RSA2048, algorithm_arg_ECCP256, algorithm_arg_ECCP384 };
 enum enum_hash { hash__NULL = -1, hash_arg_SHA1 = 0, hash_arg_SHA256, hash_arg_SHA384, hash_arg_SHA512 };
 enum enum_key_format { key_format__NULL = -1, key_format_arg_PEM = 0, key_format_arg_PKCS12, key_format_arg_GZIP, key_format_arg_DER };
 enum enum_pin_policy { pin_policy__NULL = -1, pin_policy_arg_never = 0, pin_policy_arg_once, pin_policy_arg_always };
-enum enum_touch_policy { touch_policy__NULL = -1, touch_policy_arg_never = 0, touch_policy_arg_always };
+enum enum_touch_policy { touch_policy__NULL = -1, touch_policy_arg_never = 0, touch_policy_arg_always, touch_policy_arg_cached };
+enum enum_format { format__NULL = -1, format_arg_hex = 0, format_arg_base64, format_arg_binary };
 
 /** @brief Where the command line options are stored */
 struct gengetopt_args_info
@@ -58,9 +59,9 @@ struct gengetopt_args_info
   char * reader_arg;	/**< @brief Only use a matching reader (default='Yubikey').  */
   char * reader_orig;	/**< @brief Only use a matching reader original value given at command line.  */
   const char *reader_help; /**< @brief Only use a matching reader help description.  */
-  char * key_arg;	/**< @brief Authentication key to use (default='010203040506070801020304050607080102030405060708').  */
-  char * key_orig;	/**< @brief Authentication key to use original value given at command line.  */
-  const char *key_help; /**< @brief Authentication key to use help description.  */
+  char * key_arg;	/**< @brief Management key to use (default='010203040506070801020304050607080102030405060708').  */
+  char * key_orig;	/**< @brief Management key to use original value given at command line.  */
+  const char *key_help; /**< @brief Management key to use help description.  */
   enum enum_action *action_arg;	/**< @brief Action to take.  */
   char ** action_orig;	/**< @brief Action to take original value given at command line.  */
   unsigned int action_min; /**< @brief Action to take's minimum occurreces */
@@ -75,9 +76,9 @@ struct gengetopt_args_info
   enum enum_hash hash_arg;	/**< @brief Hash to use for signatures (default='SHA256').  */
   char * hash_orig;	/**< @brief Hash to use for signatures original value given at command line.  */
   const char *hash_help; /**< @brief Hash to use for signatures help description.  */
-  char * new_key_arg;	/**< @brief New authentication key to use.  */
-  char * new_key_orig;	/**< @brief New authentication key to use original value given at command line.  */
-  const char *new_key_help; /**< @brief New authentication key to use help description.  */
+  char * new_key_arg;	/**< @brief New management key to use for action set-mgm-key.  */
+  char * new_key_orig;	/**< @brief New management key to use for action set-mgm-key original value given at command line.  */
+  const char *new_key_help; /**< @brief New management key to use for action set-mgm-key help description.  */
   int pin_retries_arg;	/**< @brief Number of retries before the pin code is blocked.  */
   char * pin_retries_orig;	/**< @brief Number of retries before the pin code is blocked original value given at command line.  */
   const char *pin_retries_help; /**< @brief Number of retries before the pin code is blocked help description.  */
@@ -99,6 +100,12 @@ struct gengetopt_args_info
   char * subject_arg;	/**< @brief The subject to use for certificate request.  */
   char * subject_orig;	/**< @brief The subject to use for certificate request original value given at command line.  */
   const char *subject_help; /**< @brief The subject to use for certificate request help description.  */
+  int serial_arg;	/**< @brief Serial number of the self-signed certificate (default='1').  */
+  char * serial_orig;	/**< @brief Serial number of the self-signed certificate original value given at command line.  */
+  const char *serial_help; /**< @brief Serial number of the self-signed certificate help description.  */
+  int valid_days_arg;	/**< @brief Time (in days) until the self-signed certificate expires (default='365').  */
+  char * valid_days_orig;	/**< @brief Time (in days) until the self-signed certificate expires original value given at command line.  */
+  const char *valid_days_help; /**< @brief Time (in days) until the self-signed certificate expires help description.  */
   char * pin_arg;	/**< @brief Pin/puk code for verification.  */
   char * pin_orig;	/**< @brief Pin/puk code for verification original value given at command line.  */
   const char *pin_help; /**< @brief Pin/puk code for verification help description.  */
@@ -111,6 +118,12 @@ struct gengetopt_args_info
   enum enum_touch_policy touch_policy_arg;	/**< @brief Set touch policy for action generate, import-key or set-mgm-key.  */
   char * touch_policy_orig;	/**< @brief Set touch policy for action generate, import-key or set-mgm-key original value given at command line.  */
   const char *touch_policy_help; /**< @brief Set touch policy for action generate, import-key or set-mgm-key help description.  */
+  int id_arg;	/**< @brief Id of object for write/read object.  */
+  char * id_orig;	/**< @brief Id of object for write/read object original value given at command line.  */
+  const char *id_help; /**< @brief Id of object for write/read object help description.  */
+  enum enum_format format_arg;	/**< @brief Format of data for write/read object (default='hex').  */
+  char * format_orig;	/**< @brief Format of data for write/read object original value given at command line.  */
+  const char *format_help; /**< @brief Format of data for write/read object help description.  */
   int sign_flag;	/**< @brief Sign data (default=off).  */
   const char *sign_help; /**< @brief Sign data help description.  */
   
@@ -132,10 +145,14 @@ struct gengetopt_args_info
   unsigned int key_format_given ;	/**< @brief Whether key-format was given.  */
   unsigned int password_given ;	/**< @brief Whether password was given.  */
   unsigned int subject_given ;	/**< @brief Whether subject was given.  */
+  unsigned int serial_given ;	/**< @brief Whether serial was given.  */
+  unsigned int valid_days_given ;	/**< @brief Whether valid-days was given.  */
   unsigned int pin_given ;	/**< @brief Whether pin was given.  */
   unsigned int new_pin_given ;	/**< @brief Whether new-pin was given.  */
   unsigned int pin_policy_given ;	/**< @brief Whether pin-policy was given.  */
   unsigned int touch_policy_given ;	/**< @brief Whether touch-policy was given.  */
+  unsigned int id_given ;	/**< @brief Whether id was given.  */
+  unsigned int format_given ;	/**< @brief Whether format was given.  */
   unsigned int sign_given ;	/**< @brief Whether sign was given.  */
 
 } ;
@@ -274,6 +291,7 @@ extern const char *cmdline_parser_hash_values[];  /**< @brief Possible values fo
 extern const char *cmdline_parser_key_format_values[];  /**< @brief Possible values for key-format. */
 extern const char *cmdline_parser_pin_policy_values[];  /**< @brief Possible values for pin-policy. */
 extern const char *cmdline_parser_touch_policy_values[];  /**< @brief Possible values for touch-policy. */
+extern const char *cmdline_parser_format_values[];  /**< @brief Possible values for format. */
 
 
 #ifdef __cplusplus
