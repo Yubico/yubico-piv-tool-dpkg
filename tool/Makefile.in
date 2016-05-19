@@ -145,7 +145,8 @@ libpiv_cmd_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libpiv_cmd_la_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am__DEPENDENCIES_1 =
-libpiv_util_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+libpiv_util_la_DEPENDENCIES = $(top_builddir)/lib/libykpiv.la \
+	$(am__DEPENDENCIES_1)
 am_libpiv_util_la_OBJECTS = util.lo
 libpiv_util_la_OBJECTS = $(am_libpiv_util_la_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)"
@@ -153,7 +154,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_yubico_piv_tool_OBJECTS = yubico-piv-tool.$(OBJEXT)
 yubico_piv_tool_OBJECTS = $(am_yubico_piv_tool_OBJECTS)
 yubico_piv_tool_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	../lib/libykpiv.la libpiv_cmd.la libpiv_util.la
+	$(top_builddir)/lib/libykpiv.la libpiv_cmd.la libpiv_util.la
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -435,13 +436,13 @@ AM_CFLAGS = $(WERROR_CFLAGS) $(WARN_CFLAGS) $(am__append_1)
 AM_CPPFLAGS = $(OPENSSL_CFLAGS) -I$(top_srcdir)/lib \
 	-I$(top_builddir)/lib
 yubico_piv_tool_SOURCES = yubico-piv-tool.c yubico-piv-tool.h2m
-yubico_piv_tool_LDADD = $(OPENSSL_LIBS) ../lib/libykpiv.la \
-	libpiv_cmd.la libpiv_util.la
+yubico_piv_tool_LDADD = $(OPENSSL_LIBS) \
+	$(top_builddir)/lib/libykpiv.la libpiv_cmd.la libpiv_util.la
 noinst_LTLIBRARIES = libpiv_cmd.la libpiv_util.la
 libpiv_cmd_la_SOURCES = cmdline.ggo cmdline.c cmdline.h
 libpiv_cmd_la_CFLAGS = 
 libpiv_util_la_SOURCES = util.c util.h
-libpiv_util_la_LIBADD = $(OPENSSL_LIBS)
+libpiv_util_la_LIBADD = $(top_builddir)/lib/libykpiv.la $(OPENSSL_LIBS)
 BUILT_SOURCES = cmdline.c cmdline.h
 MAINTAINERCLEANFILES = $(BUILT_SOURCES) $(dist_man_MANS)
 
@@ -931,11 +932,10 @@ uninstall-man: uninstall-man1
 .PRECIOUS: Makefile
 
 
-cmdline.c cmdline.h: cmdline.ggo Makefile.am
+cmdline.c cmdline.h: cmdline.ggo Makefile.am $(top_srcdir)/configure.ac
 	$(GENGETOPT) --input $^
 
-yubico-piv-tool.1: $(yubico_piv_tool_SOURCES) \
-		$(top_srcdir)/configure.ac
+yubico-piv-tool.1: $(yubico_piv_tool_SOURCES) $(libpiv_cmd_la_SOURCES)
 	$(HELP2MAN) --no-info \
 		--name="Yubico PIV tool" \
 		--include=$(srcdir)/yubico-piv-tool.h2m \
