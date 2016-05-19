@@ -1,3 +1,9 @@
+yubico-piv-tool (1.4.0-1) UNRELEASED; urgency=medium
+
+  * New upstream version.
+
+ -- Klas Lindfors <klas@yubico.com>  Thu, 19 May 2016 15:09:27 +0200
+
 yubico-piv-tool (1.1.2-1) unstable; urgency=low
 
   * New upstram version.
