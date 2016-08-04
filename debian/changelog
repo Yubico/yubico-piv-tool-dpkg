@@ -1,8 +1,13 @@
-yubico-piv-tool (1.4.0-1) UNRELEASED; urgency=medium
+yubico-piv-tool (1.4.0-1) unstable; urgency=medium
 
+  [ Simon Josefsson ]
+  * Use https URLs in Vcs-Git.
+  * Update Standards-Version from 3.9.6 to 3.9.8.
+
+  [ Klas Lindfors ]
   * New upstream version.
 
- -- Klas Lindfors <klas@yubico.com>  Thu, 19 May 2016 15:09:27 +0200
+ -- Simon Josefsson <simon@josefsson.org>  Thu, 04 Aug 2016 12:05:28 +0200
 
 yubico-piv-tool (1.1.2-1) unstable; urgency=low
 
