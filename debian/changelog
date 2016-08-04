@@ -5,7 +5,7 @@ yubico-piv-tool (1.4.0-1) unstable; urgency=medium
   * Update Standards-Version from 3.9.6 to 3.9.8.
 
   [ Klas Lindfors ]
-  * New upstream version.
+  * New upstream version.  Closes: #810284.
 
  -- Simon Josefsson <simon@josefsson.org>  Thu, 04 Aug 2016 12:05:28 +0200
 
