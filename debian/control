@@ -17,12 +17,12 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: pcscd
 Replaces: libykpiv0
 Conflicts: libykpiv0
-Description: Library for communication with the YubiKey PIV
- application. The Yubico PIV tool is used for interacting with the
- Personal Identity Verification Card (PIV) application on a YubiKey.
- With it you may generate keys on the device, import keys and
- certificates, create certificate requests, and other operations. A
- shared library, a PKCS#11 module a command-line tool are included.
+Description: Library for communication with the YubiKey PIV smartcard
+ The Yubico PIV tool is used for interacting with the Personal
+ Identity Verification Card (PIV) application on a YubiKey.  With it
+ you may generate keys on the device, import keys and certificates,
+ create certificate requests, and other operations. A shared library,
+ a PKCS#11 module a command-line tool are included.
  .
  This package contains the run-time shared library.  You normally don't
  need to install it manually.
@@ -31,13 +31,12 @@ Package: libykpiv-dev
 Architecture: any
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}, libykpiv1 (= ${binary:Version})
-Description: Library for communication with the YubiKey PIV
- application. The Yubico PIV tool is used for interacting with the
- Personal Identity Verification Card (PIV) application on a YubiKey.
- With it you may generate keys on the device, import keys and
- certificates, create certificate requests, and other operations. A
- shared library, a PKCS#11 module and a command-line tool are
- included.
+Description: Development files for the YubiKey PIV Library
+ The Yubico PIV tool is used for interacting with the Personal
+ Identity Verification Card (PIV) application on a YubiKey.  With it
+ you may generate keys on the device, import keys and certificates,
+ create certificate requests, and other operations. A shared library,
+ a PKCS#11 module a command-line tool are included.
  .
  This package contains the development files for the library.
 
@@ -45,13 +44,12 @@ Package: libykcs11-1
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}, libykpiv1 (= ${binary:Version})
-Description: PKCS#11 module for communication with the YubiKey PIV
- application. The Yubico PIV tool is used for interacting with the
- Personal Identity Verification Card (PIV) application on a YubiKey.
- With it you may generate keys on the device, import keys and
- certificates, create certificate requests, and other operations. A
- shared library, a PKCS#11 module and a command-line tool are
- included.
+Description: PKCS#11 module for the YubiKey PIV applet
+ The Yubico PIV tool is used for interacting with the Personal
+ Identity Verification Card (PIV) application on a YubiKey.  With it
+ you may generate keys on the device, import keys and certificates,
+ create certificate requests, and other operations. A shared library,
+ a PKCS#11 module a command-line tool are included.
  .
  This package contains the PKCS#11 module. You normally don't need to
  install it manually.
@@ -59,11 +57,11 @@ Description: PKCS#11 module for communication with the YubiKey PIV
 Package: yubico-piv-tool
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Command line tool for the YubiKey PIV application. The
- Yubico PIV tool is used for interacting with the Personal Identity
- Verification Card (PIV) application on a YubiKey. With it you may
- generate keys on the device, import keys and certificates, create
- certificate requests, and other operations. A shared library, a
- PKCS#11 module and command-line tool are included.
+Description: Command line tool for the YubiKey PIV applet
+ The Yubico PIV tool is used for interacting with the Personal
+ Identity Verification Card (PIV) application on a YubiKey.  With it
+ you may generate keys on the device, import keys and certificates,
+ create certificate requests, and other operations. A shared library,
+ a PKCS#11 module a command-line tool are included.
  .
  This package contains the command-line tool.

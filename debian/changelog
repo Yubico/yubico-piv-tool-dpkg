@@ -3,6 +3,8 @@ yubico-piv-tool (1.4.0-1) unstable; urgency=medium
   [ Simon Josefsson ]
   * Use https URLs in Vcs-Git.
   * Update Standards-Version from 3.9.6 to 3.9.8.
+  * Build with hardening=+all.
+  * Improve package descriptions (lintian duplicate-short-description).
 
   [ Klas Lindfors ]
   * New upstream version.  Closes: #810284.
