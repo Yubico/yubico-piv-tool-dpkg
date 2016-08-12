@@ -110,6 +110,7 @@ extern "C"
                                     const unsigned char *ec_data, unsigned char ec_data_len,
                                     const unsigned char pin_policy, const unsigned char touch_policy);
 
+#define YKPIV_ALGO_TAG 0x80
 #define YKPIV_ALGO_3DES 0x03
 #define YKPIV_ALGO_RSA1024 0x06
 #define YKPIV_ALGO_RSA2048 0x07
@@ -183,10 +184,18 @@ extern "C"
 #define YKPIV_INS_VERIFY 0x20
 #define YKPIV_INS_CHANGE_REFERENCE 0x24
 #define YKPIV_INS_RESET_RETRY 0x2c
-#define YKPIV_INS_GENERATE_ASYMMERTRIC 0x47
+#define YKPIV_INS_GENERATE_ASYMMETRIC 0x47
 #define YKPIV_INS_AUTHENTICATE 0x87
 #define YKPIV_INS_GET_DATA 0xcb
 #define YKPIV_INS_PUT_DATA 0xdb
+
+/* sw is status words, see NIST special publication 800-73-4, section 5.6 */
+#define SW_SUCCESS 0x9000
+#define SW_ERR_SECURITY_STATUS 0x6982
+#define SW_ERR_AUTH_BLOCKED 0x6983
+#define SW_ERR_INCORRECT_PARAM 0x6a80
+/* this is a custom sw for yubikey */
+#define SW_ERR_INCORRECT_SLOT 0x6b00
 
   /* Yubico vendor specific instructions */
 #define YKPIV_INS_SET_MGMKEY 0xff

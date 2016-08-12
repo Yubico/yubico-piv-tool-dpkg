@@ -1,3 +1,127 @@
+2016-08-11  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: NEWS for 1.4.1
+
+2016-08-11  Alessio Di Mauro <alessio@yubico.com>
+
+	* doc/Certificate_Authority.adoc, doc/OS_X_code_signing.adoc,
+	doc/SSH_with_PIV_and_PKCS11.adoc, doc/Windows_certificate.adoc,
+	doc/YubiKey_PIV_introduction.adoc: Fix a few typos in the
+	documentation
+
+2016-08-10  Klas Lindfors <klas@yubico.com>
+
+	* mac.mk, windows.mk: bump windows and mac builds to 1.0.2h
+
+2016-08-10  Klas Lindfors <klas@yubico.com>
+
+	* tool/cmdline.ggo, tool/yubico-piv-tool.c: make certificate serial
+	number random by default
+
+2016-08-01  Alessio Di Mauro <alessio@yubico.com>
+
+	* doc/SSH_User_certificates.adoc: Add link to ssh-keygen manpage for
+	User SSH certs
+
+2016-07-29  Alessio Di Mauro <alessio@yubico.com>
+
+	* doc/SSH_User_certificates.adoc: Fix typo
+
+2016-07-29  Alessio Di Mauro <alessio@yubico.com>
+
+	* doc/SSH_User_certificates.adoc: Fix a few typos Obligatory after-push typo.
+
+2016-07-29  Alessio Di Mauro <alessio@yubico.com>
+
+	* Makefile.am, doc/SSH_User_certificates.adoc: Add doc on SSH User
+	certificates
+
+2016-07-12  Alessio Di Mauro <alessio@yubico.com>
+
+	* tool/cmdline.ggo, tool/util.c, tool/util.h,
+	tool/yubico-piv-tool.c: Add SSH export for RSA public key
+
+2016-06-28  Oscar <oscarso@hotmail.com>
+
+	* : Merge pull request #78 from Yubico/oscarso-patch-1 Supplying --key when management key value is longer the default
+	value
+
+2016-06-28  Oscar <oscarso@hotmail.com>
+
+	* doc/Windows_certificate.adoc: Update Windows_certificate.adoc
+
+2016-06-28  Oscar <oscarso@hotmail.com>
+
+	* doc/Windows_certificate.adoc: Supplying --key at the generate
+	command Supply the management key value during generate key if it has ever
+	been modified
+
+2016-06-29  Klas Lindfors <klas@yubico.com>
+
+	* doc/YubiKey_PIV_introduction.adoc: fix wording
+
+2016-05-31  Klas Lindfors <klas@yubico.com>
+
+	* doc/Attestation.adoc: use >> when adding to a file
+
+2016-05-31  Klas Lindfors <klas@yubico.com>
+
+	* doc/Attestation.adoc: add text about verifying an attestation
+
+2016-05-24  Klas Lindfors <klas@yubico.com>
+
+	* doc/Attestation.adoc: link and headings
+
+2016-05-24  Klas Lindfors <klas@yubico.com>
+
+	* doc/Attestation.adoc: move extensions used to other attestation
+	doc
+
+2016-05-16  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: make NEWS for 1.4.0 clearer
+
+2016-05-09  Klas Lindfors <klali@avm.se>
+
+	* : Merge pull request #75 from mscherer/add_sw_const Replace magic number for status word by constants
+
+2016-05-09  Klas Lindfors <klas@yubico.com>
+
+	* : commit 215fc8d0cfdf7dc1b9f65435f4281138de2ed54d Merge: fc5e153
+	6a4608f Author: Klas Lindfors <klali@avm.se> Date:   Mon May 9
+	08:59:08 2016 +0200
+
+2016-05-09  Klas Lindfors <klali@avm.se>
+
+	* : Merge pull request #74 from mscherer/fix_constant_name Fix error in the define name YKPIV_INS_GENERATE_ASYMMERTRIC
+
+2016-05-09  Klas Lindfors <klali@avm.se>
+
+	* : Merge pull request #70 from mscherer/add_constant Add YKPIV_ALGO_TAG
+
+2016-05-05  Michael Scherer <misc@zarb.org>
+
+	* lib/ykpiv.c: Use more constant for filling apdu struct.
+
+2016-05-04  Michael Scherer <misc@zarb.org>
+
+	* lib/ykpiv.c, tool/util.c, tool/yubico-piv-tool.c: Fix various
+	errors messages
+
+2016-05-05  Michael Scherer <misc@zarb.org>
+
+	* lib/ykpiv.h, tool/yubico-piv-tool.c, ykcs11/token_vendors.c: Fix
+	error in the define name YKPIV_INS_GENERATE_ASYMMERTRIC
+
+2016-05-04  Michael Scherer <misc@zarb.org>
+
+	* lib/ykpiv.h, tool/yubico-piv-tool.c, ykcs11/token_vendors.c: Add
+	YKPIV_ALGO_TAG Replace the magic constant 0x80 when sending a packet to the key
+
+2016-05-03  Klas Lindfors <klas@yubico.com>
+
+	* NEWS, configure.ac: bump version
+
 2016-05-03  Klas Lindfors <klas@yubico.com>
 
 	* NEWS, configure.ac: release 1.4.0

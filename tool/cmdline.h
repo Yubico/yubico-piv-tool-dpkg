@@ -42,7 +42,7 @@ enum enum_action { action__NULL = -1, action_arg_version = 0, action_arg_generat
 enum enum_slot { slot__NULL = -1, slot_arg_9a = 0, slot_arg_9c, slot_arg_9d, slot_arg_9e, slot_arg_82, slot_arg_83, slot_arg_84, slot_arg_85, slot_arg_86, slot_arg_87, slot_arg_88, slot_arg_89, slot_arg_8a, slot_arg_8b, slot_arg_8c, slot_arg_8d, slot_arg_8e, slot_arg_8f, slot_arg_90, slot_arg_91, slot_arg_92, slot_arg_93, slot_arg_94, slot_arg_95, slot_arg_f9 };
 enum enum_algorithm { algorithm__NULL = -1, algorithm_arg_RSA1024 = 0, algorithm_arg_RSA2048, algorithm_arg_ECCP256, algorithm_arg_ECCP384 };
 enum enum_hash { hash__NULL = -1, hash_arg_SHA1 = 0, hash_arg_SHA256, hash_arg_SHA384, hash_arg_SHA512 };
-enum enum_key_format { key_format__NULL = -1, key_format_arg_PEM = 0, key_format_arg_PKCS12, key_format_arg_GZIP, key_format_arg_DER };
+enum enum_key_format { key_format__NULL = -1, key_format_arg_PEM = 0, key_format_arg_PKCS12, key_format_arg_GZIP, key_format_arg_DER, key_format_arg_SSH };
 enum enum_pin_policy { pin_policy__NULL = -1, pin_policy_arg_never = 0, pin_policy_arg_once, pin_policy_arg_always };
 enum enum_touch_policy { touch_policy__NULL = -1, touch_policy_arg_never = 0, touch_policy_arg_always, touch_policy_arg_cached };
 enum enum_format { format__NULL = -1, format_arg_hex = 0, format_arg_base64, format_arg_binary };
@@ -100,7 +100,7 @@ struct gengetopt_args_info
   char * subject_arg;	/**< @brief The subject to use for certificate request.  */
   char * subject_orig;	/**< @brief The subject to use for certificate request original value given at command line.  */
   const char *subject_help; /**< @brief The subject to use for certificate request help description.  */
-  int serial_arg;	/**< @brief Serial number of the self-signed certificate (default='1').  */
+  int serial_arg;	/**< @brief Serial number of the self-signed certificate.  */
   char * serial_orig;	/**< @brief Serial number of the self-signed certificate original value given at command line.  */
   const char *serial_help; /**< @brief Serial number of the self-signed certificate help description.  */
   int valid_days_arg;	/**< @brief Time (in days) until the self-signed certificate expires (default='365').  */
