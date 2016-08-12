@@ -1,3 +1,9 @@
+yubico-piv-tool (1.4.1-1) unstable; urgency=medium
+
+  * New upstream version.
+
+ -- Simon Josefsson <simon@josefsson.org>  Fri, 12 Aug 2016 13:57:11 +0200
+
 yubico-piv-tool (1.4.0-1) unstable; urgency=medium
 
   [ Simon Josefsson ]
