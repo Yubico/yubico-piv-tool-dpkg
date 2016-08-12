@@ -51,11 +51,11 @@ const char *gengetopt_args_info_full_help[] = {
   "      --puk-retries=INT    Number of retries before the puk code is blocked",
   "  -i, --input=STRING       Filename to use as input, - for stdin  (default=`-')",
   "  -o, --output=STRING      Filename to use as output, - for stdout\n                             (default=`-')",
-  "  -K, --key-format=ENUM    Format of the key being read/written  (possible\n                             values=\"PEM\", \"PKCS12\", \"GZIP\", \"DER\"\n                             default=`PEM')",
+  "  -K, --key-format=ENUM    Format of the key being read/written  (possible\n                             values=\"PEM\", \"PKCS12\", \"GZIP\", \"DER\",\n                             \"SSH\" default=`PEM')",
   "  -p, --password=STRING    Password for decryption of private key file",
   "  -S, --subject=STRING     The subject to use for certificate request",
   "\n       The subject must be written as:\n       /CN=host.example.com/OU=test/O=example.com/\n",
-  "      --serial=INT         Serial number of the self-signed certificate\n                             (default=`1')",
+  "      --serial=INT         Serial number of the self-signed certificate",
   "      --valid-days=INT     Time (in days) until the self-signed certificate\n                             expires  (default=`365')",
   "  -P, --pin=STRING         Pin/puk code for verification",
   "  -N, --new-pin=STRING     New pin/puk code for changing",
@@ -128,7 +128,7 @@ const char *cmdline_parser_action_values[] = {"version", "generate", "set-mgm-ke
 const char *cmdline_parser_slot_values[] = {"9a", "9c", "9d", "9e", "82", "83", "84", "85", "86", "87", "88", "89", "8a", "8b", "8c", "8d", "8e", "8f", "90", "91", "92", "93", "94", "95", "f9", 0}; /*< Possible values for slot. */
 const char *cmdline_parser_algorithm_values[] = {"RSA1024", "RSA2048", "ECCP256", "ECCP384", 0}; /*< Possible values for algorithm. */
 const char *cmdline_parser_hash_values[] = {"SHA1", "SHA256", "SHA384", "SHA512", 0}; /*< Possible values for hash. */
-const char *cmdline_parser_key_format_values[] = {"PEM", "PKCS12", "GZIP", "DER", 0}; /*< Possible values for key-format. */
+const char *cmdline_parser_key_format_values[] = {"PEM", "PKCS12", "GZIP", "DER", "SSH", 0}; /*< Possible values for key-format. */
 const char *cmdline_parser_pin_policy_values[] = {"never", "once", "always", 0}; /*< Possible values for pin-policy. */
 const char *cmdline_parser_touch_policy_values[] = {"never", "always", "cached", 0}; /*< Possible values for touch-policy. */
 const char *cmdline_parser_format_values[] = {"hex", "base64", "binary", 0}; /*< Possible values for format. */
@@ -200,7 +200,6 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->password_orig = NULL;
   args_info->subject_arg = NULL;
   args_info->subject_orig = NULL;
-  args_info->serial_arg = 1;
   args_info->serial_orig = NULL;
   args_info->valid_days_arg = 365;
   args_info->valid_days_orig = NULL;
@@ -1418,7 +1417,7 @@ cmdline_parser_internal (
           
             if (update_arg( (void *)&(args_info->serial_arg), 
                  &(args_info->serial_orig), &(args_info->serial_given),
-                &(local_args_info.serial_given), optarg, 0, "1", ARG_INT,
+                &(local_args_info.serial_given), optarg, 0, 0, ARG_INT,
                 check_ambiguity, override, 0, 0,
                 "serial", '-',
                 additional_error))

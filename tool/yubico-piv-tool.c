@@ -122,7 +122,7 @@ static bool generate_key(ykpiv_state *state, const char *slot,
   unsigned char in_data[11];
   unsigned char *in_ptr = in_data;
   unsigned char data[1024];
-  unsigned char templ[] = {0, YKPIV_INS_GENERATE_ASYMMERTRIC, 0, 0};
+  unsigned char templ[] = {0, YKPIV_INS_GENERATE_ASYMMETRIC, 0, 0};
   unsigned long recv_len = sizeof(data);
   int sw;
   int key = 0;
@@ -145,11 +145,11 @@ static bool generate_key(ykpiv_state *state, const char *slot,
 
   *in_ptr++ = 0xac;
   *in_ptr++ = 3;
-  *in_ptr++ = 0x80;
+  *in_ptr++ = YKPIV_ALGO_TAG;
   *in_ptr++ = 1;
   *in_ptr++ = get_piv_algorithm(algorithm);
   if(in_data[4] == 0) {
-    fprintf(stderr, "Unexepcted algorithm.\n");
+    fprintf(stderr, "Unexpected algorithm.\n");
     goto generate_out;
   }
   if(pin_policy != pin_policy__NULL) {
@@ -168,11 +168,11 @@ static bool generate_key(ykpiv_state *state, const char *slot,
         &recv_len, &sw) != YKPIV_OK) {
     fprintf(stderr, "Failed to communicate.\n");
     goto generate_out;
-  } else if(sw != 0x9000) {
+  } else if(sw != SW_SUCCESS) {
     fprintf(stderr, "Failed to generate new key (");
-    if(sw == 0x6b00) {
+    if(sw == SW_ERR_INCORRECT_SLOT) {
       fprintf(stderr, "slot not supported?)\n");
-    } else if(sw == 0x6a80) {
+    } else if(sw == SW_ERR_INCORRECT_PARAM) {
       if(pin_policy != pin_policy__NULL) {
         fprintf(stderr, "pin policy not supported?)\n");
       } else if(touch_policy != touch_policy__NULL) {
@@ -297,7 +297,7 @@ static bool reset(ykpiv_state *state) {
   /* note: the reset function is only available when both pins are blocked. */
   if(ykpiv_transfer_data(state, templ, NULL, 0, data, &recv_len, &sw) != YKPIV_OK) {
     return false;
-  } else if(sw == 0x9000) {
+  } else if(sw == SW_SUCCESS) {
     return true;
   }
   return false;
@@ -320,7 +320,7 @@ static bool set_pin_retries(ykpiv_state *state, int pin_retries, int puk_retries
 
   if(ykpiv_transfer_data(state, templ, NULL, 0, data, &recv_len, &sw) != YKPIV_OK) {
     return false;
-  } else if(sw == 0x9000) {
+  } else if(sw == SW_SUCCESS) {
     return true;
   }
   return false;
@@ -557,8 +557,8 @@ static bool import_cert(ykpiv_state *state, enum enum_key_format cert_format,
     int object = get_object_id(slot);
     ykpiv_rc res;
 
-    if(4 + cert_len + 5 > 3072) { /* 4 is prefix size, 5 is postfix size */
-      fprintf(stderr, "Certificate is to large to fit in buffer.\n");
+    if(4 + cert_len + 5 > sizeof(certdata)) { /* 4 is prefix size, 5 is postfix size */
+      fprintf(stderr, "Certificate is too large to fit in buffer.\n");
       goto import_cert_out;
     }
 
@@ -781,7 +781,7 @@ request_out:
 
 static bool selfsign_certificate(ykpiv_state *state, enum enum_key_format key_format,
     const char *input_file_name, const char *slot, char *subject, enum enum_hash hash,
-    int serial, int validDays, const char *output_file_name) {
+    const int *serial, int validDays, const char *output_file_name) {
   FILE *input_file = NULL;
   FILE *output_file = NULL;
   bool ret = false;
@@ -799,6 +799,8 @@ static bool selfsign_certificate(ykpiv_state *state, enum enum_key_format key_fo
   const unsigned char *oid;
   int nid;
   unsigned int md_len;
+  ASN1_INTEGER *sno = ASN1_INTEGER_new();
+  BIGNUM *ser = NULL;
 
   sscanf(slot, "%2x", &key);
 
@@ -847,7 +849,24 @@ static bool selfsign_certificate(ykpiv_state *state, enum enum_key_format key_fo
     fprintf(stderr, "Failed to set the certificate public key.\n");
     goto selfsign_out;
   }
-  if(!ASN1_INTEGER_set(X509_get_serialNumber(x509), serial)) {
+  if(serial) {
+    ASN1_INTEGER_set(sno, *serial);
+  } else {
+    ser = BN_new();
+    if(!ser) {
+      fprintf(stderr, "Failed to allocate BIGNUM.\n");
+      goto selfsign_out;
+    }
+    if(!BN_pseudo_rand(ser, 64, 0, 0)) {
+      fprintf(stderr, "Failed to generate randomness.\n");
+      goto selfsign_out;
+    }
+    if(!BN_to_ASN1_INTEGER(ser, sno)) {
+      fprintf(stderr, "Failed to set random serial.\n");
+      goto selfsign_out;
+    }
+  }
+  if(!X509_set_serialNumber(x509, sno)) {
     fprintf(stderr, "Failed to set certificate serial.\n");
     goto selfsign_out;
   }
@@ -929,6 +948,12 @@ selfsign_out:
   }
   if(name) {
     X509_NAME_free(name);
+  }
+  if(ser) {
+    BN_free(ser);
+  }
+  if(sno) {
+    ASN1_INTEGER_free(sno);
   }
   return ret;
 }
@@ -1058,8 +1083,10 @@ static bool read_certificate(ykpiv_state *state, enum enum_slot slot,
   bool ret = false;
   X509 *x509 = NULL;
 
-  if(key_format != key_format_arg_PEM && key_format != key_format_arg_DER) {
-    fprintf(stderr, "Only PEM and DER format are supported for read-certificate.\n");
+  if(key_format != key_format_arg_PEM &&
+     key_format != key_format_arg_DER &&
+     key_format != key_format_arg_SSH) {
+    fprintf(stderr, "Only PEM, DER and SSH format are supported for read-certificate.\n");
     return false;
   }
 
@@ -1075,7 +1102,8 @@ static bool read_certificate(ykpiv_state *state, enum enum_slot slot,
 
   if(*ptr++ == 0x70) {
     ptr += get_length(ptr, &cert_len);
-    if(key_format == key_format_arg_PEM) {
+    if(key_format == key_format_arg_PEM ||
+       key_format == key_format_arg_SSH) {
       x509 = X509_new();
       if(!x509) {
         fprintf(stderr, "Failed allocating x509 structure.\n");
@@ -1086,8 +1114,18 @@ static bool read_certificate(ykpiv_state *state, enum enum_slot slot,
         fprintf(stderr, "Failed parsing x509 information.\n");
         goto read_cert_out;
       }
-      PEM_write_X509(output_file, x509);
-      ret = true;
+
+      if (key_format == key_format_arg_PEM) {
+        PEM_write_X509(output_file, x509);
+        ret = true;
+      }
+      else {
+        if (!SSH_write_X509(output_file, x509)) {
+          fprintf(stderr, "Unable to extract public key or not an RSA key.\n");
+          goto read_cert_out;
+        }
+        ret = true;
+      }
     } else { /* key_format_arg_DER */
       /* XXX: This will just dump the raw data in tag 0x70.. */
       fwrite(ptr, (size_t)cert_len, 1, output_file);
@@ -1676,7 +1714,7 @@ static bool attest(ykpiv_state *state, const char *slot,
   if(ykpiv_transfer_data(state, templ, NULL, 0, data, &len, &sw) != YKPIV_OK) {
     fprintf(stderr, "Failed to communicate.\n");
     goto attest_out;
-  } else if(sw != 0x9000) {
+  } else if(sw != SW_SUCCESS) {
     fprintf(stderr, "Failed to attest key.\n");
     goto attest_out;
   }
@@ -2072,7 +2110,7 @@ int main(int argc, char *argv[]) {
       case action_arg_selfsignMINUS_certificate:
         if(selfsign_certificate(state, args_info.key_format_arg, args_info.input_arg,
               args_info.slot_orig, args_info.subject_arg, args_info.hash_arg,
-              args_info.serial_arg, args_info.valid_days_arg,
+              args_info.serial_given ? &args_info.serial_arg : NULL, args_info.valid_days_arg,
               args_info.output_arg) == false) {
           ret = EXIT_FAILURE;
         } else {

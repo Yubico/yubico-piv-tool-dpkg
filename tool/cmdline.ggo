@@ -51,13 +51,13 @@ option "pin-retries" - "Number of retries before the pin code is blocked" int op
 option "puk-retries" - "Number of retries before the puk code is blocked" int optional dependon="pin-retries"
 option "input" i "Filename to use as input, - for stdin" string optional default="-"
 option "output" o "Filename to use as output, - for stdout" string optional default="-"
-option "key-format" K "Format of the key being read/written" values="PEM","PKCS12","GZIP","DER" enum optional default="PEM"
+option "key-format" K "Format of the key being read/written" values="PEM","PKCS12","GZIP","DER","SSH" enum optional default="PEM"
 option "password" p "Password for decryption of private key file" string optional
 option "subject" S "The subject to use for certificate request" string optional
 text   "
        The subject must be written as:
        /CN=host.example.com/OU=test/O=example.com/\n"
-option "serial" - "Serial number of the self-signed certificate" int optional default="1"
+option "serial" - "Serial number of the self-signed certificate" int optional
 option "valid-days" - "Time (in days) until the self-signed certificate expires" int optional default="365"
 option "pin" P "Pin/puk code for verification" string optional
 option "new-pin" N "New pin/puk code for changing" string optional dependon="pin"

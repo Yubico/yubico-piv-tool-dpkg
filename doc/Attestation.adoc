@@ -1,6 +1,13 @@
 Using Attestation
 -----------------
 
+== Introduction
+This feature is only available in YubiKey 4.3 and newer.
+
+A high level description of the thinking and how this can be used can be found
+at https://developers.yubico.com/PIV/Introduction/PIV_attestation.html
+
+== Usage
 Attestation works through a special key slot called “f9” this comes
 pre-loaded from factory with a key and cert signed by Yubico, but can be
 overwritten.
@@ -11,10 +18,20 @@ special key, this can be realised by using the yubico-piv-tool action attest:
   ...
   $ yubico-piv-tool --action=attest --slot=9a
 
-The output of this is a PEM encoded certificate, signed by the key in slot f9. There are a couple of special extensions on this certificate:
+The output of this is a PEM encoded certificate, signed by the key in slot f9.
 
-* +1.3.6.1.4.1.41482.3.3+: Firmware version, encoded as 3 bytes, like: 040300 for 4.3.0
-* +1.3.6.1.4.1.41482.3.7+: Serial number, encoded as an integer.
-* +1.3.6.1.4.1.41482.3.8+: Two bytes, the first encoding pin policy and the second touch policy
-** Pin policy: 01 - never, 02 - once per session, 03 - always
-** Touch policy: 01 - never, 02 - always, 03 - cached for 15s
+== Verifying
+To verify an attestation step 1 is to build the certificate chain. Put the
+attestation root certificate in a file (or if you trust several put all
+of them in said file). The Yubico root certificate can be found at
+https://developers.yubico.com/PIV/Introduction/piv-attestation-ca.pem
+
+Then add the keys attestation certificate to that file:
+
+  $ yubico-piv-tool --action=read-certificate --slot=f9 >> certs.pem
+
+Now we're ready to verify the attestation:
+
+  $ yubico-piv-tool --action=attest --slot=f9 > attestation.pem
+  $ openssl verify -CAfile certs.pem attestation.pem
+  attestation.pem: OK
