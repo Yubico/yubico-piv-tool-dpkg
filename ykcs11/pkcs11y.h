@@ -28,19 +28,19 @@
  *
  */
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef PKCS11Y_H
+#define PKCS11Y_H
 
-#include "ykcs11.h"
+#include "pkcs11.h"
 
-CK_BBOOL has_token(const ykcs11_slot_t *slot);
-CK_RV parse_readers(ykpiv_state *state,const CK_BYTE_PTR readers, const CK_ULONG len,
-                       ykcs11_slot_t *slots, CK_ULONG_PTR n_slots, CK_ULONG_PTR n_with_token);
-CK_RV create_token(ykpiv_state *state, CK_BYTE_PTR p, ykcs11_slot_t *slot);
-void  destroy_token(ykcs11_slot_t *slot);
+typedef CK_FLAGS * CK_FLAGS_PTR;
 
-CK_BBOOL is_valid_key_id(CK_BYTE id);
-
-void strip_DER_encoding_from_ECSIG(CK_BYTE_PTR data, CK_ULONG_PTR len);
+// YUBICO specific attributes
+#define CKA_TOUCH_PIN_DEFAULT 0x00000000U
+#define CKA_TOUCH_ALWAYS      0x00000001U
+#define CKA_PIN_ONCE          0x00000002U
+#define CKA_PIN_ALWAYS        0x00000004U
+#define CKA_PIN_NEVER         0x00000008U
+#define CKA_TOUCH_NEVER       0x00000016U
 
 #endif
