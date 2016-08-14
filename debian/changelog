@@ -1,6 +1,7 @@
 yubico-piv-tool (1.4.2-1) unstable; urgency=medium
 
   * New upstream version.
+  * Clarify debian/copyright wrt ykcs11/pkcs11.h.
 
  -- Simon Josefsson <simon@josefsson.org>  Sun, 14 Aug 2016 22:28:46 +0200
 
