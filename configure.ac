@@ -1,6 +1,6 @@
-# Copyright (c) 2014 Yubico AB
+# Copyright (c) 2014-2016 Yubico AB
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
 # met:
@@ -25,8 +25,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-AC_INIT([yubico-piv-tool], [1.4.1])
+AC_INIT([yubico-piv-tool], [1.4.2])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -35,7 +34,7 @@ AC_CONFIG_MACRO_DIR([m4])
 # Interfaces added:                             AGE++
 # Interfaces removed:                           AGE=0
 AC_SUBST([LT_CURRENT], 4)
-AC_SUBST([LT_REVISION], 3)
+AC_SUBST([LT_REVISION], 4)
 AC_SUBST([LT_AGE], 3)
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])

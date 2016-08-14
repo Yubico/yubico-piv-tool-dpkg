@@ -1,28 +1,29 @@
-# Copyright (c) 2015 Yubico AB
+# Copyright (c) 2015-2016 Yubico AB
 # All rights reserved.
 # 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
+#     * Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#     * Redistributions in binary form must reproduce the above
+#       copyright notice, this list of conditions and the following
+#       disclaimer in the documentation and/or other materials provided
+#       with the distribution.
 #
-# Additional permission under GNU GPL version 3 section 7
-#
-# If you modify this program, or any covered work, by linking or
-# combining it with the OpenSSL project's OpenSSL library (or a
-# modified version of that library), containing parts covered by the
-# terms of the OpenSSL or SSLeay licenses, We grant you additional 
-# permission to convey the resulting work. Corresponding Source for a
-# non-source form of such a combination shall include the source code
-# for the parts of OpenSSL used as well as that of the covered work.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SUBDIRS = . tests
 
@@ -32,7 +33,7 @@ AM_CPPFLAGS += -I$(top_srcdir)/lib -I$(top_builddir)/lib
 
 lib_LTLIBRARIES = libykcs11.la
 
-libykcs11_la_SOURCES = ykcs11.c version.c ykcs11.pc.in ykcs11.map
+libykcs11_la_SOURCES = ykcs11.c ykcs11.pc.in ykcs11.map
 libykcs11_la_SOURCES += ykcs11.h debug.h
 libykcs11_la_SOURCES += vendors.c vendors.h vendor_ids.h
 libykcs11_la_SOURCES += slot_vendors.c slot_vendors.h
@@ -42,19 +43,11 @@ libykcs11_la_SOURCES += yubico_slot.c yubico_slot.h yubico_token.c yubico_token.
 libykcs11_la_SOURCES += utils.c utils.h
 libykcs11_la_SOURCES += openssl_utils.c openssl_utils.h openssl_types.h
 libykcs11_la_SOURCES += objects.c objects.h obj_types.h
-libykcs11_la_SOURCES += pkcs11.h  pkcs11f.h  pkcs11t.h
+libykcs11_la_SOURCES += pkcs11.h  pkcs11y.h
+libykcs11_la_SOURCES += ykcs11-version.h
 
-#internal.h
-#libykcs11_la_SOURCES += error.c
-#libykcs11_la_LDADD = ../lib/libykpiv.la
-#$(OPENSSL_LIBS)
-libykcs11_la_includedir = $(includedir)/ykcs11
-libykcs11_la_include_HEADERS = ykcs11-version.h
-#ykcs11.h
 EXTRA_libykcs11_la_DEPENDENCIES = ykcs11.map
 
-#libykcs11_la_LIBADD = $(OPENSSL_LIBS) $(PCSC_LIBS)
-#libykcs11_la_LIBADD += $(PCSC_WIN_LIBS) $(PCSC_MACOSX_LIBS)
 libykcs11_la_LIBADD = ../lib/libykpiv.la
 libykcs11_la_LIBADD += ../tool/libpiv_util.la
 

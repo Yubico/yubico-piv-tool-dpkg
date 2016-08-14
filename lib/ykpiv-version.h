@@ -1,19 +1,19 @@
 /*
- * Copyright (c) 2014 Yubico AB
+ * Copyright (c) 2014-2016 Yubico AB
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *   * Redistributions of source code must retain the above copyright
  *     notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   * Redistributions in binary form must reproduce the above
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -43,7 +43,7 @@ extern "C"
 	 * version number.  Used together with ykneomgr_check_version() to verify
 	 * header file and run-time library consistency.
 	 */
-#define YKPIV_VERSION_STRING "1.4.1"
+#define YKPIV_VERSION_STRING "1.4.2"
 
 	/**
 	 * YKPIV_VERSION_NUMBER
@@ -53,7 +53,7 @@ extern "C"
 	 * this symbol will have the value 0x01020300.  The last two digits
 	 * are only used between public releases, and will otherwise be 00.
 	 */
-#define YKPIV_VERSION_NUMBER 0x010401
+#define YKPIV_VERSION_NUMBER 0x010402
 
 	/**
 	 * YKPIV_VERSION_MAJOR
@@ -80,7 +80,7 @@ extern "C"
 	 * level of the header file version number.  For example, when the
 	 * header version is 1.2.3 this symbol will be 3.
 	 */
-#define YKPIV_VERSION_PATCH 1
+#define YKPIV_VERSION_PATCH 2
 
 	const char *ykpiv_check_version (const char *req_version);
 

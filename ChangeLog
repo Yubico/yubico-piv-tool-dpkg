@@ -1,3 +1,114 @@
+2016-08-12  Klas Lindfors <klas@yubico.com>
+
+	* NEWS: release 1.4.2
+
+2016-08-12  Simon Josefsson <simon@josefsson.org>
+
+	* README: Markup fixes.
+
+2016-08-12  Simon Josefsson <simon@josefsson.org>
+
+	* README: Whitespace fix.
+
+2016-08-12  Simon Josefsson <simon@josefsson.org>
+
+	* NEWS, README: Doc fixes.
+
+2016-08-12  Simon Josefsson <simon@josefsson.org>
+
+	* ykcs11/ykcs11.pc.in: Drop cflags since this "library" doesn't have
+	any public header files.
+
+2016-08-12  Simon Josefsson <simon@josefsson.org>
+
+	* ykcs11/pkcs11.h: We modified it => add license header.
+
+2016-08-12  Simon Josefsson <simon@josefsson.org>
+
+	* ykcs11/Makefile.am: Don't install ykcs11-version.h.
+
+2016-08-12  Simon Josefsson <simon@josefsson.org>
+
+	* Makefile.am, build-and-test.sh, configure.ac, lib/Makefile.am,
+	lib/error.c, lib/internal.h, lib/tests/Makefile.am,
+	lib/tests/basic.c, lib/tests/parse_key.c, lib/version.c,
+	lib/ykpiv-version.h.in, lib/ykpiv.c, lib/ykpiv.h, lib/ykpiv.map,
+	lib/ykpiv.pc.in, mac.mk, tool/Makefile.am, tool/cmdline.ggo,
+	tool/tests/Makefile.am, tool/tests/basic.sh,
+	tool/tests/parse_name.c, tool/tests/test_inout.c, tool/util.c,
+	tool/util.h, tool/yubico-piv-tool.adoc, tool/yubico-piv-tool.c,
+	tool/yubico-piv-tool.h2m, tools/fasc.pl, windows.mk,
+	ykcs11/Makefile.am, ykcs11/debug.h, ykcs11/mechanisms.c,
+	ykcs11/mechanisms.h, ykcs11/obj_types.h, ykcs11/objects.c,
+	ykcs11/objects.h, ykcs11/openssl_types.h, ykcs11/openssl_utils.c,
+	ykcs11/openssl_utils.h, ykcs11/pkcs11y.h, ykcs11/slot_vendors.c,
+	ykcs11/slot_vendors.h, ykcs11/tests/Makefile.am,
+	ykcs11/tests/ykcs11_tests.c, ykcs11/token_vendors.c,
+	ykcs11/token_vendors.h, ykcs11/utils.c, ykcs11/utils.h,
+	ykcs11/vendor_ids.h, ykcs11/vendors.c, ykcs11/vendors.h,
+	ykcs11/ykcs11-version.h.in, ykcs11/ykcs11.c, ykcs11/ykcs11.h,
+	ykcs11/ykcs11.map, ykcs11/ykcs11.pc.in, ykcs11/yubico_slot.c,
+	ykcs11/yubico_slot.h, ykcs11/yubico_token.c, ykcs11/yubico_token.h: 
+	Improve license headers.
+
+2016-08-12  Simon Josefsson <simon@josefsson.org>
+
+	* doc/YubiKey_PIV_introduction.adoc: Improve doc.
+
+2016-08-12  Klas Lindfors <klas@yubico.com>
+
+	* ykcs11/pkcs11.h: if CRYPTOKI_EXPORTS is not defined don't add
+	__declspec this messes up the windows build since we're already using libtool
+	for the exports.
+
+2016-08-12  Klas Lindfors <klas@yubico.com>
+
+	* ykcs11/Makefile.am, ykcs11/version.c, ykcs11/ykcs11-version.h.in: 
+	drop ykcs11_check_version() that was never used or exported
+
+2016-08-12  Klas Lindfors <klas@yubico.com>
+
+	* ykcs11/Makefile.am: fixup license header of Makefile.am
+
+2016-08-12  Klas Lindfors <klas@yubico.com>
+
+	* ykcs11/Makefile.am, ykcs11/mechanisms.c, ykcs11/obj_types.h,
+	ykcs11/objects.c, ykcs11/openssl_utils.h, ykcs11/pkcs11.h,
+	ykcs11/pkcs11f.h, ykcs11/pkcs11t.h, ykcs11/pkcs11y.h,
+	ykcs11/slot_vendors.h, ykcs11/ykcs11.c, ykcs11/ykcs11.h,
+	ykcs11/yubico_slot.h: switch out the pkcs11 headers for the SCUTE
+	pkcs11 header from opensc create pkcs11y.h for our additional things
+
+2016-08-12  Klas Lindfors <klas@yubico.com>
+
+	* ykcs11/debug.h, ykcs11/mechanisms.c, ykcs11/mechanisms.h,
+	ykcs11/obj_types.h, ykcs11/objects.c, ykcs11/objects.h,
+	ykcs11/openssl_types.h, ykcs11/openssl_utils.c,
+	ykcs11/openssl_utils.h, ykcs11/slot_vendors.c,
+	ykcs11/slot_vendors.h, ykcs11/tests/ykcs11_tests.c,
+	ykcs11/token_vendors.c, ykcs11/token_vendors.h, ykcs11/utils.c,
+	ykcs11/utils.h, ykcs11/vendor_ids.h, ykcs11/vendors.c,
+	ykcs11/vendors.h, ykcs11/ykcs11.c, ykcs11/ykcs11.h,
+	ykcs11/yubico_slot.c, ykcs11/yubico_slot.h, ykcs11/yubico_token.c,
+	ykcs11/yubico_token.h: add copyright and license header
+
+2016-08-12  Klas Lindfors <klas@yubico.com>
+
+	* windows.mk: enable asm for windows openssl builds also choose the correct target for 32bits
+
+2016-08-11  Klas Lindfors <klas@yubico.com>
+
+	* ykcs11/version.c, ykcs11/ykcs11-version.h.in, ykcs11/ykcs11.map: 
+	correct license on ykcs11 files
+
+2016-08-11  Alessio Di Mauro <alessio@yubico.com>
+
+	* ykcs11/ykcs11.c: Return CKR_FUNCTION_FAILED for unimplemented func Closes #84
+
+2016-08-11  Klas Lindfors <klas@yubico.com>
+
+	* NEWS, configure.ac: bump versions
+
 2016-08-11  Klas Lindfors <klas@yubico.com>
 
 	* NEWS: NEWS for 1.4.1

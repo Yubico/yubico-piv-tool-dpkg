@@ -14,32 +14,32 @@
 
 @SET_MAKE@
 
-# Copyright (c) 2015 Yubico AB
+# Copyright (c) 2015-2016 Yubico AB
 # All rights reserved.
 # 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
+#     * Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#     * Redistributions in binary form must reproduce the above
+#       copyright notice, this list of conditions and the following
+#       disclaimer in the documentation and/or other materials provided
+#       with the distribution.
 #
-# Additional permission under GNU GPL version 3 section 7
-#
-# If you modify this program, or any covered work, by linking or
-# combining it with the OpenSSL project's OpenSSL library (or a
-# modified version of that library), containing parts covered by the
-# terms of the OpenSSL or SSLeay licenses, We grant you additional 
-# permission to convey the resulting work. Corresponding Source for a
-# non-source form of such a combination shall include the source code
-# for the parts of OpenSSL used as well as that of the covered work.
-
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 VPATH = @srcdir@
@@ -130,8 +130,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ld-version-script.m4 \
 	$(top_srcdir)/m4/warnings.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-DIST_COMMON = $(srcdir)/Makefile.am $(libykcs11_la_include_HEADERS) \
-	$(am__DIST_COMMON)
+DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES = ykcs11-version.h ykcs11.pc
 CONFIG_CLEAN_VPATH_FILES =
@@ -162,13 +161,12 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" \
-	"$(DESTDIR)$(libykcs11_la_includedir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libykcs11_la_DEPENDENCIES = ../lib/libykpiv.la ../tool/libpiv_util.la
-am_libykcs11_la_OBJECTS = ykcs11.lo version.lo vendors.lo \
-	slot_vendors.lo token_vendors.lo mechanisms.lo yubico_slot.lo \
-	yubico_token.lo utils.lo openssl_utils.lo objects.lo
+am_libykcs11_la_OBJECTS = ykcs11.lo vendors.lo slot_vendors.lo \
+	token_vendors.lo mechanisms.lo yubico_slot.lo yubico_token.lo \
+	utils.lo openssl_utils.lo objects.lo
 libykcs11_la_OBJECTS = $(am_libykcs11_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -227,7 +225,6 @@ am__can_run_installinfo = \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
 DATA = $(pkgconfig_DATA)
-HEADERS = $(libykcs11_la_include_HEADERS)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 am__recursive_targets = \
@@ -428,25 +425,14 @@ AM_CFLAGS = $(WERROR_CFLAGS) $(WARN_CFLAGS) $(am__append_3)
 AM_CPPFLAGS = $(OPENSSL_CFLAGS) $(PCSC_CFLAGS) -I$(top_srcdir)/lib \
 	-I$(top_builddir)/lib
 lib_LTLIBRARIES = libykcs11.la
-libykcs11_la_SOURCES = ykcs11.c version.c ykcs11.pc.in ykcs11.map \
-	ykcs11.h debug.h vendors.c vendors.h vendor_ids.h \
-	slot_vendors.c slot_vendors.h token_vendors.c token_vendors.h \
-	mechanisms.c mechanisms.h yubico_slot.c yubico_slot.h \
-	yubico_token.c yubico_token.h utils.c utils.h openssl_utils.c \
-	openssl_utils.h openssl_types.h objects.c objects.h \
-	obj_types.h pkcs11.h pkcs11f.h pkcs11t.h
-
-#internal.h
-#libykcs11_la_SOURCES += error.c
-#libykcs11_la_LDADD = ../lib/libykpiv.la
-#$(OPENSSL_LIBS)
-libykcs11_la_includedir = $(includedir)/ykcs11
-libykcs11_la_include_HEADERS = ykcs11-version.h
-#ykcs11.h
+libykcs11_la_SOURCES = ykcs11.c ykcs11.pc.in ykcs11.map ykcs11.h \
+	debug.h vendors.c vendors.h vendor_ids.h slot_vendors.c \
+	slot_vendors.h token_vendors.c token_vendors.h mechanisms.c \
+	mechanisms.h yubico_slot.c yubico_slot.h yubico_token.c \
+	yubico_token.h utils.c utils.h openssl_utils.c openssl_utils.h \
+	openssl_types.h objects.c objects.h obj_types.h pkcs11.h \
+	pkcs11y.h ykcs11-version.h
 EXTRA_libykcs11_la_DEPENDENCIES = ykcs11.map
-
-#libykcs11_la_LIBADD = $(OPENSSL_LIBS) $(PCSC_LIBS)
-#libykcs11_la_LIBADD += $(PCSC_WIN_LIBS) $(PCSC_MACOSX_LIBS)
 libykcs11_la_LIBADD = ../lib/libykpiv.la ../tool/libpiv_util.la
 libykcs11_la_LDFLAGS = -no-undefined -version-info \
 	$(LT_CURRENT):$(LT_REVISION):$(LT_AGE) $(am__append_1) \
@@ -543,7 +529,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/token_vendors.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vendors.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/version.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ykcs11.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/yubico_slot.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/yubico_token.Plo@am__quote@
@@ -595,27 +580,6 @@ uninstall-pkgconfigDATA:
 	@list='$(pkgconfig_DATA)'; test -n "$(pkgconfigdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(pkgconfigdir)'; $(am__uninstall_files_from_dir)
-install-libykcs11_la_includeHEADERS: $(libykcs11_la_include_HEADERS)
-	@$(NORMAL_INSTALL)
-	@list='$(libykcs11_la_include_HEADERS)'; test -n "$(libykcs11_la_includedir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(libykcs11_la_includedir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(libykcs11_la_includedir)" || exit 1; \
-	fi; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libykcs11_la_includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libykcs11_la_includedir)" || exit $$?; \
-	done
-
-uninstall-libykcs11_la_includeHEADERS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(libykcs11_la_include_HEADERS)'; test -n "$(libykcs11_la_includedir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(libykcs11_la_includedir)'; $(am__uninstall_files_from_dir)
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run 'make' without going through this Makefile.
@@ -773,10 +737,10 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-recursive
-all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(libykcs11_la_includedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -832,8 +796,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-libykcs11_la_includeHEADERS \
-	install-pkgconfigDATA
+install-data-am: install-pkgconfigDATA
 
 install-dvi: install-dvi-recursive
 
@@ -879,8 +842,7 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-libLTLIBRARIES \
-	uninstall-libykcs11_la_includeHEADERS uninstall-pkgconfigDATA
+uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgconfigDATA
 
 .MAKE: $(am__recursive_targets) install-am install-strip
 
@@ -892,14 +854,13 @@ uninstall-am: uninstall-libLTLIBRARIES \
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-libykcs11_la_includeHEADERS \
-	install-man install-pdf install-pdf-am install-pkgconfigDATA \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-libLTLIBRARIES \
-	uninstall-libykcs11_la_includeHEADERS uninstall-pkgconfigDATA
+	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
+	install-pkgconfigDATA install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
+	uninstall-libLTLIBRARIES uninstall-pkgconfigDATA
 
 .PRECIOUS: Makefile
 
