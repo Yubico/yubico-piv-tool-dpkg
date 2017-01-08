@@ -1,3 +1,9 @@
+yubico-piv-tool (1.4.2-2) unstable; urgency=medium
+
+  * Fix openssl 1.1 ftbfs.  Closes: #828616.
+
+ -- Simon Josefsson <simon@josefsson.org>  Sun, 08 Jan 2017 12:41:03 +0100
+
 yubico-piv-tool (1.4.2-1) unstable; urgency=medium
 
   * New upstream version.
